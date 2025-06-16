@@ -1,0 +1,47 @@
+class SignInResponse {
+  final int statusCode;
+  final String message;
+  final List<SignInData> data;
+
+  SignInResponse({
+    required this.statusCode,
+    required this.message,
+    required this.data,
+  });
+
+  factory SignInResponse.fromJson(Map<String, dynamic> json) {
+    return SignInResponse(
+      statusCode: json['statusCode'] as int,
+      message: json['message'] as String,
+      data: (json['data'] as List?)
+          ?.map((item) => SignInData.fromJson(item as Map<String, dynamic>))
+          .toList() ?? [],
+    );
+  }
+}
+
+class SignInData {
+  final String accessToken;
+  final int expiresIn;
+  final String idToken;
+  final String refreshToken;
+  final String tokenType;
+
+  SignInData({
+    required this.accessToken,
+    required this.expiresIn,
+    required this.idToken,
+    required this.refreshToken,
+    required this.tokenType,
+  });
+
+  factory SignInData.fromJson(Map<String, dynamic> json) {
+    return SignInData(
+      accessToken: json['AccessToken'] as String,
+      expiresIn: json['ExpiresIn'] as int,
+      idToken: json['IdToken'] as String,
+      refreshToken: json['RefreshToken'] as String,
+      tokenType: json['TokenType'] as String,
+    );
+  }
+} 

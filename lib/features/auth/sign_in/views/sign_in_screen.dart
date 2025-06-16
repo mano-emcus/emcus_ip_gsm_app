@@ -1,8 +1,13 @@
 import 'package:emcus_ipgsm_app/features/auth/register/views/register_screen.dart';
+import 'package:emcus_ipgsm_app/features/auth/sign_in/bloc/sign_in_bloc.dart';
+import 'package:emcus_ipgsm_app/features/auth/sign_in/bloc/sign_in_event.dart';
+import 'package:emcus_ipgsm_app/features/auth/sign_in/bloc/sign_in_state.dart';
 import 'package:emcus_ipgsm_app/features/home/views/dashboard_screen.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:emcus_ipgsm_app/utils/widgets/generic_text_field_widget.dart';
+import 'package:emcus_ipgsm_app/utils/widgets/generic_yet_to_implement_pop_up_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -26,222 +31,291 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      backgroundColor: ColorConstants.whiteColor,
-      body: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          return SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight:
-                    MediaQuery.of(context).size.height -
-                    MediaQuery.of(context).padding.top -
-                    MediaQuery.of(context).padding.bottom,
+    return BlocProvider(
+      create: (context) => SignInBloc(),
+      child: BlocListener<SignInBloc, SignInState>(
+        listener: (context, state) {
+          if (state is SignInSuccess) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => const DashBoardScreen(),
               ),
-              child: IntrinsicHeight(
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(height: 46 + MediaQuery.of(context).padding.top),
-                    SvgPicture.asset('assets/svgs/emcus_logo.svg'),
-                    const SizedBox(height: 68),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 26),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Sign in',
-                          style: GoogleFonts.inter(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w700,
-                            color: ColorConstants.blackColor,
+              (Route<dynamic> route) => false,
+            );
+          } else if (state is SignInFailure) {
+            showDialog(
+              context: context,
+              builder: (context) => GenericYetToImplementPopUpWidget(
+                title: 'Sign In Failed',
+                message: state.error,
+              ),
+            );
+          }
+        },
+        child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          backgroundColor: ColorConstants.whiteColor,
+          body: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              return SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight:
+                        MediaQuery.of(context).size.height -
+                        MediaQuery.of(context).padding.top -
+                        MediaQuery.of(context).padding.bottom,
+                  ),
+                  child: IntrinsicHeight(
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(height: 46 + MediaQuery.of(context).padding.top),
+                        SvgPicture.asset('assets/svgs/emcus_logo.svg'),
+                        const SizedBox(height: 68),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 26),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Sign in',
+                              style: GoogleFonts.inter(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w700,
+                                color: ColorConstants.blackColor,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 49),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 26),
-                      child: GenericTextFieldWidget(
-                        labelText: 'Email Address',
-                        hintText: 'Enter your email address',
-                        controller: emailController,
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 26),
-                      child: GenericTextFieldWidget(
-                        labelText: 'Password',
-                        hintText: 'Enter your password',
-                        controller: passwordController,
-                        keyboardType: TextInputType.visiblePassword,
-                        obscureText: true,
-                      ),
-                    ),
-                    const SizedBox(height: 19),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 26),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                isRememberMe = !isRememberMe;
-                              });
-                            },
-                            child: Row(
-                              children: <Widget>[
-                                Container(
-                                  width: 18,
-                                  height: 18,
-                                  decoration: BoxDecoration(
-                                    color:
-                                        isRememberMe
-                                            ? ColorConstants.primaryColor
-                                            : ColorConstants.whiteColor,
-                                    borderRadius: BorderRadius.circular(4),
-                                    border: Border.all(
-                                      color:
-                                          ColorConstants.textFieldBorderColor,
+                        const SizedBox(height: 49),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 26),
+                          child: GenericTextFieldWidget(
+                            labelText: 'Email Address',
+                            hintText: 'Enter your email address',
+                            controller: emailController,
+                            keyboardType: TextInputType.emailAddress,
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 26),
+                          child: GenericTextFieldWidget(
+                            labelText: 'Password',
+                            hintText: 'Enter your password',
+                            controller: passwordController,
+                            keyboardType: TextInputType.visiblePassword,
+                            obscureText: true,
+                          ),
+                        ),
+                        const SizedBox(height: 19),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 26),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isRememberMe = !isRememberMe;
+                                  });
+                                },
+                                child: Row(
+                                  children: <Widget>[
+                                    Container(
+                                      width: 18,
+                                      height: 18,
+                                      decoration: BoxDecoration(
+                                        color:
+                                            isRememberMe
+                                                ? ColorConstants.primaryColor
+                                                : ColorConstants.whiteColor,
+                                        borderRadius: BorderRadius.circular(4),
+                                        border: Border.all(
+                                          color:
+                                              ColorConstants.textFieldBorderColor,
+                                        ),
+                                      ),
+                                      child:
+                                          isRememberMe
+                                              ? const Center(
+                                                child: Icon(
+                                                  Icons.check,
+                                                  color: ColorConstants.whiteColor,
+                                                  size: 12,
+                                                ),
+                                              )
+                                              : null,
                                     ),
-                                  ),
-                                  child:
-                                      isRememberMe
-                                          ? const Center(
-                                            child: Icon(
-                                              Icons.check,
-                                              color: ColorConstants.whiteColor,
-                                              size: 12,
-                                            ),
-                                          )
-                                          : null,
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      'Remember me',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                        color: ColorConstants.blackColor,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(width: 10),
-                                Text(
-                                  'Remember me',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w400,
-                                    color: ColorConstants.blackColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Text(
-                            'Forgot password?',
-                            style: GoogleFonts.inter(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: ColorConstants.primaryColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 39),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 26),
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) => const DashBoardScreen(),
                               ),
-                              (Route<dynamic> route) => false,
-                            );
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: ColorConstants.primaryColor,
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 24,
-                                vertical: 16,
-                              ),
-                              child: Text(
-                                'Sign in',
+                              Text(
+                                'Forgot password?',
                                 style: GoogleFonts.inter(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
-                                  color: ColorConstants.whiteColor,
+                                  color: ColorConstants.primaryColor,
                                 ),
                               ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 39),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 26),
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: BlocBuilder<SignInBloc, SignInState>(
+                              builder: (context, state) {
+                                return GestureDetector(
+                                  onTap: _canSubmit()
+                                      ? () {
+                                          if (state is! SignInLoading) {
+                                            context.read<SignInBloc>().add(
+                                                  SignInSubmitted(
+                                                    email: emailController.text,
+                                                    password: passwordController.text,
+                                                  ),
+                                                );
+                                          }
+                                        }
+                                      : () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) => GenericYetToImplementPopUpWidget(
+                                              title: 'Sign In',
+                                              message: _getValidationMessage(),
+                                            ),
+                                          );
+                                        },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: ColorConstants.primaryColor,
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 24,
+                                        vertical: 16,
+                                      ),
+                                      child: state is SignInLoading
+                                          ? const SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: CircularProgressIndicator(
+                                                color: ColorConstants.whiteColor,
+                                                strokeWidth: 2,
+                                              ),
+                                            )
+                                          : Text(
+                                              'Sign in',
+                                              style: GoogleFonts.inter(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                                color: ColorConstants.whiteColor,
+                                              ),
+                                            ),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                    const Spacer(),
-                    Divider(
-                      color: ColorConstants.blackColor.withValues(alpha: 0.2),
-                      thickness: 1,
-                    ),
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 26),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            'Don’t have an account?',
-                            style: GoogleFonts.inter(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                              color: ColorConstants.blackColor,
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) => const RegisterScreen(),
+                        const Spacer(),
+                        Divider(
+                          color: ColorConstants.blackColor.withValues(alpha: 0.2),
+                          thickness: 1,
+                        ),
+                        const SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 26),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                "Don't have an account?",
+                                style: GoogleFonts.inter(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  color: ColorConstants.blackColor,
                                 ),
-                              );
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: ColorConstants.textFieldBorderColor,
-                                ),
-                                borderRadius: BorderRadius.circular(100),
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 8,
-                                ),
-                                child: Text(
-                                  'Sign Up Here',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w400,
-                                    color: ColorConstants.primaryColor,
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) => const RegisterScreen(),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: ColorConstants.textFieldBorderColor,
+                                    ),
+                                    borderRadius: BorderRadius.circular(100),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 8,
+                                    ),
+                                    child: Text(
+                                      'Sign Up Here',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                        color: ColorConstants.primaryColor,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          );
-        },
+              );
+            },
+          ),
+        ),
       ),
     );
   }
-}
+
+  bool _canSubmit() {
+    return emailController.text.isNotEmpty && passwordController.text.isNotEmpty;
+  }
+
+  String _getValidationMessage() {
+    if (emailController.text.isEmpty) {
+      return 'Please enter your email address';
+    }
+    if (passwordController.text.isEmpty) {
+      return 'Please enter your password';
+    }
+    return 'Please fill all fields';
+  }
+} 

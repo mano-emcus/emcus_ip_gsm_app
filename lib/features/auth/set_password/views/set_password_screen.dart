@@ -81,7 +81,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                           title: 'Verification',
                           isBackButtonVisible: true,
                         ),
-                        SizedBox(height: 35),
+                        const SizedBox(height: 35),
                         Stack(
                           alignment: Alignment.center,
                           children: [
@@ -91,7 +91,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 22),
+                        const SizedBox(height: 22),
                         Text(
                           'Verification Successful',
                           style: GoogleFonts.inter(
@@ -100,7 +100,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                             color: ColorConstants.blackColor,
                           ),
                         ),
-                        SizedBox(height: 17),
+                        const SizedBox(height: 17),
                         Text(
                           'Create your new sign in password',
                           style: GoogleFonts.inter(
