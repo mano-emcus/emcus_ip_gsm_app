@@ -1,7 +1,11 @@
 import 'package:emcus_ipgsm_app/core/services/auth_manager.dart';
+import 'package:emcus_ipgsm_app/features/logs/bloc/logs_bloc.dart';
+import 'package:emcus_ipgsm_app/features/logs/bloc/logs_event.dart';
+import 'package:emcus_ipgsm_app/features/logs/bloc/logs_state.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:emcus_ipgsm_app/utils/widgets/generic_yet_to_implement_pop_up_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -14,29 +18,50 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
+  void initState() {
+    super.initState();
+    // Fetch logs when the screen loads
+    context.read<LogsBloc>().add(LogsFetched());
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ColorConstants.whiteColor,
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 26),
-              child: Column(
-                children: [
-                  _buildDashboard(),
-                  const SizedBox(height: 39),
-                  _buildRecentSites(),
-                  const SizedBox(height: 39),
-                  _buildRecentNotes(),
-                  const SizedBox(height: 39),
-                  _buildLogoutButton(),
-                  const SizedBox(height: 100),
-                ],
-              ),
+    return BlocListener<LogsBloc, LogsState>(
+      listener: (context, state) {
+        if (state is LogsFailure) {
+          // Show error message if logs fail to load
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to load logs: ${state.error}'),
+              backgroundColor: Colors.red,
+              duration: const Duration(seconds: 3),
             ),
           );
-        },
+        }
+      },
+      child: Scaffold(
+        backgroundColor: ColorConstants.whiteColor,
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 26),
+                child: Column(
+                  children: [
+                    _buildDashboard(),
+                    const SizedBox(height: 39),
+                    _buildRecentSites(),
+                    const SizedBox(height: 39),
+                    _buildRecentNotes(),
+                    const SizedBox(height: 39),
+                    _buildLogoutButton(),
+                    const SizedBox(height: 100),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
