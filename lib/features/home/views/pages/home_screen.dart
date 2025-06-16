@@ -43,8 +43,24 @@ class _HomeScreenState extends State<HomeScreen> {
             // Authentication failed, redirect to sign-in
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(
-                builder: (BuildContext context) => const SignInScreen(),
+              PageRouteBuilder(
+                transitionDuration: const Duration(milliseconds: 600),
+                pageBuilder: (context, animation, secondaryAnimation) => const SignInScreen(),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  return SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(0.0, -0.15),
+                      end: Offset.zero,
+                    ).animate(CurvedAnimation(
+                      parent: animation,
+                      curve: Curves.easeInOutCubic,
+                    )),
+                    child: FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    ),
+                  );
+                },
               ),
               (Route<dynamic> route) => false,
             );
@@ -62,26 +78,70 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: Scaffold(
         backgroundColor: ColorConstants.whiteColor,
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 26),
-                child: Column(
-                  children: [
-                    _buildDashboard(),
-                    const SizedBox(height: 39),
-                    _buildRecentSites(),
-                    const SizedBox(height: 39),
-                    _buildRecentNotes(),
-                    const SizedBox(height: 39),
-                    _buildLogoutButton(),
-                    const SizedBox(height: 100),
-                  ],
-                ),
+        body: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              backgroundColor: ColorConstants.whiteColor,
+              surfaceTintColor: ColorConstants.whiteColor,
+              elevation: 0,
+              pinned: true,
+              expandedHeight: 120,
+              automaticallyImplyLeading: false,
+              flexibleSpace: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  final double appBarHeight = constraints.biggest.height;
+                  final double statusBarHeight = MediaQuery.of(context).padding.top;
+                  final double minHeight = kToolbarHeight + statusBarHeight;
+                  final double maxHeight = 120 + statusBarHeight;
+                  
+                  // Calculate scroll progress (0.0 = fully expanded, 1.0 = fully collapsed)
+                  final double scrollProgress = ((maxHeight - appBarHeight) / (maxHeight - minHeight)).clamp(0.0, 1.0);
+                  
+                  // Calculate logo size and position based on scroll
+                  final double logoSize = 60 - (25 * scrollProgress); // 60 -> 35
+                  final double topPadding = statusBarHeight + (20 * (1 - scrollProgress));
+                  
+                  return Container(
+                    color: ColorConstants.whiteColor,
+                    child: Align(
+                      alignment: scrollProgress > 0.5 
+                          ? Alignment.bottomCenter 
+                          : Alignment.center,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          top: scrollProgress > 0.5 ? 0 : topPadding,
+                          bottom: scrollProgress > 0.5 ? 16 : 0,
+                        ),
+                        child: Hero(
+                          tag: 'emcus_logo',
+                          child: SvgPicture.asset(
+                            'assets/svgs/emcus_logo.svg',
+                            height: logoSize,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
-            );
-          },
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 26),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  const SizedBox(height: 20),
+                  _buildDashboardContent(),
+                  const SizedBox(height: 39),
+                  _buildRecentSites(),
+                  const SizedBox(height: 39),
+                  _buildRecentNotes(),
+                  const SizedBox(height: 39),
+                  _buildLogoutButton(),
+                  const SizedBox(height: 100),
+                ]),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -119,8 +179,202 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       children: [
         SizedBox(height: 46 + MediaQuery.of(context).padding.top),
-        SvgPicture.asset('assets/svgs/emcus_logo.svg'),
+        Hero(
+          tag: 'emcus_logo',
+          child: SvgPicture.asset('assets/svgs/emcus_logo.svg'),
+        ),
         const SizedBox(height: 43),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'Dashboard',
+            style: GoogleFonts.inter(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: ColorConstants.textColor,
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        BlocBuilder<LogsBloc, LogsState>(
+          builder: (context, state) {
+            int fireCount = 0;
+            int faultCount = 0;
+            int allEventsCount = 0;
+            String fireCountText = '-';
+            String faultCountText = '-';
+            String allEventsCountText = '-';
+
+            if (state is LogsSuccess) {
+              fireCount = _getFireCount(state.logs);
+              faultCount = _getFaultCount(state.logs);
+              allEventsCount = _getAllEventsCount(state.logs);
+              fireCountText = fireCount.toString();
+              faultCountText = faultCount.toString();
+              allEventsCountText = allEventsCount.toString();
+            } else if (state is LogsLoading) {
+              fireCountText = '...';
+              faultCountText = '...';
+              allEventsCountText = '...';
+            }
+
+            return GridView.count(
+              padding: EdgeInsets.zero,
+              crossAxisCount: 3,
+              mainAxisSpacing: 16,
+              crossAxisSpacing: 16,
+              childAspectRatio: 1.25,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                GestureDetector(
+                  onTap: () => _navigateToLogsList(LogType.fire, 'Fire Events'),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: ColorConstants.fireTitleBackGroundColor,
+                      border: Border.all(color: ColorConstants.fireTitleBorderColor),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        top: 17,
+                        right: 13,
+                        bottom: 9,
+                        left: 10,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              fireCountText,
+                              style: GoogleFonts.inter(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                                color: ColorConstants.blackColor,
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Fire',
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: ColorConstants.fireTitleTextColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => _navigateToLogsList(LogType.fault, 'Fault Events'),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: ColorConstants.faultTitleBackGroundColor,
+                      border: Border.all(color: ColorConstants.faultTitleBorderColor),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        top: 17,
+                        right: 13,
+                        bottom: 9,
+                        left: 10,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              faultCountText,
+                              style: GoogleFonts.inter(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                                color: ColorConstants.blackColor,
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Fault',
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: ColorConstants.faultTitleTextColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => _navigateToLogsList(LogType.all, 'All Events'),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: ColorConstants.allEventsTitleBackGroundColor,
+                      border: Border.all(
+                        color: ColorConstants.allEventsTitleBorderColor,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        top: 17,
+                        right: 13,
+                        bottom: 9,
+                        left: 10,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              allEventsCountText,
+                              style: GoogleFonts.inter(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                                color: ColorConstants.blackColor,
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'All Events',
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: ColorConstants.allEventsTitleTextColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDashboardContent() {
+    return Column(
+      children: [
         Align(
           alignment: Alignment.centerLeft,
           child: Text(

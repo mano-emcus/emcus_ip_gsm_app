@@ -11,6 +11,45 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+// Custom page route for smooth transitions
+class CustomPageRoute<T> extends PageRouteBuilder<T> {
+  final Widget child;
+  final Duration duration;
+
+  CustomPageRoute({
+    required this.child,
+    this.duration = const Duration(milliseconds: 800),
+  }) : super(
+          transitionDuration: duration,
+          reverseTransitionDuration: duration,
+          pageBuilder: (context, animation, secondaryAnimation) => child,
+        );
+
+  @override
+  Widget buildTransitions(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child) {
+    return SlideTransition(
+      position: Tween<Offset>(
+        begin: const Offset(0.0, 0.15),
+        end: Offset.zero,
+      ).animate(CurvedAnimation(
+        parent: animation,
+        curve: Curves.easeInOutCubic,
+      )),
+      child: FadeTransition(
+        opacity: Tween<double>(
+          begin: 0.0,
+          end: 1.0,
+        ).animate(CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeInOutCubic,
+        )),
+        child: child,
+      ),
+    );
+  }
+}
+
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
 
@@ -46,8 +85,8 @@ class _SignInScreenState extends State<SignInScreen> {
           if (state is SignInSuccess) {
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(
-                builder: (BuildContext context) => const DashBoardScreen(),
+              CustomPageRoute(
+                child: const DashBoardScreen(),
               ),
               (Route<dynamic> route) => false,
             );
@@ -78,7 +117,10 @@ class _SignInScreenState extends State<SignInScreen> {
                     child: Column(
                       children: <Widget>[
                         SizedBox(height: 46 + MediaQuery.of(context).padding.top),
-                        SvgPicture.asset('assets/svgs/emcus_logo.svg'),
+                        Hero(
+                          tag: 'emcus_logo',
+                          child: SvgPicture.asset('assets/svgs/emcus_logo.svg'),
+                        ),
                         const SizedBox(height: 68),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 26),
