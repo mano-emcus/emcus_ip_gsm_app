@@ -14,11 +14,13 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    Future.delayed(const Duration(seconds: 2), () {
+    Future<void>.delayed(const Duration(seconds: 4), () {
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const SignInScreen()),
+          MaterialPageRoute(
+            builder: (BuildContext context) => const SignInScreen(),
+          ),
         );
       }
     });
@@ -28,10 +30,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ColorConstants.whiteColor,
       body: Center(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
+          children: <Widget>[
             SizedBox(height: MediaQuery.sizeOf(context).height * 0.3),
             SvgPicture.asset('assets/svgs/emcus_logo.svg'),
             Spacer(),
@@ -55,7 +57,7 @@ class _SplashScreenState extends State<SplashScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
+              children: <Widget>[
                 Flexible(
                   child: SvgPicture.asset(
                     'assets/svgs/splash_bottom_left_icon.svg',

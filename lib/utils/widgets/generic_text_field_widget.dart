@@ -3,13 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class GenericTextFieldWidget extends StatelessWidget {
-  final String labelText;
-  final String hintText;
-  final TextEditingController controller;
-  final TextInputType keyboardType;
-  final bool? obscureText;
-  final bool? isPassword;
-  final bool? isEmail;
   const GenericTextFieldWidget({
     super.key,
     required this.labelText,
@@ -20,6 +13,13 @@ class GenericTextFieldWidget extends StatelessWidget {
     this.isPassword,
     this.isEmail,
   });
+  final String labelText;
+  final String hintText;
+  final TextEditingController controller;
+  final TextInputType keyboardType;
+  final bool? obscureText;
+  final bool? isPassword;
+  final bool? isEmail;
 
   @override
   Widget build(BuildContext context) {

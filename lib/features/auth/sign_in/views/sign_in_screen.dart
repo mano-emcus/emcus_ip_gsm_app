@@ -1,3 +1,4 @@
+import 'package:emcus_ipgsm_app/features/auth/register/views/register_screen.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:emcus_ipgsm_app/utils/widgets/generic_text_field_widget.dart';
 import 'package:flutter/material.dart';
@@ -12,34 +13,41 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  late TextEditingController emailController;
+  late TextEditingController passwordController;
   bool isRememberMe = false;
+
+  @override
+  void initState() {
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: ColorConstants.whiteColor,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 26),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: MediaQuery.of(context).size.height - 
-                             MediaQuery.of(context).padding.top - 
-                             MediaQuery.of(context).padding.bottom - 
-                             52, // Account for horizontal padding
-                ),
-                child: IntrinsicHeight(
-                  child: Column(
-                    children: [
-                      SizedBox(height: 76),
-                      SvgPicture.asset('assets/svgs/emcus_logo.svg'),
-                      SizedBox(height: 68),
-                      Align(
+      body: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          return SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight:
+                    MediaQuery.of(context).size.height -
+                    MediaQuery.of(context).padding.top -
+                    MediaQuery.of(context).padding.bottom,
+              ),
+              child: IntrinsicHeight(
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(height: 46 + MediaQuery.of(context).padding.top),
+                    SvgPicture.asset('assets/svgs/emcus_logo.svg'),
+                    SizedBox(height: 68),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 26),
+                      child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
                           'Sign in',
@@ -50,25 +58,34 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 49),
-                      GenericTextFieldWidget(
-                        labelText: 'Email',
-                        hintText: "Enter your email",
+                    ),
+                    SizedBox(height: 49),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 26),
+                      child: GenericTextFieldWidget(
+                        labelText: 'Email Address',
+                        hintText: 'Enter your email address',
                         controller: emailController,
                         keyboardType: TextInputType.emailAddress,
                       ),
-                      SizedBox(height: 14),
-                      GenericTextFieldWidget(
+                    ),
+                    SizedBox(height: 14),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 26),
+                      child: GenericTextFieldWidget(
                         labelText: 'Password',
-                        hintText: "Enter your password",
+                        hintText: 'Enter your password',
                         controller: passwordController,
                         keyboardType: TextInputType.visiblePassword,
                         obscureText: true,
                       ),
-                      SizedBox(height: 19),
-                      Row(
+                    ),
+                    SizedBox(height: 19),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 26),
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
+                        children: <Widget>[
                           GestureDetector(
                             onTap: () {
                               setState(() {
@@ -76,7 +93,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               });
                             },
                             child: Row(
-                              children: [
+                              children: <Widget>[
                                 Container(
                                   width: 18,
                                   height: 18,
@@ -87,7 +104,8 @@ class _SignInScreenState extends State<SignInScreen> {
                                             : ColorConstants.whiteColor,
                                     borderRadius: BorderRadius.circular(4),
                                     border: Border.all(
-                                      color: ColorConstants.textFieldBorderColor,
+                                      color:
+                                          ColorConstants.textFieldBorderColor,
                                     ),
                                   ),
                                   child:
@@ -123,8 +141,11 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 39),
-                      Align(
+                    ),
+                    SizedBox(height: 39),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 26),
+                      child: Align(
                         alignment: Alignment.centerRight,
                         child: Container(
                           decoration: BoxDecoration(
@@ -132,7 +153,10 @@ class _SignInScreenState extends State<SignInScreen> {
                             borderRadius: BorderRadius.circular(100),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 16,
+                            ),
                             child: Text(
                               'Sign in',
                               style: GoogleFonts.inter(
@@ -144,23 +168,67 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                         ),
                       ),
-                      Spacer(), // Now this will work!
-                      Text(
-                        'Dont have an account?',
-                        style: GoogleFonts.inter(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          color: ColorConstants.blackColor,
-                        ),
+                    ),
+                    Spacer(),
+                    Divider(
+                      color: ColorConstants.blackColor.withValues(alpha: 0.2),
+                      thickness: 1,
+                    ),
+                    SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 26),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            'Don’t have an account?',
+                            style: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: ColorConstants.blackColor,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) => RegisterScreen(),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: ColorConstants.textFieldBorderColor,
+                                ),
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 8,
+                                ),
+                                child: Text(
+                                  'Sign Up Here',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: ColorConstants.primaryColor,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 20), // Add some bottom padding
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
