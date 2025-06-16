@@ -171,7 +171,5 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     );
   }
 
-  void _resendOtp() {
-    // TODO: Implement resend OTP
-  }
+  void _resendOtp() {}
 }

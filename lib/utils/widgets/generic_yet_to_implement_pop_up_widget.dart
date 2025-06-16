@@ -20,7 +20,6 @@ class GenericYetToImplementPopUpWidget extends StatelessWidget {
   }) {
     return showDialog(
       context: context,
-      barrierDismissible: true,
       builder: (context) => GenericYetToImplementPopUpWidget(
         title: title,
         message: message,
@@ -44,7 +43,7 @@ class GenericYetToImplementPopUpWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -68,7 +67,7 @@ class GenericYetToImplementPopUpWidget extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor.withOpacity(0.1),
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(

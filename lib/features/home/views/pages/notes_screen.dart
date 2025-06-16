@@ -58,7 +58,7 @@ class _NotesScreenState extends State<NotesScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 26),
               child: Container(
                 decoration: BoxDecoration(
-                  color: ColorConstants.textFieldBorderColor.withOpacity(0.3),
+                  color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: TextField(
@@ -103,7 +103,7 @@ class _NotesScreenState extends State<NotesScreen> {
                       margin: const EdgeInsets.only(bottom: 12),
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: ColorConstants.textFieldBorderColor.withOpacity(0.3),
+                        color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Column(

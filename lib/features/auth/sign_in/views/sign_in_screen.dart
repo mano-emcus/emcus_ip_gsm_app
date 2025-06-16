@@ -1,6 +1,5 @@
 import 'package:emcus_ipgsm_app/features/auth/register/views/register_screen.dart';
 import 'package:emcus_ipgsm_app/features/home/views/dashboard_screen.dart';
-import 'package:emcus_ipgsm_app/features/home/views/pages/home_screen.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:emcus_ipgsm_app/utils/widgets/generic_text_field_widget.dart';
 import 'package:flutter/material.dart';

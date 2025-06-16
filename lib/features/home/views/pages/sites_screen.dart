@@ -58,7 +58,7 @@ class _SitesScreenState extends State<SitesScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 26),
               child: Container(
                 decoration: BoxDecoration(
-                  color: ColorConstants.textFieldBorderColor.withOpacity(0.3),
+                  color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: TextField(
@@ -103,7 +103,7 @@ class _SitesScreenState extends State<SitesScreen> {
                       margin: const EdgeInsets.only(bottom: 12),
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: ColorConstants.textFieldBorderColor.withOpacity(0.3),
+                        color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Column(
@@ -114,7 +114,7 @@ class _SitesScreenState extends State<SitesScreen> {
                               Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor.withOpacity(0.1),
+                                  color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                                   shape: BoxShape.circle,
                                 ),
                                 child: Icon(
@@ -211,7 +211,7 @@ class _SitesScreenState extends State<SitesScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
