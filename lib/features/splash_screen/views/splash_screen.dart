@@ -1,4 +1,6 @@
+import 'package:emcus_ipgsm_app/core/services/auth_manager.dart';
 import 'package:emcus_ipgsm_app/features/auth/sign_in/views/sign_in_screen.dart';
+import 'package:emcus_ipgsm_app/features/home/views/dashboard_screen.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -12,19 +14,40 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final AuthManager _authManager = AuthManager();
+
   @override
   void initState() {
-    Future<void>.delayed(const Duration(seconds: 4), () {
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => const SignInScreen(),
-          ),
-        );
-      }
-    });
     super.initState();
+    _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
+    // Wait for splash screen display duration
+    await Future.delayed(const Duration(seconds: 4));
+    
+    if (!mounted) return;
+    
+    // Check if user is already signed in
+    final isSignedIn = await _authManager.isAuthenticated();
+    
+    if (isSignedIn) {
+      // User has valid token, navigate to dashboard
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => const DashBoardScreen(),
+        ),
+      );
+    } else {
+      // User doesn't have token, navigate to sign in
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => const SignInScreen(),
+        ),
+      );
+    }
   }
 
   @override

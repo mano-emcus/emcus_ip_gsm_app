@@ -1,3 +1,4 @@
+import 'package:emcus_ipgsm_app/core/services/auth_manager.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:emcus_ipgsm_app/utils/widgets/generic_yet_to_implement_pop_up_widget.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +43,22 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       children: [
         SizedBox(height: 46 + MediaQuery.of(context).padding.top),
-        SvgPicture.asset('assets/svgs/emcus_logo.svg'),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Spacer(),
+            SvgPicture.asset('assets/svgs/emcus_logo.svg'),
+            IconButton(
+              onPressed: () => _showLogoutDialog(context),
+              icon: const Icon(
+                Icons.logout,
+                color: ColorConstants.primaryColor,
+                size: 24,
+              ),
+              tooltip: 'Logout',
+            ),
+          ],
+        ),
         const SizedBox(height: 43),
         Align(
           alignment: Alignment.centerLeft,
@@ -403,6 +419,59 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ],
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Logout',
+            style: GoogleFonts.inter(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: ColorConstants.textColor,
+            ),
+          ),
+          content: Text(
+            'Are you sure you want to logout?',
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+              color: ColorConstants.textColor,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Cancel',
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop(); // Close dialog first
+                await AuthManager().logout(context);
+              },
+              child: Text(
+                'Logout',
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: ColorConstants.primaryColor,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

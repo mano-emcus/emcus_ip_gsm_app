@@ -2,12 +2,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:emcus_ipgsm_app/features/auth/sign_in/bloc/sign_in_event.dart';
 import 'package:emcus_ipgsm_app/features/auth/sign_in/bloc/sign_in_state.dart';
 import 'package:emcus_ipgsm_app/features/auth/sign_in/bloc/sign_in_repository.dart';
+import 'package:emcus_ipgsm_app/core/services/auth_manager.dart';
 
 class SignInBloc extends Bloc<SignInEvent, SignInState> {
   final SignInRepository _signInRepository;
+  final AuthManager _authManager;
 
-  SignInBloc({SignInRepository? signInRepository})
-      : _signInRepository = signInRepository ?? SignInRepository(),
+  SignInBloc({
+    SignInRepository? signInRepository,
+    AuthManager? authManager,
+  }) : _signInRepository = signInRepository ?? SignInRepository(),
+        _authManager = authManager ?? AuthManager(),
         super(SignInInitial()) {
     on<SignInSubmitted>(_onSignInSubmitted);
   }
@@ -24,9 +29,18 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
       );
       
       if (response.statusCode == 1) {
+        final signInData = response.data.first;
+        
+        // Store tokens in SharedPreferences
+        await _authManager.storeAuthTokens(
+          idToken: signInData.idToken,
+          accessToken: signInData.accessToken,
+          refreshToken: signInData.refreshToken,
+        );
+        
         emit(SignInSuccess(
           message: response.message,
-          signInData: response.data.first,
+          signInData: signInData,
         ));
       } else {
         emit(SignInFailure(error: response.message));
