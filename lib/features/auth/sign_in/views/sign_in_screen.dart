@@ -45,7 +45,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   children: <Widget>[
                     SizedBox(height: 46 + MediaQuery.of(context).padding.top),
                     SvgPicture.asset('assets/svgs/emcus_logo.svg'),
-                    SizedBox(height: 68),
+                    const SizedBox(height: 68),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 26),
                       child: Align(
@@ -60,7 +60,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 49),
+                    const SizedBox(height: 49),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 26),
                       child: GenericTextFieldWidget(
@@ -70,7 +70,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         keyboardType: TextInputType.emailAddress,
                       ),
                     ),
-                    SizedBox(height: 14),
+                    const SizedBox(height: 14),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 26),
                       child: GenericTextFieldWidget(
@@ -81,7 +81,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         obscureText: true,
                       ),
                     ),
-                    SizedBox(height: 19),
+                    const SizedBox(height: 19),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 26),
                       child: Row(
@@ -111,7 +111,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   ),
                                   child:
                                       isRememberMe
-                                          ? Center(
+                                          ? const Center(
                                             child: Icon(
                                               Icons.check,
                                               color: ColorConstants.whiteColor,
@@ -120,7 +120,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                           )
                                           : null,
                                 ),
-                                SizedBox(width: 10),
+                                const SizedBox(width: 10),
                                 Text(
                                   'Remember me',
                                   style: GoogleFonts.inter(
@@ -143,7 +143,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 39),
+                    const SizedBox(height: 39),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 26),
                       child: Align(
@@ -153,7 +153,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                builder: (BuildContext context) => DashBoardScreen(),
+                                builder: (BuildContext context) => const DashBoardScreen(),
                               ),
                               (Route<dynamic> route) => false,
                             );
@@ -181,12 +181,12 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     Divider(
                       color: ColorConstants.blackColor.withValues(alpha: 0.2),
                       thickness: 1,
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 26),
                       child: Row(
@@ -205,7 +205,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (BuildContext context) => RegisterScreen(),
+                                  builder: (BuildContext context) => const RegisterScreen(),
                                 ),
                               );
                             },

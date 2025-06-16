@@ -36,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
           children: <Widget>[
             SizedBox(height: MediaQuery.sizeOf(context).height * 0.3),
             SvgPicture.asset('assets/svgs/emcus_logo.svg'),
-            Spacer(),
+            const Spacer(),
             Text(
               'Version 1.0',
               style: GoogleFonts.inter(
@@ -45,7 +45,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 color: ColorConstants.textColor,
               ),
             ),
-            SizedBox(height: 15),
+            const SizedBox(height: 15),
             Text(
               'Copyrighted, EMCUS & its Associates',
               style: GoogleFonts.inter(

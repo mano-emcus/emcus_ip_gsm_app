@@ -29,7 +29,7 @@ class RegisterAppBarWidget extends StatelessWidget {
               color: ColorConstants.blackColor,
             ),
           ),
-          Spacer(),
+          const Spacer(),
           SvgPicture.asset('assets/svgs/emcus_logo.svg', width: 147),
         ],
       ),

@@ -17,9 +17,9 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   int _selectedIndex = 0;
 
   List<Widget> get _screens => [
-    HomeScreen(),
-    SitesScreen(),
-    NotesScreen(),
+    const HomeScreen(),
+    const SitesScreen(),
+    const NotesScreen(),
   ];
 
   void _onItemTapped(int index) {

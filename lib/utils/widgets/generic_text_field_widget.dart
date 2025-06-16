@@ -34,7 +34,7 @@ class GenericTextFieldWidget extends StatelessWidget {
             color: ColorConstants.textColor,
           ),
         ),
-        SizedBox(height: 14),
+        const SizedBox(height: 14),
         Container(
           decoration: BoxDecoration(
             color: ColorConstants.whiteColor,
@@ -55,7 +55,7 @@ class GenericTextFieldWidget extends StatelessWidget {
             ),
             obscuringCharacter: '*',
             decoration: InputDecoration(
-              contentPadding: EdgeInsets.symmetric(horizontal: 18),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 18),
               border: InputBorder.none,
               hintText: hintText,
               hintStyle: GoogleFonts.inter(

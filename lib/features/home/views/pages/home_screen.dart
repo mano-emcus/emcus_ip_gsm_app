@@ -24,11 +24,11 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 children: [
                   _buildDashboard(),
-                  SizedBox(height: 39),
+                  const SizedBox(height: 39),
                   _buildRecentSites(),
-                  SizedBox(height: 39),
+                  const SizedBox(height: 39),
                   _buildRecentNotes(),
-                  SizedBox(height: 100),
+                  const SizedBox(height: 100),
                 ],
               ),
             ),
@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         SizedBox(height: 46 + MediaQuery.of(context).padding.top),
         SvgPicture.asset('assets/svgs/emcus_logo.svg'),
-        SizedBox(height: 43),
+        const SizedBox(height: 43),
         Align(
           alignment: Alignment.centerLeft,
           child: Text(
@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         GridView.count(
           padding: EdgeInsets.zero,
           crossAxisCount: 3,
@@ -216,7 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SvgPicture.asset('assets/svgs/arrow_forward_icon.svg'),
           ],
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         GestureDetector(
           onTap: () {
             showDialog(
@@ -248,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         GestureDetector(
           onTap: () {
             showDialog(
@@ -280,7 +280,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         GestureDetector(
           onTap: () {
             showDialog(
@@ -333,7 +333,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SvgPicture.asset('assets/svgs/arrow_forward_icon.svg'),
           ],
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         GridView.count(
           padding: EdgeInsets.zero,
           crossAxisCount: 3,
