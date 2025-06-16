@@ -1,4 +1,4 @@
-import 'package:emcus_ipgsm_app/features/auth/register/views/set_password_screen.dart';
+import 'package:emcus_ipgsm_app/features/auth/set_password/views/set_password_screen.dart';
 import 'package:emcus_ipgsm_app/features/auth/register/widgets/register_app_bar_widget.dart';
 import 'package:emcus_ipgsm_app/features/auth/verify_otp/bloc/verify_otp_bloc.dart';
 import 'package:emcus_ipgsm_app/features/auth/verify_otp/bloc/verify_otp_event.dart';
@@ -22,23 +22,16 @@ class VerifyOtpScreen extends StatefulWidget {
 
 class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
   late TextEditingController otpController;
-  late TextEditingController companyNameController;
-  late TextEditingController emailController;
-  bool isTermsAndConditions = false;
 
   @override
   void initState() {
     super.initState();
     otpController = TextEditingController();
-    companyNameController = TextEditingController();
-    emailController = TextEditingController();
   }
 
   @override
   void dispose() {
     otpController.dispose();
-    companyNameController.dispose();
-    emailController.dispose();
     super.dispose();
   }
 
@@ -52,7 +45,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const SetPasswordScreen(),
+                builder: (context) => SetPasswordScreen(email: widget.email),
               ),
             );
           } else if (state is VerifyOtpFailure) {
@@ -86,7 +79,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                           title: 'Verification',
                           isBackButtonVisible: true,
                         ),
-                        SizedBox(height: 35),
+                        const SizedBox(height: 35),
                         SvgPicture.asset('assets/svgs/shield_icon.svg'),
                         const SizedBox(height: 30),
                         Padding(
