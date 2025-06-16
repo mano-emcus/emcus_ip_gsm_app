@@ -16,7 +16,7 @@ class AuthManager {
 
   /// Get the current user's ID token
   Future<String?> getCurrentIdToken() async {
-    return await _tokenStorageService.getIdToken();
+    return await _tokenStorageService.getValidIdToken();
   }
 
   /// Get the current user's access token

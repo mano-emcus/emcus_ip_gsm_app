@@ -1,7 +1,10 @@
 import 'package:emcus_ipgsm_app/core/services/auth_manager.dart';
+import 'package:emcus_ipgsm_app/features/auth/sign_in/views/sign_in_screen.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_bloc.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_event.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_state.dart';
+import 'package:emcus_ipgsm_app/features/logs/models/log_entry.dart';
+import 'package:emcus_ipgsm_app/features/logs/views/logs_list_screen.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:emcus_ipgsm_app/utils/widgets/generic_yet_to_implement_pop_up_widget.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +24,10 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     // Fetch logs when the screen loads
+    _fetchLogs();
+  }
+
+  void _fetchLogs() {
     context.read<LogsBloc>().add(LogsFetched());
   }
 
@@ -29,14 +36,28 @@ class _HomeScreenState extends State<HomeScreen> {
     return BlocListener<LogsBloc, LogsState>(
       listener: (context, state) {
         if (state is LogsFailure) {
-          // Show error message if logs fail to load
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to load logs: ${state.error}'),
-              backgroundColor: Colors.red,
-              duration: const Duration(seconds: 3),
-            ),
-          );
+          // Check if it's an authentication error
+          if (state.error.contains('AuthenticationException') || 
+              state.error.contains('No valid authentication token') ||
+              state.error.contains('Missing Authorization header')) {
+            // Authentication failed, redirect to sign-in
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => const SignInScreen(),
+              ),
+              (Route<dynamic> route) => false,
+            );
+          } else {
+            // Show error message for other failures
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Failed to load logs: ${state.error}'),
+                backgroundColor: Colors.red,
+                duration: const Duration(seconds: 3),
+              ),
+            );
+          }
         }
       },
       child: Scaffold(
@@ -66,6 +87,34 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Helper methods to calculate log counts based on event IDs
+  int _getFireCount(List<LogEntry> logs) {
+    return logs.where((log) => log.u16EventId >= 1001 && log.u16EventId <= 1007).length;
+  }
+
+  int _getFaultCount(List<LogEntry> logs) {
+    return logs.where((log) => log.u16EventId >= 2000 && log.u16EventId < 3000).length;
+  }
+
+  int _getAllEventsCount(List<LogEntry> logs) {
+    return logs.length;
+  }
+
+  void _navigateToLogsList(LogType logType, String title) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BlocProvider(
+          create: (context) => LogsBloc(),
+          child: LogsListScreen(
+            logType: logType,
+            title: title,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildDashboard() {
     return Column(
       children: [
@@ -84,144 +133,177 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         const SizedBox(height: 16),
-        GridView.count(
-          padding: EdgeInsets.zero,
-          crossAxisCount: 3,
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
-          childAspectRatio: 1.25,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: ColorConstants.fireTitleBackGroundColor,
-                border: Border.all(color: ColorConstants.fireTitleBorderColor),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  top: 17,
-                  right: 13,
-                  bottom: 9,
-                  left: 10,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        '4',
-                        style: GoogleFonts.inter(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w600,
-                          color: ColorConstants.blackColor,
-                        ),
+        BlocBuilder<LogsBloc, LogsState>(
+          builder: (context, state) {
+            int fireCount = 0;
+            int faultCount = 0;
+            int allEventsCount = 0;
+            String fireCountText = '-';
+            String faultCountText = '-';
+            String allEventsCountText = '-';
+
+            if (state is LogsSuccess) {
+              fireCount = _getFireCount(state.logs);
+              faultCount = _getFaultCount(state.logs);
+              allEventsCount = _getAllEventsCount(state.logs);
+              fireCountText = fireCount.toString();
+              faultCountText = faultCount.toString();
+              allEventsCountText = allEventsCount.toString();
+            } else if (state is LogsLoading) {
+              fireCountText = '...';
+              faultCountText = '...';
+              allEventsCountText = '...';
+            }
+
+            return GridView.count(
+              padding: EdgeInsets.zero,
+              crossAxisCount: 3,
+              mainAxisSpacing: 16,
+              crossAxisSpacing: 16,
+              childAspectRatio: 1.25,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                GestureDetector(
+                  onTap: () => _navigateToLogsList(LogType.fire, 'Fire Events'),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: ColorConstants.fireTitleBackGroundColor,
+                      border: Border.all(color: ColorConstants.fireTitleBorderColor),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        top: 17,
+                        right: 13,
+                        bottom: 9,
+                        left: 10,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              fireCountText,
+                              style: GoogleFonts.inter(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                                color: ColorConstants.blackColor,
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Fire',
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: ColorConstants.fireTitleTextColor,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Fire',
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: ColorConstants.fireTitleTextColor,
-                        ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => _navigateToLogsList(LogType.fault, 'Fault Events'),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: ColorConstants.faultTitleBackGroundColor,
+                      border: Border.all(color: ColorConstants.faultTitleBorderColor),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        top: 17,
+                        right: 13,
+                        bottom: 9,
+                        left: 10,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              faultCountText,
+                              style: GoogleFonts.inter(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                                color: ColorConstants.blackColor,
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Fault',
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: ColorConstants.faultTitleTextColor,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: ColorConstants.faultTitleBackGroundColor,
-                border: Border.all(color: ColorConstants.faultTitleBorderColor),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  top: 17,
-                  right: 13,
-                  bottom: 9,
-                  left: 10,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        '24',
-                        style: GoogleFonts.inter(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w600,
-                          color: ColorConstants.blackColor,
-                        ),
+                GestureDetector(
+                  onTap: () => _navigateToLogsList(LogType.all, 'All Events'),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: ColorConstants.allEventsTitleBackGroundColor,
+                      border: Border.all(
+                        color: ColorConstants.allEventsTitleBorderColor,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        top: 17,
+                        right: 13,
+                        bottom: 9,
+                        left: 10,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              allEventsCountText,
+                              style: GoogleFonts.inter(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                                color: ColorConstants.blackColor,
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'All Events',
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: ColorConstants.allEventsTitleTextColor,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Fault',
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: ColorConstants.faultTitleTextColor,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: ColorConstants.allEventsTitleBackGroundColor,
-                border: Border.all(
-                  color: ColorConstants.allEventsTitleBorderColor,
-                ),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  top: 17,
-                  right: 13,
-                  bottom: 9,
-                  left: 10,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        '42',
-                        style: GoogleFonts.inter(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w600,
-                          color: ColorConstants.blackColor,
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Fault',
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: ColorConstants.allEventsTitleTextColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
+              ],
+            );
+          },
         ),
       ],
     );

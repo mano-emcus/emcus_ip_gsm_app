@@ -19,7 +19,7 @@ class LogsRepository {
       final idToken = await _authManager.getCurrentIdToken();
       
       if (idToken == null || idToken.isEmpty) {
-        throw Exception('No authentication token found');
+        throw AuthenticationException('No valid authentication token found');
       }
 
       final headers = {
@@ -50,8 +50,10 @@ class LogsRepository {
       if (response.statusCode == 200) {
         return LogsResponse.fromJson(responseData);
       } else if (response.statusCode == 401) {
+        // Token is expired or invalid, clear tokens
+        await _authManager.logoutSilent();
         final errorResponse = LogsErrorResponse.fromJson(responseData);
-        throw Exception(errorResponse.message);
+        throw AuthenticationException(errorResponse.message);
       } else {
         throw Exception('Failed to fetch logs: ${response.statusCode}');
       }
@@ -59,8 +61,19 @@ class LogsRepository {
       throw Exception('No internet connection');
     } on FormatException {
       throw Exception('Invalid response format');
+    } on AuthenticationException {
+      rethrow;
     } catch (e) {
       throw Exception('Failed to fetch logs: ${e.toString()}');
     }
   }
+}
+
+class AuthenticationException implements Exception {
+  final String message;
+  
+  AuthenticationException(this.message);
+  
+  @override
+  String toString() => 'AuthenticationException: $message';
 } 
