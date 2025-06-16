@@ -29,6 +29,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   _buildRecentSites(),
                   const SizedBox(height: 39),
                   _buildRecentNotes(),
+                  const SizedBox(height: 39),
+                  _buildLogoutButton(),
                   const SizedBox(height: 100),
                 ],
               ),
@@ -43,22 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       children: [
         SizedBox(height: 46 + MediaQuery.of(context).padding.top),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Spacer(),
-            SvgPicture.asset('assets/svgs/emcus_logo.svg'),
-            IconButton(
-              onPressed: () => _showLogoutDialog(context),
-              icon: const Icon(
-                Icons.logout,
-                color: ColorConstants.primaryColor,
-                size: 24,
-              ),
-              tooltip: 'Logout',
-            ),
-          ],
-        ),
+        SvgPicture.asset('assets/svgs/emcus_logo.svg'),
         const SizedBox(height: 43),
         Align(
           alignment: Alignment.centerLeft,
@@ -419,6 +406,42 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildLogoutButton() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: ElevatedButton(
+        onPressed: () => _showLogoutDialog(context),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: ColorConstants.primaryColor,
+          foregroundColor: ColorConstants.whiteColor,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          elevation: 2,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.logout,
+              size: 20,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'Logout',
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
