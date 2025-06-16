@@ -1,7 +1,7 @@
 import 'package:emcus_ipgsm_app/features/auth/register/bloc/register_bloc.dart';
 import 'package:emcus_ipgsm_app/features/auth/register/bloc/register_event.dart';
 import 'package:emcus_ipgsm_app/features/auth/register/bloc/register_state.dart';
-import 'package:emcus_ipgsm_app/features/auth/register/views/verify_otp_screen.dart';
+import 'package:emcus_ipgsm_app/features/auth/verify_otp/views/verify_otp_screen.dart';
 import 'package:emcus_ipgsm_app/features/auth/sign_in/views/sign_in_screen.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:emcus_ipgsm_app/utils/widgets/generic_text_field_widget.dart';
