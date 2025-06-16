@@ -179,10 +179,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       children: [
         SizedBox(height: 46 + MediaQuery.of(context).padding.top),
-        Hero(
-          tag: 'emcus_logo',
-          child: SvgPicture.asset('assets/svgs/emcus_logo.svg'),
-        ),
+        // Hero widget removed - now handled by SliverAppBar
+        SvgPicture.asset('assets/svgs/emcus_logo.svg'),
         const SizedBox(height: 43),
         Align(
           alignment: Alignment.centerLeft,

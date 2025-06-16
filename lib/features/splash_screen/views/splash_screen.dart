@@ -97,7 +97,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   }
 
   Future<void> _initializeApp() async {
-    // Wait for splash screen display duration
+    // Wait for splash screen display duration and animation to complete
     await Future.delayed(const Duration(seconds: 4));
     
     if (!mounted) return;
@@ -105,12 +105,18 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     // Check if user is already signed in
     final isSignedIn = await _authManager.isAuthenticated();
     
+    // Add a small delay to ensure the splash animation completes before navigation
+    await Future.delayed(const Duration(milliseconds: 200));
+    
+    if (!mounted) return;
+    
     if (isSignedIn) {
       // User has valid token, navigate to dashboard
       Navigator.pushReplacement(
         context,
         SplashPageRoute(
           child: const DashBoardScreen(),
+          duration: const Duration(milliseconds: 1000), // Slightly longer for better effect
         ),
       );
     } else {
@@ -119,6 +125,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
         context,
         SplashPageRoute(
           child: const SignInScreen(),
+          duration: const Duration(milliseconds: 1000), // Slightly longer for better effect
         ),
       );
     }
