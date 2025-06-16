@@ -1,0 +1,408 @@
+import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
+import 'package:emcus_ipgsm_app/utils/widgets/generic_yet_to_implement_pop_up_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: ColorConstants.whiteColor,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 26),
+              child: Column(
+                children: [
+                  _buildDashboard(),
+                  SizedBox(height: 39),
+                  _buildRecentSites(),
+                  SizedBox(height: 39),
+                  _buildRecentNotes(),
+                  SizedBox(height: 100),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildDashboard() {
+    return Column(
+      children: [
+        SizedBox(height: 46 + MediaQuery.of(context).padding.top),
+        SvgPicture.asset('assets/svgs/emcus_logo.svg'),
+        SizedBox(height: 43),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'Dashboard',
+            style: GoogleFonts.inter(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: ColorConstants.textColor,
+            ),
+          ),
+        ),
+        SizedBox(height: 16),
+        GridView.count(
+          padding: EdgeInsets.zero,
+          crossAxisCount: 3,
+          mainAxisSpacing: 16,
+          crossAxisSpacing: 16,
+          childAspectRatio: 1.25,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: ColorConstants.fireTitleBackGroundColor,
+                border: Border.all(color: ColorConstants.fireTitleBorderColor),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  top: 17,
+                  right: 13,
+                  bottom: 9,
+                  left: 10,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        '4',
+                        style: GoogleFonts.inter(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w600,
+                          color: ColorConstants.blackColor,
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Fire',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: ColorConstants.fireTitleTextColor,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: ColorConstants.faultTitleBackGroundColor,
+                border: Border.all(color: ColorConstants.faultTitleBorderColor),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  top: 17,
+                  right: 13,
+                  bottom: 9,
+                  left: 10,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        '24',
+                        style: GoogleFonts.inter(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w600,
+                          color: ColorConstants.blackColor,
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Fault',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: ColorConstants.faultTitleTextColor,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: ColorConstants.allEventsTitleBackGroundColor,
+                border: Border.all(
+                  color: ColorConstants.allEventsTitleBorderColor,
+                ),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  top: 17,
+                  right: 13,
+                  bottom: 9,
+                  left: 10,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        '42',
+                        style: GoogleFonts.inter(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w600,
+                          color: ColorConstants.blackColor,
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Fault',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: ColorConstants.allEventsTitleTextColor,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRecentSites() {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Recent Sites',
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: ColorConstants.textColor,
+              ),
+            ),
+            SvgPicture.asset('assets/svgs/arrow_forward_icon.svg'),
+          ],
+        ),
+        SizedBox(height: 12),
+        GestureDetector(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder:
+                  (context) => GenericYetToImplementPopUpWidget(
+                    title: 'Recent Sites',
+                    message: 'This feature is not yet implemented',
+                    onClose: () {},
+                  ),
+            );
+          },
+          child: Container(
+            height: 68,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Center(
+              child: Text(
+                'Recent Sites',
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: ColorConstants.textColor,
+                ),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 12),
+        GestureDetector(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder:
+                  (context) => GenericYetToImplementPopUpWidget(
+                    title: 'Recent Sites',
+                    message: 'This feature is not yet implemented',
+                    onClose: () {},
+                  ),
+            );
+          },
+          child: Container(
+            height: 68,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Center(
+              child: Text(
+                'Recent Sites',
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: ColorConstants.textColor,
+                ),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 12),
+        GestureDetector(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder:
+                  (context) => GenericYetToImplementPopUpWidget(
+                    title: 'Recent Sites',
+                    message: 'This feature is not yet implemented',
+                    onClose: () {},
+                  ),
+            );
+          },
+          child: Container(
+            height: 68,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Center(
+              child: Text(
+                'Recent Sites',
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: ColorConstants.textColor,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRecentNotes() {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Recent Notes',
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: ColorConstants.textColor,
+              ),
+            ),
+            SvgPicture.asset('assets/svgs/arrow_forward_icon.svg'),
+          ],
+        ),
+        SizedBox(height: 12),
+        GridView.count(
+          padding: EdgeInsets.zero,
+          crossAxisCount: 3,
+          mainAxisSpacing: 16,
+          crossAxisSpacing: 16,
+          childAspectRatio: 1.25,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            GestureDetector(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => GenericYetToImplementPopUpWidget(
+                    title: 'Recent Notes',
+                    message: 'This feature is not yet implemented',
+                    onClose: () {},
+                  ),
+                );
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                
+              ),
+            ),
+            GestureDetector(
+               onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => GenericYetToImplementPopUpWidget(
+                    title: 'Recent Notes',
+                    message: 'This feature is not yet implemented',
+                    onClose: () {},
+                  ),
+                );
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                
+              ),
+            ),
+            GestureDetector(
+               onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => GenericYetToImplementPopUpWidget(
+                    title: 'Recent Notes',
+                    message: 'This feature is not yet implemented',
+                    onClose: () {},
+                  ),
+                );
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}

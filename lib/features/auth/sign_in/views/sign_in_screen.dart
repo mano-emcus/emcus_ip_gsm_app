@@ -1,4 +1,6 @@
 import 'package:emcus_ipgsm_app/features/auth/register/views/register_screen.dart';
+import 'package:emcus_ipgsm_app/features/home/views/dashboard_screen.dart';
+import 'package:emcus_ipgsm_app/features/home/views/pages/home_screen.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:emcus_ipgsm_app/utils/widgets/generic_text_field_widget.dart';
 import 'package:flutter/material.dart';
@@ -147,22 +149,33 @@ class _SignInScreenState extends State<SignInScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 26),
                       child: Align(
                         alignment: Alignment.centerRight,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: ColorConstants.primaryColor,
-                            borderRadius: BorderRadius.circular(100),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 16,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) => DashBoardScreen(),
+                              ),
+                              (Route<dynamic> route) => false,
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: ColorConstants.primaryColor,
+                              borderRadius: BorderRadius.circular(100),
                             ),
-                            child: Text(
-                              'Sign in',
-                              style: GoogleFonts.inter(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: ColorConstants.whiteColor,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 16,
+                              ),
+                              child: Text(
+                                'Sign in',
+                                style: GoogleFonts.inter(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: ColorConstants.whiteColor,
+                                ),
                               ),
                             ),
                           ),

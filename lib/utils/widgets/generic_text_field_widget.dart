@@ -41,29 +41,27 @@ class GenericTextFieldWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
             border: Border.all(color: ColorConstants.textFieldBorderColor),
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 2),
-            child: TextField(
-              onTapOutside: (event) {
-                FocusScope.of(context).unfocus();
-              },
-              controller: controller,
-              keyboardType: keyboardType,
-              obscureText: obscureText ?? false,
-              style: GoogleFonts.inter(
+          child: TextField(
+            onTapOutside: (event) {
+              FocusScope.of(context).unfocus();
+            },
+            controller: controller,
+            keyboardType: keyboardType,
+            obscureText: obscureText ?? false,
+            style: GoogleFonts.inter(
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+              color: ColorConstants.textColor,
+            ),
+            obscuringCharacter: '*',
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.symmetric(horizontal: 18),
+              border: InputBorder.none,
+              hintText: hintText,
+              hintStyle: GoogleFonts.inter(
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
-                color: ColorConstants.textColor,
-              ),
-              obscuringCharacter: '*',
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: hintText,
-                hintStyle: GoogleFonts.inter(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  color: ColorConstants.greyColor,
-                ),
+                color: ColorConstants.greyColor,
               ),
             ),
           ),

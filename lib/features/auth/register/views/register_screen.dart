@@ -202,7 +202,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const VerifyOtpScreen(),
+                                builder: (context) => VerifyOtpScreen(
+                                  email: emailController.text ,
+                                ),
                               ),
                             );
                           },
