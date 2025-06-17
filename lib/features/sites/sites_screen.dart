@@ -1,6 +1,7 @@
 import 'package:emcus_ipgsm_app/features/home/views/pages/home_screen.dart';
 import 'package:emcus_ipgsm_app/features/home/views/pages/notes_screen.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_bloc.dart';
+import 'package:emcus_ipgsm_app/features/sites/views/all_site_screen.dart';
 import 'package:emcus_ipgsm_app/features/sites/views/site_dashboard_screen.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SitesScreen extends StatefulWidget {
-  const SitesScreen({super.key});
+  const SitesScreen({super.key, required this.fireCount, required this.faultCount, required this.allEventsCount});
+  final String fireCount;
+  final String faultCount;
+  final String allEventsCount;
 
   @override
   State<SitesScreen> createState() => _SitesScreenState();
@@ -23,7 +27,7 @@ class _SitesScreenState extends State<SitesScreen> {
       create: (context) => LogsBloc(),
       child: SiteDashboardScreen(siteName: 'Emcus'),
     ),
-    const SitesScreen(),
+    AllSitesScreen(fireCount: widget.fireCount, faultCount: widget.faultCount, allEventsCount: widget.allEventsCount),
     const NotesScreen(),
   ];
 

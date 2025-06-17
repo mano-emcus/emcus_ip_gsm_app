@@ -529,97 +529,136 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // First row: Zone Address and Device Address
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  child: Text(
-                    log.u8DeviceText,
-                    style: GoogleFonts.inter(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: ColorConstants.textColor,
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: _getLogTypeBackgroundColor(log),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Text(
-                    _getLogTypeText(log),
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: _getLogTypeColor(log),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildInfoItem(
-                    'Zone',
-                    log.u8ZoneNumber.toString(),
-                    Icons.location_on_outlined,
-                  ),
-                ),
-                Expanded(
-                  child: _buildInfoItem(
-                    'Device',
-                    log.u8DeviceAddress.toString(),
-                    Icons.device_hub_outlined,
-                  ),
-                ),
-                Expanded(
-                  child: _buildInfoItem(
-                    'Source',
-                    log.source,
-                    log.source == 'IP'
-                        ? Icons.wifi
-                        : Icons.signal_cellular_4_bar,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Icon(Icons.access_time, size: 16, color: Colors.grey[600]),
-                const SizedBox(width: 8),
                 Text(
-                  log.formattedDateTime,
+                  'Zone Address',
                   style: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey[600],
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: ColorConstants.primaryColor,
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Icon(Icons.tag, size: 16, color: Colors.grey[600]),
-                const SizedBox(width: 8),
+                const SizedBox(height: 4),
                 Text(
-                  'Event ID: ${log.u16EventId}',
+                  log.u8ZoneNumber.toString(),
                   style: GoogleFonts.inter(
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
-                    color: Colors.grey[600],
+                    color: ColorConstants.textColor,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Device Address',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: ColorConstants.primaryColor,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  log.u8DeviceAddress.toString(),
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    color: ColorConstants.textColor,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            // Second row: Source
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Source',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: ColorConstants.primaryColor,
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.only(
+                    left: 4,
+                    right: 5,
+                    top: 1,
+                    bottom: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: log.source.toLowerCase() == 'gsm'
+                        ? ColorConstants.gsmBackGroundColor
+                        : ColorConstants.primaryColor,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    log.source,
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: ColorConstants.allEventsTitleBackGroundColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            // Third row: Date & Time and Status
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Date & Time',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: ColorConstants.primaryColor,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  log.formattedDateTime,
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    color: ColorConstants.textColor,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Status',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: ColorConstants.primaryColor,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  _getLogTypeText(log),
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: _getLogTypeColor(log),
                   ),
                 ),
               ],

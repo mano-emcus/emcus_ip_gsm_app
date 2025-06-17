@@ -180,8 +180,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return logs.length;
   }
 
-
-
   Widget _buildDashboardContent() {
     return Column(
       children: [
@@ -329,9 +327,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SvgPicture.asset(
-                          'assets/svgs/all_event_tile_icon.svg',
-                        ),
+                        SvgPicture.asset('assets/svgs/all_event_tile_icon.svg'),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -367,137 +363,162 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildRecentSites() {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return BlocBuilder<LogsBloc, LogsState>(
+      builder: (context, state) {
+        if (state is LogsSuccess) {
+          fireCount = _getFireCount(state.logs);
+          faultCount = _getFaultCount(state.logs);
+          allEventsCount = _getAllEventsCount(state.logs);
+          fireCountText = fireCount.toString();
+          faultCountText = faultCount.toString();
+          allEventsCountText = allEventsCount.toString();
+        } else if (state is LogsLoading) {
+          fireCountText = '...';
+          faultCountText = '...';
+          allEventsCountText = '...';
+        }
+        return Column(
           children: [
-            Text(
-              'Recent Sites',
-              style: GoogleFonts.inter(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: ColorConstants.textColor,
-              ),
-            ),
-            SvgPicture.asset('assets/svgs/arrow_forward_icon.svg'),
-          ],
-        ),
-        const SizedBox(height: 12),
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SitesScreen()),
-            );
-          },
-          child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(
-                left: 17,
-                right: 17,
-                top: 13,
-                bottom: 15,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Emcus',
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: ColorConstants.primaryColor,
-                    ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Recent Sites',
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: ColorConstants.textColor,
                   ),
-                  SizedBox(height: 8),
-                  Row(
+                ),
+                SvgPicture.asset('assets/svgs/arrow_forward_icon.svg'),
+              ],
+            ),
+            const SizedBox(height: 12),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => SitesScreen(
+                          fireCount: fireCountText,
+                          faultCount: faultCountText,
+                          allEventsCount: allEventsCountText,
+                        ),
+                  ),
+                );
+              },
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: ColorConstants.textFieldBorderColor.withValues(
+                    alpha: 0.3,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 17,
+                    right: 17,
+                    top: 13,
+                    bottom: 15,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: 'Fire : ',
-                                style: GoogleFonts.inter(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                  color: ColorConstants.textColor,
-                                ),
-                              ),
-                              TextSpan(
-                                text: fireCountText,
-                                style: GoogleFonts.inter(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700,
-                                  color: ColorConstants.textColor,
-                                ),
-                              ),
-                            ],
-                          ),
+                      Text(
+                        'Emcus',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: ColorConstants.primaryColor,
                         ),
                       ),
-                      Expanded(
-                        child: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: 'Fault : ',
-                                style: GoogleFonts.inter(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                  color: ColorConstants.textColor,
-                                ),
+                      SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: 'Fire : ',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                      color: ColorConstants.textColor,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: fireCountText,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      color: ColorConstants.textColor,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              TextSpan(
-                                text: faultCountText,
-                                style: GoogleFonts.inter(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700,
-                                  color: ColorConstants.textColor,
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
-                      Expanded(
-                        child: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: 'Events : ',
-                                style: GoogleFonts.inter(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                  color: ColorConstants.textColor,
-                                ),
+                          Expanded(
+                            child: RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: 'Fault : ',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                      color: ColorConstants.textColor,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: faultCountText,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      color: ColorConstants.textColor,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              TextSpan(
-                                text: allEventsCountText,
-                                style: GoogleFonts.inter(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700,
-                                  color: ColorConstants.textColor,
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
+                          Expanded(
+                            child: RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: 'Events : ',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                      color: ColorConstants.textColor,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: allEventsCountText,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      color: ColorConstants.textColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 
