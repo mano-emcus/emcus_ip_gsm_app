@@ -33,6 +33,145 @@ class _NotesScreenState extends State<NotesScreen> {
     super.dispose();
   }
 
+  void _showAddNoteBottomSheet(BuildContext context) {
+    final TextEditingController noteController = TextEditingController();
+    
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.7,
+            ),
+            child: IntrinsicHeight(
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: ColorConstants.whiteColor,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Handle bar
+                      Center(
+                        child: Container(
+                          width: 40,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: ColorConstants.greyColor.withValues(alpha: 0.3),
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      // Title
+                      Text(
+                        'Add Note',
+                        style: GoogleFonts.inter(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: ColorConstants.primaryColor,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      // Note input field
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
+                            ),
+                          ),
+                          child: TextField(
+                            controller: noteController,
+                            maxLines: null,
+                            expands: true,
+                            textAlignVertical: TextAlignVertical.top,
+                            decoration: InputDecoration(
+                              hintText: 'Write your note here...',
+                              hintStyle: GoogleFonts.inter(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: ColorConstants.greyColor,
+                              ),
+                              border: InputBorder.none,
+                            ),
+                            style: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: ColorConstants.blackColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      // Submit button
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (noteController.text.trim().isNotEmpty) {
+                              // TODO: Implement note submission logic
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Note saved successfully!'),
+                                  backgroundColor: Colors.green,
+                                  duration: const Duration(seconds: 2),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Please enter some content for your note'),
+                                  backgroundColor: Colors.orange,
+                                  duration: const Duration(seconds: 2),
+                                ),
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: ColorConstants.primaryColor,
+                            foregroundColor: ColorConstants.whiteColor,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: Text(
+                            'Submit to Cloud',
+                            style: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -363,18 +502,14 @@ class _NotesScreenState extends State<NotesScreen> {
           padding: EdgeInsets.only(
             bottom: 80,
           ), // Account for bottom nav bar height
-          child: FloatingActionButton(
-            onPressed: () {
-              GenericYetToImplementPopUpWidget.show(
-                context,
-                title: 'New Note',
-                message: 'Create new note feature is coming soon!',
-              );
-            },
-            backgroundColor: ColorConstants.primaryColor,
-            shape: const CircleBorder(),
-            child: const Icon(Icons.add, color: ColorConstants.whiteColor),
-          ),
+                      child: FloatingActionButton(
+              onPressed: () {
+                _showAddNoteBottomSheet(context);
+              },
+              backgroundColor: ColorConstants.primaryColor,
+              shape: const CircleBorder(),
+              child: const Icon(Icons.add, color: ColorConstants.whiteColor),
+            ),
         ),
       ),
     );
