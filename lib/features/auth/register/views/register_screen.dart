@@ -225,53 +225,68 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 26),
                           child: Align(
                             alignment: Alignment.centerRight,
-                            child: GestureDetector(
-                              onTap: emailController.text.isNotEmpty &&
-                                      companyNameController.text.isNotEmpty &&
-                                      fullNameController.text.isNotEmpty &&
-                                      isTermsAndConditions
-                                  ? () {
-                                      context.read<RegisterBloc>().add(
-                                            RegisterSubmitted(
-                                              fullName: fullNameController.text,
-                                              companyName: companyNameController.text,
-                                              email: emailController.text,
+                            child: BlocBuilder<RegisterBloc, RegisterState>(
+                              builder: (context, state) {
+                                return GestureDetector(
+                                  onTap: emailController.text.isNotEmpty &&
+                                          companyNameController.text.isNotEmpty &&
+                                          fullNameController.text.isNotEmpty &&
+                                          isTermsAndConditions
+                                      ? () {
+                                          if (state is! RegisterLoading) {
+                                            context.read<RegisterBloc>().add(
+                                                  RegisterSubmitted(
+                                                    fullName: fullNameController.text,
+                                                    companyName: companyNameController.text,
+                                                    email: emailController.text,
+                                                  ),
+                                                );
+                                          }
+                                        }
+                                      : () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) => GenericYetToImplementPopUpWidget(
+                                              title: 'Register',
+                                              message: emailController.text.isEmpty ||
+                                                      companyNameController.text.isEmpty ||
+                                                      fullNameController.text.isEmpty
+                                                  ? 'Please fill all the fields to register'
+                                                  : 'Please agree to the terms and conditions to register',
                                             ),
                                           );
-                                    }
-                                  : () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => GenericYetToImplementPopUpWidget(
-                                          title: 'Register',
-                                          message: emailController.text.isEmpty ||
-                                                  companyNameController.text.isEmpty ||
-                                                  fullNameController.text.isEmpty
-                                              ? 'Please fill all the fields to register'
-                                              : 'Please agree to the terms and conditions to register',
-                                        ),
-                                      );
-                                    },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: ColorConstants.primaryColor,
-                                  borderRadius: BorderRadius.circular(100),
-                                ),
-                                child: const Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 24,
-                                    vertical: 16,
-                                  ),
-                                  child: Text(
-                                    'Register',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                      color: ColorConstants.whiteColor,
+                                        },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: ColorConstants.primaryColor,
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 24,
+                                        vertical: 16,
+                                      ),
+                                      child: state is RegisterLoading
+                                          ? const SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: CircularProgressIndicator(
+                                                color: ColorConstants.whiteColor,
+                                                strokeWidth: 2,
+                                              ),
+                                            )
+                                          : Text(
+                                              'Register',
+                                              style: GoogleFonts.inter(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                                color: ColorConstants.whiteColor,
+                                              ),
+                                            ),
                                     ),
                                   ),
-                                ),
-                              ),
+                                );
+                              },
                             ),
                           ),
                         ),

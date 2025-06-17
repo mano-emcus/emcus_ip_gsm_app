@@ -22,19 +22,33 @@ class SetPasswordScreen extends StatefulWidget {
 class _SetPasswordScreenState extends State<SetPasswordScreen> {
   late TextEditingController passwordController;
   late TextEditingController confirmPasswordController;
+  bool _showPasswordMismatchError = false;
 
   @override
   void initState() {
     super.initState();
     passwordController = TextEditingController();
     confirmPasswordController = TextEditingController();
+    
+    // Add listeners to validate passwords in real-time
+    passwordController.addListener(_validatePasswordMatch);
+    confirmPasswordController.addListener(_validatePasswordMatch);
   }
 
   @override
   void dispose() {
+    passwordController.removeListener(_validatePasswordMatch);
+    confirmPasswordController.removeListener(_validatePasswordMatch);
     passwordController.dispose();
     confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  void _validatePasswordMatch() {
+    setState(() {
+      _showPasswordMismatchError = confirmPasswordController.text.isNotEmpty &&
+          passwordController.text != confirmPasswordController.text;
+    });
   }
 
   @override
@@ -131,7 +145,29 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                             obscureText: true,
                           ),
                         ),
-                        const SizedBox(height: 39),
+                        if (_showPasswordMismatchError)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 26, right: 26, top: 8),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.error_outline,
+                                  color: Colors.red,
+                                  size: 16,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  'Passwords do not match',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        SizedBox(height: _showPasswordMismatchError ? 31 : 39),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 26),
                           child: BlocBuilder<SetPasswordBloc, SetPasswordState>(
@@ -266,13 +302,6 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
 
   bool _validatePasswords() {
     if (passwordController.text != confirmPasswordController.text) {
-      showDialog(
-        context: context,
-        builder: (context) => GenericYetToImplementPopUpWidget(
-          title: 'Password Mismatch',
-          message: 'Passwords do not match. Please try again.',
-        ),
-      );
       return false;
     }
     

@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:emcus_ipgsm_app/features/auth/register/bloc/register_event.dart';
 import 'package:emcus_ipgsm_app/features/auth/register/bloc/register_state.dart';
 import 'package:emcus_ipgsm_app/features/auth/register/bloc/register_repository.dart';
-import 'package:emcus_ipgsm_app/features/auth/register/models/register_response.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   final RegisterRepository _registerRepository;
