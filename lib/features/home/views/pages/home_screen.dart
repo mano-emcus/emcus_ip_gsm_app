@@ -234,14 +234,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       bottom: 9,
                       left: 10,
                     ),
-                    child: Row(
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SvgPicture.asset('assets/svgs/fire_tile_icon.svg'),
-                        Column(
+                        Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            SvgPicture.asset(
+                              'assets/svgs/fire_tile_icon.svg',
+                              height: 32,
+                            ),
                             Text(
                               fireCountText,
                               style: GoogleFonts.inter(
@@ -250,15 +253,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: ColorConstants.blackColor,
                               ),
                             ),
-                            Text(
-                              'Fire',
-                              style: GoogleFonts.inter(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: ColorConstants.fireTitleTextColor,
-                              ),
-                            ),
                           ],
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            'Fire',
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: ColorConstants.fireTitleTextColor,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -279,14 +285,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       bottom: 9,
                       left: 10,
                     ),
-                    child: Row(
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SvgPicture.asset('assets/svgs/fault_tile_icon.svg'),
-                        Column(
+                        Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            SvgPicture.asset('assets/svgs/fault_tile_icon.svg'),
                             Text(
                               faultCountText,
                               style: GoogleFonts.inter(
@@ -295,15 +301,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: ColorConstants.blackColor,
                               ),
                             ),
-                            Text(
-                              'Fault',
-                              style: GoogleFonts.inter(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: ColorConstants.faultTitleTextColor,
-                              ),
-                            ),
                           ],
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            'Fault',
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: ColorConstants.faultTitleTextColor,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -324,14 +333,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       bottom: 9,
                       left: 10,
                     ),
-                    child: Row(
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SvgPicture.asset('assets/svgs/all_event_tile_icon.svg'),
-                        Column(
+                        Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            SvgPicture.asset(
+                              'assets/svgs/all_event_tile_icon.svg',
+                            ),
                             Text(
                               allEventsCountText,
                               style: GoogleFonts.inter(
@@ -340,15 +351,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: ColorConstants.blackColor,
                               ),
                             ),
-                            Text(
-                              'Events',
-                              style: GoogleFonts.inter(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: ColorConstants.allEventsTitleTextColor,
-                              ),
-                            ),
                           ],
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            'All Events',
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: ColorConstants.allEventsTitleTextColor,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -400,11 +414,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   context,
                   MaterialPageRoute(
                     builder:
-                        (context) => SitesScreen(
-                          fireCount: fireCountText,
-                          faultCount: faultCountText,
-                          allEventsCount: allEventsCountText,
-                        ),
+                        (context) => SitesScreen(),
                   ),
                 );
               },
@@ -490,7 +500,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               text: TextSpan(
                                 children: [
                                   TextSpan(
-                                    text: 'Events : ',
+                                    text: 'All Events : ',
                                     style: GoogleFonts.inter(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w400,

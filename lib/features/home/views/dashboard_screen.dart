@@ -2,6 +2,7 @@ import 'package:emcus_ipgsm_app/core/services/auth_manager.dart';
 import 'package:emcus_ipgsm_app/features/home/views/pages/home_screen.dart';
 import 'package:emcus_ipgsm_app/features/home/views/pages/notes_screen.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_bloc.dart';
+import 'package:emcus_ipgsm_app/features/sites/views/all_site_screen.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,7 +25,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       child: const HomeScreen(),
     ),
 
-    const NotesScreen(),
+    const AllSitesScreen(fireCount: '10', faultCount: '10', allEventsCount: '10'),
   ];
 
   void _onItemTapped(int index) {
@@ -130,7 +131,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
-                  'assets/svgs/notes_icon.svg',
+                  'assets/svgs/sites_icon.svg',
                   height: 24,
                   width: 24,
                   colorFilter: ColorFilter.mode(
@@ -140,7 +141,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                     BlendMode.srcIn,
                   ),
                 ),
-                label: 'Notes',
+                label: 'Sites',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.logout, color: ColorConstants.blackColor),

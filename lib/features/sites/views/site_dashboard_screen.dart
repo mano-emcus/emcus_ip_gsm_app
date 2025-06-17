@@ -22,7 +22,7 @@ class SiteDashboardScreen extends StatefulWidget {
 }
 
 class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
-  LogType selectedLogType = LogType.fire;
+  LogType selectedLogType = LogType.all;
   @override
   void initState() {
     super.initState();
@@ -133,6 +133,7 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
       child: Scaffold(
         backgroundColor: ColorConstants.whiteColor,
         body: CustomScrollView(
+          physics: const NeverScrollableScrollPhysics(),
           slivers: [
             _buildSiteAppBar(),
             SliverList(
@@ -149,7 +150,7 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
                 delegate: SliverChildListDelegate([
                   const SizedBox(height: 20),
                   _buildDashboardContent(selectedLogType),
-                  // const SizedBox(height: 39),
+                  const SizedBox(height: 5),
                   _buildEventLogs(),
 
                   const SizedBox(height: 100),
@@ -262,44 +263,50 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
               physics: const NeverScrollableScrollPhysics(),
               children: [
                 GestureDetector(
-                  onTap: () => _selectLogType(LogType.fire),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: ColorConstants.fireTitleBackGroundColor,
-                      border: Border.all(
-                        color: ColorConstants.fireTitleBorderColor,
+                  onTap: () {
+                    _selectLogType(LogType.fire);
+                  },
+                  child: Opacity(
+                    opacity: selectedLogType == LogType.fire ? 1 : 0.5,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: ColorConstants.fireTitleBackGroundColor,
+                        border: Border.all(
+                          color: ColorConstants.fireTitleBorderColor,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        top: 17,
-                        right: 13,
-                        bottom: 9,
-                        left: 10,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Opacity(
-                            opacity: selectedLogType == LogType.fire ? 1 : 0.5,
-                            child: SvgPicture.asset(
-                              'assets/svgs/fire_tile_icon.svg',
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                fireCountText,
-                                style: GoogleFonts.inter(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w600,
-                                  color: ColorConstants.blackColor,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          top: 17,
+                          right: 13,
+                          bottom: 9,
+                          left: 10,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/svgs/fire_tile_icon.svg',
+                                  height: 32,
                                 ),
-                              ),
-                              Text(
+                                Text(
+                                  fireCountText,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w600,
+                                    color: ColorConstants.blackColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: Text(
                                 'Fire',
                                 style: GoogleFonts.inter(
                                   fontSize: 14,
@@ -307,52 +314,55 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
                                   color: ColorConstants.fireTitleTextColor,
                                 ),
                               ),
-                            ],
-                          ),
-                        ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => _selectLogType(LogType.fault),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: ColorConstants.faultTitleBackGroundColor,
-                      border: Border.all(
-                        color: ColorConstants.faultTitleBorderColor,
+                  onTap: () {
+                    _selectLogType(LogType.fault);
+                  },
+                  child: Opacity(
+                    opacity: selectedLogType == LogType.fault ? 1 : 0.5,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: ColorConstants.faultTitleBackGroundColor,
+                        border: Border.all(
+                          color: ColorConstants.faultTitleBorderColor,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        top: 17,
-                        right: 13,
-                        bottom: 9,
-                        left: 10,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Opacity(
-                            opacity: selectedLogType == LogType.fault ? 1 : 0.5,
-                            child: SvgPicture.asset(
-                              'assets/svgs/fault_tile_icon.svg',
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                faultCountText,
-                                style: GoogleFonts.inter(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w600,
-                                  color: ColorConstants.blackColor,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          top: 17,
+                          right: 13,
+                          bottom: 9,
+                          left: 10,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SvgPicture.asset('assets/svgs/fault_tile_icon.svg'),
+                                Text(
+                                  faultCountText,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w600,
+                                    color: ColorConstants.blackColor,
+                                  ),
                                 ),
-                              ),
-                              Text(
+                              ],
+                            ),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: Text(
                                 'Fault',
                                 style: GoogleFonts.inter(
                                   fontSize: 14,
@@ -360,62 +370,67 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
                                   color: ColorConstants.faultTitleTextColor,
                                 ),
                               ),
-                            ],
-                          ),
-                        ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => _selectLogType(LogType.all),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: ColorConstants.allEventsTitleBackGroundColor,
-                      border: Border.all(
-                        color: ColorConstants.allEventsTitleBorderColor,
+                  onTap: () {
+                    _selectLogType(LogType.all);
+                  },
+                  child: Opacity(
+                    opacity: selectedLogType == LogType.all ? 1 : 0.5,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: ColorConstants.allEventsTitleBackGroundColor,
+                        border: Border.all(
+                          color: ColorConstants.allEventsTitleBorderColor,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        top: 17,
-                        right: 13,
-                        bottom: 9,
-                        left: 10,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Opacity(
-                            opacity: selectedLogType == LogType.all ? 1 : 0.5,
-                            child: SvgPicture.asset(
-                              'assets/svgs/all_event_tile_icon.svg',
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                allEventsCountText,
-                                style: GoogleFonts.inter(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w600,
-                                  color: ColorConstants.blackColor,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          top: 17,
+                          right: 13,
+                          bottom: 9,
+                          left: 10,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/svgs/all_event_tile_icon.svg',
                                 ),
-                              ),
-                              Text(
-                                'Events',
+                                Text(
+                                  allEventsCountText,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w600,
+                                    color: ColorConstants.blackColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                'All Events',
                                 style: GoogleFonts.inter(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                   color: ColorConstants.allEventsTitleTextColor,
                                 ),
                               ),
-                            ],
-                          ),
-                        ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -445,32 +460,38 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
 
           if (filteredLogs.isEmpty) {
             return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.inbox_outlined, size: 64, color: Colors.grey[400]),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No ${selectedLogType.name.toLowerCase()} found',
-                    style: GoogleFonts.inter(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.grey[600],
+              child: Padding(
+                padding: const EdgeInsets.only(top: 100),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.inbox_outlined, size: 64, color: Colors.grey[400]),
+                    const SizedBox(height: 16),
+                    Text(
+                      'No ${selectedLogType.name.toLowerCase()} found',
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey[600],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           }
 
-          return ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: filteredLogs.length,
-            itemBuilder: (context, index) {
-              final log = filteredLogs[index];
-              return _buildLogCard(log);
-            },
+          return SizedBox(
+            height: MediaQuery.of(context).size.height - MediaQuery.of(context).padding.bottom - 180,
+            child: ListView.builder(
+              // shrinkWrap: true,
+              // physics: const NeverScrollableScrollPhysics(),
+              itemCount: filteredLogs.length,
+              itemBuilder: (context, index) {
+                final log = filteredLogs[index];
+                return _buildLogCard(log);
+              },
+            ),
           );
         } else if (state is LogsFailure) {
           return Center(

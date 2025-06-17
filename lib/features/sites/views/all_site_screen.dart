@@ -47,7 +47,7 @@ class _AllSitesScreenState extends State<AllSitesScreen> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => SitesScreen(fireCount: widget.fireCount, faultCount: widget.faultCount, allEventsCount: widget.allEventsCount)),
+              MaterialPageRoute(builder: (context) => SitesScreen()),
             );
           },
           child: Container(

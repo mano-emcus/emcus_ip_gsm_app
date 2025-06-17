@@ -28,7 +28,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void initState() {
     super.initState();
     fullNameController = TextEditingController();
-    companyNameController = TextEditingController();
+    companyNameController = TextEditingController(text: 'Emcus Technologies');
     emailController = TextEditingController();
   }
 
@@ -122,6 +122,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             hintText: 'Enter your Company Name',
                             controller: companyNameController,
                             keyboardType: TextInputType.name,
+                            readOnly: true,
                           ),
                         ),
                         const SizedBox(height: 14),

@@ -12,6 +12,7 @@ class GenericTextFieldWidget extends StatelessWidget {
     this.obscureText,
     this.isPassword,
     this.isEmail,
+    this.readOnly,
   });
   final String labelText;
   final String hintText;
@@ -20,6 +21,7 @@ class GenericTextFieldWidget extends StatelessWidget {
   final bool? obscureText;
   final bool? isPassword;
   final bool? isEmail;
+  final bool? readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +44,7 @@ class GenericTextFieldWidget extends StatelessWidget {
             border: Border.all(color: ColorConstants.textFieldBorderColor),
           ),
           child: TextField(
+            readOnly: readOnly ?? false,
             onTapOutside: (event) {
               FocusScope.of(context).unfocus();
             },

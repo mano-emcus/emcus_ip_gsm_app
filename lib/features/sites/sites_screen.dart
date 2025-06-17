@@ -10,10 +10,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SitesScreen extends StatefulWidget {
-  const SitesScreen({super.key, required this.fireCount, required this.faultCount, required this.allEventsCount});
-  final String fireCount;
-  final String faultCount;
-  final String allEventsCount;
+  const SitesScreen({super.key});
 
   @override
   State<SitesScreen> createState() => _SitesScreenState();
@@ -25,9 +22,9 @@ class _SitesScreenState extends State<SitesScreen> {
   List<Widget> get _screens => [
     BlocProvider(
       create: (context) => LogsBloc(),
-      child: SiteDashboardScreen(siteName: 'Emcus'),
+      child: SiteDashboardScreen(siteName: 'Emcus Technologies'),
     ),
-    AllSitesScreen(fireCount: widget.fireCount, faultCount: widget.faultCount, allEventsCount: widget.allEventsCount),
+    AllSitesScreen(fireCount: '10', faultCount: '10', allEventsCount: '10'),
     const NotesScreen(),
   ];
 
@@ -82,7 +79,7 @@ class _SitesScreenState extends State<SitesScreen> {
                     BlendMode.srcIn,
                   ),
                 ),
-                label: 'Sites',
+                label: 'All Logs',
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
