@@ -8,16 +8,15 @@ import 'package:emcus_ipgsm_app/features/logs/models/logs_response.dart';
 import 'package:http/http.dart' as http;
 
 class LogsRepository {
-  final AuthManager _authManager;
-
   LogsRepository({AuthManager? authManager})
-      : _authManager = authManager ?? AuthManager();
+    : _authManager = authManager ?? AuthManager();
+  final AuthManager _authManager;
 
   Future<LogsResponse> fetchLogs() async {
     try {
       // Get the stored ID token for authorization
       final idToken = await _authManager.getCurrentIdToken();
-      
+
       if (idToken == null || idToken.isEmpty) {
         throw AuthenticationException('No valid authentication token found');
       }
@@ -70,10 +69,9 @@ class LogsRepository {
 }
 
 class AuthenticationException implements Exception {
-  final String message;
-  
   AuthenticationException(this.message);
-  
+  final String message;
+
   @override
   String toString() => 'AuthenticationException: $message';
-} 
+}

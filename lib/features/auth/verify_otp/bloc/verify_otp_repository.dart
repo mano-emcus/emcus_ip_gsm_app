@@ -6,9 +6,9 @@ import 'package:emcus_ipgsm_app/core/utils/api_logger.dart';
 import 'package:emcus_ipgsm_app/features/auth/verify_otp/models/verify_otp_response.dart';
 
 class VerifyOtpRepository {
+  VerifyOtpRepository({http.Client? client})
+    : _client = client ?? http.Client();
   final http.Client _client;
-
-  VerifyOtpRepository({http.Client? client}) : _client = client ?? http.Client();
 
   Future<VerifyOtpResponse> verifyCode({
     required String email,
@@ -16,10 +16,7 @@ class VerifyOtpRepository {
   }) async {
     final url = AuthEndpoints.verifyCode;
     final headers = ApiConfig.defaultHeaders;
-    final body = {
-      'email': email,
-      'confirmationCode': confirmationCode,
-    };
+    final body = {'email': email, 'confirmationCode': confirmationCode};
 
     try {
       // Log request
@@ -48,7 +45,9 @@ class VerifyOtpRepository {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return VerifyOtpResponse.fromJson(responseData);
       } else {
-        final error = responseData['message'] ?? 'Failed to verify OTP: ${response.statusCode}';
+        final error =
+            responseData['message'] ??
+            'Failed to verify OTP: ${response.statusCode}';
         ApiLogger.logError(error);
         throw Exception(error);
       }
@@ -64,4 +63,4 @@ class VerifyOtpRepository {
   void dispose() {
     _client.close();
   }
-} 
+}

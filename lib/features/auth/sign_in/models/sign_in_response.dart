@@ -1,7 +1,4 @@
 class SignInResponse {
-  final int statusCode;
-  final String message;
-  final List<SignInData> data;
 
   SignInResponse({
     required this.statusCode,
@@ -18,14 +15,12 @@ class SignInResponse {
           .toList() ?? [],
     );
   }
+  final int statusCode;
+  final String message;
+  final List<SignInData> data;
 }
 
 class SignInData {
-  final String accessToken;
-  final int expiresIn;
-  final String idToken;
-  final String refreshToken;
-  final String tokenType;
 
   SignInData({
     required this.accessToken,
@@ -44,4 +39,9 @@ class SignInData {
       tokenType: json['TokenType'] as String,
     );
   }
+  final String accessToken;
+  final int expiresIn;
+  final String idToken;
+  final String refreshToken;
+  final String tokenType;
 } 

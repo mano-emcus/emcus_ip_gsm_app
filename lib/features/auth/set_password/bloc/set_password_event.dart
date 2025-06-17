@@ -8,14 +8,10 @@ abstract class SetPasswordEvent extends Equatable {
 }
 
 class SetPasswordSubmitted extends SetPasswordEvent {
+  const SetPasswordSubmitted({required this.email, required this.password});
   final String email;
   final String password;
 
-  const SetPasswordSubmitted({
-    required this.email,
-    required this.password,
-  });
-
   @override
   List<Object> get props => [email, password];
-} 
+}

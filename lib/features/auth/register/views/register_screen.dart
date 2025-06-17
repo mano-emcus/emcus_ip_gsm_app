@@ -50,18 +50,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => VerifyOtpScreen(
-                  email: emailController.text,
-                ),
+                builder:
+                    (context) => VerifyOtpScreen(email: emailController.text),
               ),
             );
           } else if (state is RegisterFailure) {
             showDialog(
               context: context,
-              builder: (context) => GenericYetToImplementPopUpWidget(
-                title: 'Registration Failed',
-                message: state.error,
-              ),
+              builder:
+                  (context) => GenericYetToImplementPopUpWidget(
+                    title: 'Registration Failed',
+                    message: state.error,
+                  ),
             );
           }
         },
@@ -81,7 +81,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: IntrinsicHeight(
                     child: Column(
                       children: [
-                        SizedBox(height: 46 + MediaQuery.of(context).padding.top),
+                        SizedBox(
+                          height: 46 + MediaQuery.of(context).padding.top,
+                        ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 26),
                           child: Row(
@@ -142,11 +144,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    isTermsAndConditions = !isTermsAndConditions;
+                                    isTermsAndConditions =
+                                        !isTermsAndConditions;
                                   });
                                 },
                                 child: Padding(
-                                  padding: const EdgeInsets.only(top: 2, right: 10),
+                                  padding: const EdgeInsets.only(
+                                    top: 2,
+                                    right: 10,
+                                  ),
                                   child: Container(
                                     width: 18,
                                     height: 18,
@@ -157,7 +163,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                               : ColorConstants.whiteColor,
                                       borderRadius: BorderRadius.circular(4),
                                       border: Border.all(
-                                        color: ColorConstants.textFieldBorderColor,
+                                        color:
+                                            ColorConstants.textFieldBorderColor,
                                       ),
                                     ),
                                     child:
@@ -165,7 +172,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             ? const Center(
                                               child: Icon(
                                                 Icons.check,
-                                                color: ColorConstants.whiteColor,
+                                                color:
+                                                    ColorConstants.whiteColor,
                                                 size: 12,
                                               ),
                                             )
@@ -228,34 +236,52 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             child: BlocBuilder<RegisterBloc, RegisterState>(
                               builder: (context, state) {
                                 return GestureDetector(
-                                  onTap: emailController.text.isNotEmpty &&
-                                          companyNameController.text.isNotEmpty &&
-                                          fullNameController.text.isNotEmpty &&
-                                          isTermsAndConditions
-                                      ? () {
-                                          if (state is! RegisterLoading) {
-                                            context.read<RegisterBloc>().add(
-                                                  RegisterSubmitted(
-                                                    fullName: fullNameController.text,
-                                                    companyName: companyNameController.text,
-                                                    email: emailController.text,
-                                                  ),
-                                                );
+                                  onTap:
+                                      emailController.text.isNotEmpty &&
+                                              companyNameController
+                                                  .text
+                                                  .isNotEmpty &&
+                                              fullNameController
+                                                  .text
+                                                  .isNotEmpty &&
+                                              isTermsAndConditions
+                                          ? () {
+                                            if (state is! RegisterLoading) {
+                                              context.read<RegisterBloc>().add(
+                                                RegisterSubmitted(
+                                                  fullName:
+                                                      fullNameController.text,
+                                                  companyName:
+                                                      companyNameController
+                                                          .text,
+                                                  email: emailController.text,
+                                                ),
+                                              );
+                                            }
                                           }
-                                        }
-                                      : () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) => GenericYetToImplementPopUpWidget(
-                                              title: 'Register',
-                                              message: emailController.text.isEmpty ||
-                                                      companyNameController.text.isEmpty ||
-                                                      fullNameController.text.isEmpty
-                                                  ? 'Please fill all the fields to register'
-                                                  : 'Please agree to the terms and conditions to register',
-                                            ),
-                                          );
-                                        },
+                                          : () {
+                                            showDialog(
+                                              context: context,
+                                              builder:
+                                                  (
+                                                    context,
+                                                  ) => GenericYetToImplementPopUpWidget(
+                                                    title: 'Register',
+                                                    message:
+                                                        emailController
+                                                                    .text
+                                                                    .isEmpty ||
+                                                                companyNameController
+                                                                    .text
+                                                                    .isEmpty ||
+                                                                fullNameController
+                                                                    .text
+                                                                    .isEmpty
+                                                            ? 'Please fill all the fields to register'
+                                                            : 'Please agree to the terms and conditions to register',
+                                                  ),
+                                            );
+                                          },
                                   child: Container(
                                     decoration: BoxDecoration(
                                       color: ColorConstants.primaryColor,
@@ -266,23 +292,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         horizontal: 24,
                                         vertical: 16,
                                       ),
-                                      child: state is RegisterLoading
-                                          ? const SizedBox(
-                                              height: 20,
-                                              width: 20,
-                                              child: CircularProgressIndicator(
-                                                color: ColorConstants.whiteColor,
-                                                strokeWidth: 2,
+                                      child:
+                                          state is RegisterLoading
+                                              ? const SizedBox(
+                                                height: 20,
+                                                width: 20,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                      color:
+                                                          ColorConstants
+                                                              .whiteColor,
+                                                      strokeWidth: 2,
+                                                    ),
+                                              )
+                                              : Text(
+                                                'Register',
+                                                style: GoogleFonts.inter(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                  color:
+                                                      ColorConstants.whiteColor,
+                                                ),
                                               ),
-                                            )
-                                          : Text(
-                                              'Register',
-                                              style: GoogleFonts.inter(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500,
-                                                color: ColorConstants.whiteColor,
-                                              ),
-                                            ),
                                     ),
                                   ),
                                 );
@@ -292,7 +323,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         const Spacer(),
                         Divider(
-                          color: ColorConstants.blackColor.withValues(alpha: 0.2),
+                          color: ColorConstants.blackColor.withValues(
+                            alpha: 0.2,
+                          ),
                           thickness: 1,
                         ),
                         const SizedBox(height: 20),
@@ -314,14 +347,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const SignInScreen(),
+                                      builder:
+                                          (context) => const SignInScreen(),
                                     ),
                                   );
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
                                     border: Border.all(
-                                      color: ColorConstants.textFieldBorderColor,
+                                      color:
+                                          ColorConstants.textFieldBorderColor,
                                     ),
                                     borderRadius: BorderRadius.circular(100),
                                   ),

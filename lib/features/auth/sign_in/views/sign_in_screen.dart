@@ -13,8 +13,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 // Custom page route for smooth transitions
 class CustomPageRoute<T> extends PageRouteBuilder<T> {
-  final Widget child;
-  final Duration duration;
 
   CustomPageRoute({
     required this.child,
@@ -24,6 +22,8 @@ class CustomPageRoute<T> extends PageRouteBuilder<T> {
           reverseTransitionDuration: duration,
           pageBuilder: (context, animation, secondaryAnimation) => child,
         );
+  final Widget child;
+  final Duration duration;
 
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation,

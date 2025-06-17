@@ -4,13 +4,12 @@ import 'package:emcus_ipgsm_app/features/logs/bloc/logs_state.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_repository.dart';
 
 class LogsBloc extends Bloc<LogsEvent, LogsState> {
-  final LogsRepository _logsRepository;
-
   LogsBloc({LogsRepository? logsRepository})
-      : _logsRepository = logsRepository ?? LogsRepository(),
-        super(LogsInitial()) {
+    : _logsRepository = logsRepository ?? LogsRepository(),
+      super(LogsInitial()) {
     on<LogsFetched>(_onLogsFetched);
   }
+  final LogsRepository _logsRepository;
 
   Future<void> _onLogsFetched(
     LogsFetched event,
@@ -19,12 +18,9 @@ class LogsBloc extends Bloc<LogsEvent, LogsState> {
     emit(LogsLoading());
     try {
       final response = await _logsRepository.fetchLogs();
-      
+
       if (response.statusCode == 1) {
-        emit(LogsSuccess(
-          logs: response.data,
-          message: response.message,
-        ));
+        emit(LogsSuccess(logs: response.data, message: response.message));
       } else {
         emit(LogsFailure(error: response.message));
       }
@@ -32,4 +28,4 @@ class LogsBloc extends Bloc<LogsEvent, LogsState> {
       emit(LogsFailure(error: e.toString()));
     }
   }
-} 
+}

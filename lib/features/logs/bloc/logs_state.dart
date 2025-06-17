@@ -11,23 +11,18 @@ class LogsInitial extends LogsState {}
 class LogsLoading extends LogsState {}
 
 class LogsSuccess extends LogsState {
+  LogsSuccess({required this.logs, required this.message});
   final List<LogEntry> logs;
   final String message;
-
-  LogsSuccess({
-    required this.logs,
-    required this.message,
-  });
 
   @override
   List<Object?> get props => [logs, message];
 }
 
 class LogsFailure extends LogsState {
-  final String error;
-
   LogsFailure({required this.error});
+  final String error;
 
   @override
   List<Object?> get props => [error];
-} 
+}

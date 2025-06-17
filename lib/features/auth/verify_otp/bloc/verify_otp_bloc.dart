@@ -4,13 +4,12 @@ import 'package:emcus_ipgsm_app/features/auth/verify_otp/bloc/verify_otp_state.d
 import 'package:emcus_ipgsm_app/features/auth/verify_otp/bloc/verify_otp_repository.dart';
 
 class VerifyOtpBloc extends Bloc<VerifyOtpEvent, VerifyOtpState> {
-  final VerifyOtpRepository _verifyOtpRepository;
-
   VerifyOtpBloc({VerifyOtpRepository? verifyOtpRepository})
-      : _verifyOtpRepository = verifyOtpRepository ?? VerifyOtpRepository(),
-        super(VerifyOtpInitial()) {
+    : _verifyOtpRepository = verifyOtpRepository ?? VerifyOtpRepository(),
+      super(VerifyOtpInitial()) {
     on<VerifyOtpSubmitted>(_onVerifyOtpSubmitted);
   }
+  final VerifyOtpRepository _verifyOtpRepository;
 
   Future<void> _onVerifyOtpSubmitted(
     VerifyOtpSubmitted event,
@@ -22,12 +21,14 @@ class VerifyOtpBloc extends Bloc<VerifyOtpEvent, VerifyOtpState> {
         email: event.email,
         confirmationCode: event.confirmationCode,
       );
-      
+
       if (response.statusCode == 1) {
-        emit(VerifyOtpSuccess(
-          message: response.data.first.message,
-          session: response.data.first.response.session,
-        ));
+        emit(
+          VerifyOtpSuccess(
+            message: response.data.first.message,
+            session: response.data.first.response.session,
+          ),
+        );
       } else {
         emit(VerifyOtpFailure(error: response.message));
       }
@@ -41,4 +42,4 @@ class VerifyOtpBloc extends Bloc<VerifyOtpEvent, VerifyOtpState> {
     _verifyOtpRepository.dispose();
     return super.close();
   }
-} 
+}

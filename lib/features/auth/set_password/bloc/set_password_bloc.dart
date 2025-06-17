@@ -4,13 +4,12 @@ import 'package:emcus_ipgsm_app/features/auth/set_password/bloc/set_password_sta
 import 'package:emcus_ipgsm_app/features/auth/set_password/bloc/set_password_repository.dart';
 
 class SetPasswordBloc extends Bloc<SetPasswordEvent, SetPasswordState> {
-  final SetPasswordRepository _setPasswordRepository;
-
   SetPasswordBloc({SetPasswordRepository? setPasswordRepository})
-      : _setPasswordRepository = setPasswordRepository ?? SetPasswordRepository(),
-        super(SetPasswordInitial()) {
+    : _setPasswordRepository = setPasswordRepository ?? SetPasswordRepository(),
+      super(SetPasswordInitial()) {
     on<SetPasswordSubmitted>(_onSetPasswordSubmitted);
   }
+  final SetPasswordRepository _setPasswordRepository;
 
   Future<void> _onSetPasswordSubmitted(
     SetPasswordSubmitted event,
@@ -22,11 +21,9 @@ class SetPasswordBloc extends Bloc<SetPasswordEvent, SetPasswordState> {
         email: event.email,
         password: event.password,
       );
-      
+
       if (response.statusCode == 1) {
-        emit(SetPasswordSuccess(
-          message: response.message,
-        ));
+        emit(SetPasswordSuccess(message: response.message));
       } else {
         emit(SetPasswordFailure(error: response.message));
       }
@@ -40,4 +37,4 @@ class SetPasswordBloc extends Bloc<SetPasswordEvent, SetPasswordState> {
     _setPasswordRepository.dispose();
     return super.close();
   }
-} 
+}

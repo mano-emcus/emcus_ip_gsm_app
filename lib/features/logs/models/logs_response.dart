@@ -1,27 +1,29 @@
 import 'package:emcus_ipgsm_app/features/logs/models/log_entry.dart';
 
 class LogsResponse {
-  final int statusCode;
-  final String message;
-  final List<LogEntry> data;
+  factory LogsResponse.fromJson(Map<String, dynamic> json) {
+    return LogsResponse(
+      statusCode: json['statusCode'] as int,
+      message: json['message'] as String,
+      data:
+          json['data'] != null
+              ? (json['data'] as List)
+                  .map(
+                    (item) => LogEntry.fromJson(item as Map<String, dynamic>),
+                  )
+                  .toList()
+              : [],
+    );
+  }
 
   LogsResponse({
     required this.statusCode,
     required this.message,
     required this.data,
   });
-
-  factory LogsResponse.fromJson(Map<String, dynamic> json) {
-    return LogsResponse(
-      statusCode: json['statusCode'] as int,
-      message: json['message'] as String,
-      data: json['data'] != null
-          ? (json['data'] as List)
-              .map((item) => LogEntry.fromJson(item as Map<String, dynamic>))
-              .toList()
-          : [],
-    );
-  }
+  final int statusCode;
+  final String message;
+  final List<LogEntry> data;
 
   Map<String, dynamic> toJson() {
     return {
@@ -33,10 +35,6 @@ class LogsResponse {
 }
 
 class LogsErrorResponse {
-  final String message;
-  final String error;
-  final int statusCode;
-
   LogsErrorResponse({
     required this.message,
     required this.error,
@@ -50,12 +48,11 @@ class LogsErrorResponse {
       statusCode: json['statusCode'] as int,
     );
   }
+  final String message;
+  final String error;
+  final int statusCode;
 
   Map<String, dynamic> toJson() {
-    return {
-      'message': message,
-      'error': error,
-      'statusCode': statusCode,
-    };
+    return {'message': message, 'error': error, 'statusCode': statusCode};
   }
-} 
+}

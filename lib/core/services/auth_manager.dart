@@ -3,9 +3,9 @@ import 'package:emcus_ipgsm_app/features/auth/sign_in/views/sign_in_screen.dart'
 import 'package:flutter/material.dart';
 
 class AuthManager {
-  static final AuthManager _instance = AuthManager._internal();
   factory AuthManager() => _instance;
   AuthManager._internal();
+  static final AuthManager _instance = AuthManager._internal();
 
   final TokenStorageService _tokenStorageService = TokenStorageService();
 
@@ -34,7 +34,7 @@ class AuthManager {
     try {
       // Clear all stored tokens
       await _tokenStorageService.clearTokens();
-      
+
       // Navigate to sign-in screen and remove all previous routes
       if (context.mounted) {
         Navigator.pushAndRemoveUntil(
@@ -73,4 +73,4 @@ class AuthManager {
       refreshToken: refreshToken,
     );
   }
-} 
+}

@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
       listener: (context, state) {
         if (state is LogsFailure) {
           // Check if it's an authentication error
-          if (state.error.contains('AuthenticationException') || 
+          if (state.error.contains('AuthenticationException') ||
               state.error.contains('No valid authentication token') ||
               state.error.contains('Missing Authorization header')) {
             // Authentication failed, redirect to sign-in
@@ -45,20 +45,26 @@ class _HomeScreenState extends State<HomeScreen> {
               context,
               PageRouteBuilder(
                 transitionDuration: const Duration(milliseconds: 600),
-                pageBuilder: (context, animation, secondaryAnimation) => const SignInScreen(),
-                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                pageBuilder:
+                    (context, animation, secondaryAnimation) =>
+                        const SignInScreen(),
+                transitionsBuilder: (
+                  context,
+                  animation,
+                  secondaryAnimation,
+                  child,
+                ) {
                   return SlideTransition(
                     position: Tween<Offset>(
                       begin: const Offset(0.0, -0.15),
                       end: Offset.zero,
-                    ).animate(CurvedAnimation(
-                      parent: animation,
-                      curve: Curves.easeInOutCubic,
-                    )),
-                    child: FadeTransition(
-                      opacity: animation,
-                      child: child,
+                    ).animate(
+                      CurvedAnimation(
+                        parent: animation,
+                        curve: Curves.easeInOutCubic,
+                      ),
                     ),
+                    child: FadeTransition(opacity: animation, child: child),
                   );
                 },
               ),
@@ -90,23 +96,29 @@ class _HomeScreenState extends State<HomeScreen> {
               flexibleSpace: LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
                   final double appBarHeight = constraints.biggest.height;
-                  final double statusBarHeight = MediaQuery.of(context).padding.top;
+                  final double statusBarHeight =
+                      MediaQuery.of(context).padding.top;
                   final double minHeight = kToolbarHeight + statusBarHeight;
                   final double maxHeight = 120 + statusBarHeight;
-                  
+
                   // Calculate scroll progress (0.0 = fully expanded, 1.0 = fully collapsed)
-                  final double scrollProgress = ((maxHeight - appBarHeight) / (maxHeight - minHeight)).clamp(0.0, 1.0);
-                  
+                  final double scrollProgress = ((maxHeight - appBarHeight) /
+                          (maxHeight - minHeight))
+                      .clamp(0.0, 1.0);
+
                   // Calculate logo size and position based on scroll
-                  final double logoSize = 60 - (25 * scrollProgress); // 60 -> 35
-                  final double topPadding = statusBarHeight + (20 * (1 - scrollProgress));
-                  
+                  final double logoSize =
+                      60 - (25 * scrollProgress); // 60 -> 35
+                  final double topPadding =
+                      statusBarHeight + (20 * (1 - scrollProgress));
+
                   return Container(
                     color: ColorConstants.whiteColor,
                     child: Align(
-                      alignment: scrollProgress > 0.5 
-                          ? Alignment.bottomCenter 
-                          : Alignment.center,
+                      alignment:
+                          scrollProgress > 0.5
+                              ? Alignment.bottomCenter
+                              : Alignment.center,
                       child: Padding(
                         padding: EdgeInsets.only(
                           top: scrollProgress > 0.5 ? 0 : topPadding,
@@ -149,11 +161,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Helper methods to calculate log counts based on event IDs
   int _getFireCount(List<LogEntry> logs) {
-    return logs.where((log) => log.u16EventId >= 1001 && log.u16EventId <= 1007).length;
+    return logs
+        .where((log) => log.u16EventId >= 1001 && log.u16EventId <= 1007)
+        .length;
   }
 
   int _getFaultCount(List<LogEntry> logs) {
-    return logs.where((log) => log.u16EventId >= 2000 && log.u16EventId < 3000).length;
+    return logs
+        .where((log) => log.u16EventId >= 2000 && log.u16EventId < 3000)
+        .length;
   }
 
   int _getAllEventsCount(List<LogEntry> logs) {
@@ -164,209 +180,12 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => BlocProvider(
-          create: (context) => LogsBloc(),
-          child: LogsListScreen(
-            logType: logType,
-            title: title,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDashboard() {
-    return Column(
-      children: [
-        SizedBox(height: 46 + MediaQuery.of(context).padding.top),
-        // Hero widget removed - now handled by SliverAppBar
-        SvgPicture.asset('assets/svgs/emcus_logo.svg'),
-        const SizedBox(height: 43),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            'Dashboard',
-            style: GoogleFonts.inter(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: ColorConstants.textColor,
+        builder:
+            (context) => BlocProvider(
+              create: (context) => LogsBloc(),
+              child: LogsListScreen(logType: logType, title: title),
             ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        BlocBuilder<LogsBloc, LogsState>(
-          builder: (context, state) {
-            int fireCount = 0;
-            int faultCount = 0;
-            int allEventsCount = 0;
-            String fireCountText = '-';
-            String faultCountText = '-';
-            String allEventsCountText = '-';
-
-            if (state is LogsSuccess) {
-              fireCount = _getFireCount(state.logs);
-              faultCount = _getFaultCount(state.logs);
-              allEventsCount = _getAllEventsCount(state.logs);
-              fireCountText = fireCount.toString();
-              faultCountText = faultCount.toString();
-              allEventsCountText = allEventsCount.toString();
-            } else if (state is LogsLoading) {
-              fireCountText = '...';
-              faultCountText = '...';
-              allEventsCountText = '...';
-            }
-
-            return GridView.count(
-              padding: EdgeInsets.zero,
-              crossAxisCount: 3,
-              mainAxisSpacing: 16,
-              crossAxisSpacing: 16,
-              childAspectRatio: 1.25,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                GestureDetector(
-                  onTap: () => _navigateToLogsList(LogType.fire, 'Fire Events'),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: ColorConstants.fireTitleBackGroundColor,
-                      border: Border.all(color: ColorConstants.fireTitleBorderColor),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        top: 17,
-                        right: 13,
-                        bottom: 9,
-                        left: 10,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              fireCountText,
-                              style: GoogleFonts.inter(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w600,
-                                color: ColorConstants.blackColor,
-                              ),
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Fire',
-                              style: GoogleFonts.inter(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: ColorConstants.fireTitleTextColor,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () => _navigateToLogsList(LogType.fault, 'Fault Events'),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: ColorConstants.faultTitleBackGroundColor,
-                      border: Border.all(color: ColorConstants.faultTitleBorderColor),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        top: 17,
-                        right: 13,
-                        bottom: 9,
-                        left: 10,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              faultCountText,
-                              style: GoogleFonts.inter(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w600,
-                                color: ColorConstants.blackColor,
-                              ),
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Fault',
-                              style: GoogleFonts.inter(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: ColorConstants.faultTitleTextColor,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () => _navigateToLogsList(LogType.all, 'All Events'),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: ColorConstants.allEventsTitleBackGroundColor,
-                      border: Border.all(
-                        color: ColorConstants.allEventsTitleBorderColor,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        top: 17,
-                        right: 13,
-                        bottom: 9,
-                        left: 10,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              allEventsCountText,
-                              style: GoogleFonts.inter(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w600,
-                                color: ColorConstants.blackColor,
-                              ),
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'All Events',
-                              style: GoogleFonts.inter(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: ColorConstants.allEventsTitleTextColor,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      ],
+      ),
     );
   }
 
@@ -421,7 +240,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Container(
                     decoration: BoxDecoration(
                       color: ColorConstants.fireTitleBackGroundColor,
-                      border: Border.all(color: ColorConstants.fireTitleBorderColor),
+                      border: Border.all(
+                        color: ColorConstants.fireTitleBorderColor,
+                      ),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Padding(
@@ -462,11 +283,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => _navigateToLogsList(LogType.fault, 'Fault Events'),
+                  onTap:
+                      () => _navigateToLogsList(LogType.fault, 'Fault Events'),
                   child: Container(
                     decoration: BoxDecoration(
                       color: ColorConstants.faultTitleBackGroundColor,
-                      border: Border.all(color: ColorConstants.faultTitleBorderColor),
+                      border: Border.all(
+                        color: ColorConstants.faultTitleBorderColor,
+                      ),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Padding(
@@ -709,57 +533,63 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () {
                 showDialog(
                   context: context,
-                  builder: (context) => GenericYetToImplementPopUpWidget(
-                    title: 'Recent Notes',
-                    message: 'This feature is not yet implemented',
-                    onClose: () {},
-                  ),
+                  builder:
+                      (context) => GenericYetToImplementPopUpWidget(
+                        title: 'Recent Notes',
+                        message: 'This feature is not yet implemented',
+                        onClose: () {},
+                      ),
                 );
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
+                  color: ColorConstants.textFieldBorderColor.withValues(
+                    alpha: 0.3,
+                  ),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                
               ),
             ),
             GestureDetector(
-               onTap: () {
+              onTap: () {
                 showDialog(
                   context: context,
-                  builder: (context) => GenericYetToImplementPopUpWidget(
-                    title: 'Recent Notes',
-                    message: 'This feature is not yet implemented',
-                    onClose: () {},
-                  ),
+                  builder:
+                      (context) => GenericYetToImplementPopUpWidget(
+                        title: 'Recent Notes',
+                        message: 'This feature is not yet implemented',
+                        onClose: () {},
+                      ),
                 );
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
+                  color: ColorConstants.textFieldBorderColor.withValues(
+                    alpha: 0.3,
+                  ),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                
               ),
             ),
             GestureDetector(
-               onTap: () {
+              onTap: () {
                 showDialog(
                   context: context,
-                  builder: (context) => GenericYetToImplementPopUpWidget(
-                    title: 'Recent Notes',
-                    message: 'This feature is not yet implemented',
-                    onClose: () {},
-                  ),
+                  builder:
+                      (context) => GenericYetToImplementPopUpWidget(
+                        title: 'Recent Notes',
+                        message: 'This feature is not yet implemented',
+                        onClose: () {},
+                      ),
                 );
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
+                  color: ColorConstants.textFieldBorderColor.withValues(
+                    alpha: 0.3,
+                  ),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                
               ),
             ),
           ],
@@ -778,18 +608,13 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: ColorConstants.primaryColor,
           foregroundColor: ColorConstants.whiteColor,
           padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           elevation: 2,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.logout,
-              size: 20,
-            ),
+            const Icon(Icons.logout, size: 20),
             const SizedBox(width: 8),
             Text(
               'Logout',

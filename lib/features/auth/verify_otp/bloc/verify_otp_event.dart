@@ -8,14 +8,13 @@ abstract class VerifyOtpEvent extends Equatable {
 }
 
 class VerifyOtpSubmitted extends VerifyOtpEvent {
-  final String email;
-  final String confirmationCode;
-
   const VerifyOtpSubmitted({
     required this.email,
     required this.confirmationCode,
   });
+  final String email;
+  final String confirmationCode;
 
   @override
   List<Object> get props => [email, confirmationCode];
-} 
+}

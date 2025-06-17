@@ -6,9 +6,9 @@ import 'package:emcus_ipgsm_app/core/utils/api_logger.dart';
 import 'package:emcus_ipgsm_app/features/auth/sign_in/models/sign_in_response.dart';
 
 class SignInRepository {
-  final http.Client _client;
 
   SignInRepository({http.Client? client}) : _client = client ?? http.Client();
+  final http.Client _client;
 
   Future<SignInResponse> signIn({
     required String email,

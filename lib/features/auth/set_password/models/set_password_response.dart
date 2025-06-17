@@ -1,14 +1,4 @@
 class SetPasswordResponse {
-  final int statusCode;
-  final String message;
-  final List<dynamic> data;
-
-  SetPasswordResponse({
-    required this.statusCode,
-    required this.message,
-    required this.data,
-  });
-
   factory SetPasswordResponse.fromJson(Map<String, dynamic> json) {
     return SetPasswordResponse(
       statusCode: json['statusCode'] as int,
@@ -16,4 +6,13 @@ class SetPasswordResponse {
       data: json['data'] as List<dynamic>,
     );
   }
-} 
+
+  SetPasswordResponse({
+    required this.statusCode,
+    required this.message,
+    required this.data,
+  });
+  final int statusCode;
+  final String message;
+  final List<dynamic> data;
+}

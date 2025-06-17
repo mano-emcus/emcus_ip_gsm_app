@@ -6,9 +6,9 @@ import 'package:emcus_ipgsm_app/core/utils/api_logger.dart';
 import 'package:emcus_ipgsm_app/features/auth/set_password/models/set_password_response.dart';
 
 class SetPasswordRepository {
-  final http.Client _client;
 
   SetPasswordRepository({http.Client? client}) : _client = client ?? http.Client();
+  final http.Client _client;
 
   Future<SetPasswordResponse> updatePassword({
     required String email,

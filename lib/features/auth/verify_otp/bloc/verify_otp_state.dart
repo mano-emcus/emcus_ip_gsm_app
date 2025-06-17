@@ -12,23 +12,18 @@ class VerifyOtpInitial extends VerifyOtpState {}
 class VerifyOtpLoading extends VerifyOtpState {}
 
 class VerifyOtpSuccess extends VerifyOtpState {
+  const VerifyOtpSuccess({required this.message, required this.session});
   final String message;
   final String session;
-
-  const VerifyOtpSuccess({
-    required this.message,
-    required this.session,
-  });
 
   @override
   List<Object> get props => [message, session];
 }
 
 class VerifyOtpFailure extends VerifyOtpState {
-  final String error;
-
   const VerifyOtpFailure({required this.error});
+  final String error;
 
   @override
   List<Object> get props => [error];
-} 
+}

@@ -4,13 +4,12 @@ import 'package:emcus_ipgsm_app/features/auth/register/bloc/register_state.dart'
 import 'package:emcus_ipgsm_app/features/auth/register/bloc/register_repository.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
-  final RegisterRepository _registerRepository;
-
   RegisterBloc({RegisterRepository? registerRepository})
-      : _registerRepository = registerRepository ?? RegisterRepository(),
-        super(RegisterInitial()) {
+    : _registerRepository = registerRepository ?? RegisterRepository(),
+      super(RegisterInitial()) {
     on<RegisterSubmitted>(_onRegisterSubmitted);
   }
+  final RegisterRepository _registerRepository;
 
   Future<void> _onRegisterSubmitted(
     RegisterSubmitted event,
@@ -23,11 +22,9 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         companyName: event.companyName,
         email: event.email,
       );
-      
+
       if (response.statusCode == 1) {
-        emit(RegisterSuccess(
-          message: response.data.first.message,
-        ));
+        emit(RegisterSuccess(message: response.data.first.message));
       } else {
         emit(RegisterFailure(error: response.message));
       }
@@ -41,4 +38,4 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     _registerRepository.dispose();
     return super.close();
   }
-} 
+}

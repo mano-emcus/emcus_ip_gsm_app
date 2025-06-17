@@ -1,24 +1,4 @@
 class LogEntry {
-  final int id;
-  final int u16EventId;
-  final int logNum;
-  final String u8DeviceText;
-  final int u8ZoneNumber;
-  final int u8NodeAddress;
-  final int u8DeviceAddress;
-  final int u8DeviceType;
-  final int u8DeviceSubType;
-  final int u8Date;
-  final int u8Month;
-  final int u8Year;
-  final int u8Hours;
-  final int u8Minutes;
-  final int u8Seconds;
-  final int u8Logbitoffset;
-  final int u16Crc;
-  final String source;
-  final String createdAt;
-
   LogEntry({
     required this.id,
     required this.u16EventId,
@@ -64,6 +44,25 @@ class LogEntry {
       createdAt: json['createdAt'] as String,
     );
   }
+  final int id;
+  final int u16EventId;
+  final int logNum;
+  final String u8DeviceText;
+  final int u8ZoneNumber;
+  final int u8NodeAddress;
+  final int u8DeviceAddress;
+  final int u8DeviceType;
+  final int u8DeviceSubType;
+  final int u8Date;
+  final int u8Month;
+  final int u8Year;
+  final int u8Hours;
+  final int u8Minutes;
+  final int u8Seconds;
+  final int u8Logbitoffset;
+  final int u16Crc;
+  final String source;
+  final String createdAt;
 
   Map<String, dynamic> toJson() {
     return {
@@ -91,7 +90,7 @@ class LogEntry {
 
   /// Get formatted date string
   String get formattedDate {
-    return '${u8Date.toString().padLeft(2, '0')}/${u8Month.toString().padLeft(2, '0')}/${u8Year}';
+    return '${u8Date.toString().padLeft(2, '0')}/${u8Month.toString().padLeft(2, '0')}/$u8Year';
   }
 
   /// Get formatted time string
@@ -103,4 +102,4 @@ class LogEntry {
   String get formattedDateTime {
     return '$formattedDate $formattedTime';
   }
-} 
+}

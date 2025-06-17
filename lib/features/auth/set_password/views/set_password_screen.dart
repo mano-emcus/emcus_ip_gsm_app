@@ -29,7 +29,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
     super.initState();
     passwordController = TextEditingController();
     confirmPasswordController = TextEditingController();
-    
+
     // Add listeners to validate passwords in real-time
     passwordController.addListener(_validatePasswordMatch);
     confirmPasswordController.addListener(_validatePasswordMatch);
@@ -46,7 +46,8 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
 
   void _validatePasswordMatch() {
     setState(() {
-      _showPasswordMismatchError = confirmPasswordController.text.isNotEmpty &&
+      _showPasswordMismatchError =
+          confirmPasswordController.text.isNotEmpty &&
           passwordController.text != confirmPasswordController.text;
     });
   }
@@ -67,10 +68,11 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
           } else if (state is SetPasswordFailure) {
             showDialog(
               context: context,
-              builder: (context) => GenericYetToImplementPopUpWidget(
-                title: 'Set Password Failed',
-                message: state.error,
-              ),
+              builder:
+                  (context) => GenericYetToImplementPopUpWidget(
+                    title: 'Set Password Failed',
+                    message: state.error,
+                  ),
             );
           }
         },
@@ -90,7 +92,9 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                   child: IntrinsicHeight(
                     child: Column(
                       children: [
-                        SizedBox(height: 46 + MediaQuery.of(context).padding.top),
+                        SizedBox(
+                          height: 46 + MediaQuery.of(context).padding.top,
+                        ),
                         const RegisterAppBarWidget(
                           title: 'Verification',
                           isBackButtonVisible: true,
@@ -99,7 +103,9 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                         Stack(
                           alignment: Alignment.center,
                           children: [
-                            SvgPicture.asset('assets/svgs/shield_green_icon.svg'),
+                            SvgPicture.asset(
+                              'assets/svgs/shield_green_icon.svg',
+                            ),
                             SvgPicture.asset(
                               'assets/svgs/shield_green_check_icon.svg',
                             ),
@@ -147,7 +153,11 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                         ),
                         if (_showPasswordMismatchError)
                           Padding(
-                            padding: const EdgeInsets.only(left: 26, right: 26, top: 8),
+                            padding: const EdgeInsets.only(
+                              left: 26,
+                              right: 26,
+                              top: 8,
+                            ),
                             child: Row(
                               children: [
                                 Icon(
@@ -173,28 +183,37 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                           child: BlocBuilder<SetPasswordBloc, SetPasswordState>(
                             builder: (context, state) {
                               return GestureDetector(
-                                onTap: _canSubmit()
-                                    ? () {
-                                        if (state is! SetPasswordLoading) {
-                                          if (_validatePasswords()) {
-                                            context.read<SetPasswordBloc>().add(
-                                                  SetPasswordSubmitted(
-                                                    email: widget.email,
-                                                    password: passwordController.text,
-                                                  ),
-                                                );
+                                onTap:
+                                    _canSubmit()
+                                        ? () {
+                                          if (state is! SetPasswordLoading) {
+                                            if (_validatePasswords()) {
+                                              context
+                                                  .read<SetPasswordBloc>()
+                                                  .add(
+                                                    SetPasswordSubmitted(
+                                                      email: widget.email,
+                                                      password:
+                                                          passwordController
+                                                              .text,
+                                                    ),
+                                                  );
+                                            }
                                           }
                                         }
-                                      }
-                                    : () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) => GenericYetToImplementPopUpWidget(
-                                            title: 'Set Password',
-                                            message: _getValidationMessage(),
-                                          ),
-                                        );
-                                      },
+                                        : () {
+                                          showDialog(
+                                            context: context,
+                                            builder:
+                                                (
+                                                  context,
+                                                ) => GenericYetToImplementPopUpWidget(
+                                                  title: 'Set Password',
+                                                  message:
+                                                      _getValidationMessage(),
+                                                ),
+                                          );
+                                        },
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: ColorConstants.primaryColor,
@@ -205,23 +224,26 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                                       horizontal: 24,
                                       vertical: 16,
                                     ),
-                                    child: state is SetPasswordLoading
-                                        ? const SizedBox(
-                                            height: 20,
-                                            width: 20,
-                                            child: CircularProgressIndicator(
-                                              color: ColorConstants.whiteColor,
-                                              strokeWidth: 2,
+                                    child:
+                                        state is SetPasswordLoading
+                                            ? const SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: CircularProgressIndicator(
+                                                color:
+                                                    ColorConstants.whiteColor,
+                                                strokeWidth: 2,
+                                              ),
+                                            )
+                                            : const Text(
+                                              'Confirm and Sign In',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                                color:
+                                                    ColorConstants.whiteColor,
+                                              ),
                                             ),
-                                          )
-                                        : const Text(
-                                            'Confirm and Sign In',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                              color: ColorConstants.whiteColor,
-                                            ),
-                                          ),
                                   ),
                                 ),
                               );
@@ -230,7 +252,9 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                         ),
                         const Spacer(),
                         Divider(
-                          color: ColorConstants.blackColor.withValues(alpha: 0.2),
+                          color: ColorConstants.blackColor.withValues(
+                            alpha: 0.2,
+                          ),
                           thickness: 1,
                         ),
                         const SizedBox(height: 20),
@@ -252,7 +276,8 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                                   Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const SignInScreen(),
+                                      builder:
+                                          (context) => const SignInScreen(),
                                     ),
                                     (Route<dynamic> route) => false,
                                   );
@@ -260,7 +285,8 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     border: Border.all(
-                                      color: ColorConstants.textFieldBorderColor,
+                                      color:
+                                          ColorConstants.textFieldBorderColor,
                                     ),
                                     borderRadius: BorderRadius.circular(100),
                                   ),
@@ -297,25 +323,26 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
 
   bool _canSubmit() {
     return passwordController.text.isNotEmpty &&
-           confirmPasswordController.text.isNotEmpty;
+        confirmPasswordController.text.isNotEmpty;
   }
 
   bool _validatePasswords() {
     if (passwordController.text != confirmPasswordController.text) {
       return false;
     }
-    
+
     if (passwordController.text.length < 6) {
       showDialog(
         context: context,
-        builder: (context) => GenericYetToImplementPopUpWidget(
-          title: 'Password Too Short',
-          message: 'Password must be at least 6 characters long.',
-        ),
+        builder:
+            (context) => GenericYetToImplementPopUpWidget(
+              title: 'Password Too Short',
+              message: 'Password must be at least 6 characters long.',
+            ),
       );
       return false;
     }
-    
+
     return true;
   }
 

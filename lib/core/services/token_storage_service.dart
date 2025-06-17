@@ -2,14 +2,14 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TokenStorageService {
+  factory TokenStorageService() => _instance;
+  TokenStorageService._internal();
   static const String _tokenKey = 'id_token';
   static const String _accessTokenKey = 'access_token';
   static const String _refreshTokenKey = 'refresh_token';
 
   // Singleton pattern
   static final TokenStorageService _instance = TokenStorageService._internal();
-  factory TokenStorageService() => _instance;
-  TokenStorageService._internal();
 
   /// Store the ID token
   Future<void> storeIdToken(String token) async {
@@ -76,13 +76,13 @@ class TokenStorageService {
     if (idToken == null || idToken.isEmpty) {
       return null;
     }
-    
+
     if (_isTokenExpired(idToken)) {
       // Token is expired, clear it
       await clearTokens();
       return null;
     }
-    
+
     return idToken;
   }
 
@@ -117,7 +117,7 @@ class TokenStorageService {
 
       final expirationDate = DateTime.fromMillisecondsSinceEpoch(exp * 1000);
       final now = DateTime.now();
-      
+
       // Add a 30-second buffer to account for network delays
       return now.isAfter(expirationDate.subtract(const Duration(seconds: 30)));
     } catch (e) {
@@ -173,4 +173,4 @@ class TokenStorageService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_tokenKey);
   }
-} 
+}
