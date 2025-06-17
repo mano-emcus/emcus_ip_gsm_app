@@ -39,7 +39,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       extendBody: true,
       body: _screens[_selectedIndex],
       bottomNavigationBar: Container(
-        height: 80,
+        height: 80 + MediaQuery.of(context).padding.bottom,
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(

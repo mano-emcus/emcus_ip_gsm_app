@@ -6,6 +6,7 @@ class AuthEndpoints {
   static String get updatePassword => '${ApiConfig.baseUrl}/auth/user/updatePassword';
   static String get signIn => '${ApiConfig.baseUrl}/auth/signin';
   static String get logs => '${ApiConfig.baseUrl}/logs';
+  static String get notes => '${ApiConfig.baseUrl}/notes';
   // Add other auth endpoints here as needed
   // static String get login => '${ApiConfig.baseUrl}/auth/login';
   // static String get verifyOtp => '${ApiConfig.baseUrl}/auth/verify-otp';
