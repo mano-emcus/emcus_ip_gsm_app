@@ -36,177 +36,202 @@ class _NotesScreenState extends State<NotesScreen> {
   void _showAddNoteBottomSheet(BuildContext context) {
     final TextEditingController titleController = TextEditingController();
     final TextEditingController noteController = TextEditingController();
-    
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height * 0.85,
+      builder:
+          (context) => Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
-            child: IntrinsicHeight(
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: ColorConstants.whiteColor,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
+            child: SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.85,
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Handle bar
-                      Center(
-                        child: Container(
-                          width: 40,
-                          height: 4,
-                          decoration: BoxDecoration(
-                            color: ColorConstants.greyColor.withValues(alpha: 0.3),
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        ),
+                child: IntrinsicHeight(
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: ColorConstants.whiteColor,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
                       ),
-                      const SizedBox(height: 20),
-                      // Title
-                      Text(
-                        'Add Note',
-                        style: GoogleFonts.inter(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                          color: ColorConstants.primaryColor,
-                        ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 20,
                       ),
-                      const SizedBox(height: 20),
-                      // Title input field
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
-                          ),
-                        ),
-                        child: TextField(
-                          controller: titleController,
-                          decoration: InputDecoration(
-                            hintText: 'Enter note title...',
-                            hintStyle: GoogleFonts.inter(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                              color: ColorConstants.greyColor,
-                            ),
-                            border: InputBorder.none,
-                          ),
-                          style: GoogleFonts.inter(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: ColorConstants.blackColor,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      // Note input field
-                      Container(
-                        height: 300, // Set specific height for the text field
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        decoration: BoxDecoration(
-                          color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
-                          ),
-                        ),
-                        child: TextField(
-                          controller: noteController,
-                          maxLines: null,
-                          expands: true,
-                          textAlignVertical: TextAlignVertical.top,
-                          decoration: InputDecoration(
-                            hintText: 'Write your note here...',
-                            hintStyle: GoogleFonts.inter(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                              color: ColorConstants.greyColor,
-                            ),
-                            border: InputBorder.none,
-                          ),
-                          style: GoogleFonts.inter(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            color: ColorConstants.blackColor,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      // Submit button
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                                            onPressed: () {
-                    final title = titleController.text.trim();
-                    final content = noteController.text.trim();
-                    
-                    if (title.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Please enter a title for your note'),
-                          backgroundColor: Colors.orange,
-                          duration: const Duration(seconds: 2),
-                        ),
-                      );
-                    } else if (content.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Please enter some content for your note'),
-                          backgroundColor: Colors.orange,
-                          duration: const Duration(seconds: 2),
-                        ),
-                      );
-                    } else {
-                      // Trigger note creation
-                      _notesBloc.add(NoteAdded(
-                        noteTitle: title,
-                        noteContent: content,
-                      ));
-                      
-                      Navigator.pop(context);
-                    }
-                  },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: ColorConstants.primaryColor,
-                            foregroundColor: ColorConstants.whiteColor,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Handle bar
+                          Center(
+                            child: Container(
+                              width: 40,
+                              height: 4,
+                              decoration: BoxDecoration(
+                                color: ColorConstants.greyColor.withValues(
+                                  alpha: 0.3,
+                                ),
+                                borderRadius: BorderRadius.circular(2),
+                              ),
                             ),
                           ),
-                          child: Text(
-                            'Submit to Cloud',
+                          const SizedBox(height: 20),
+                          // Title
+                          Text(
+                            'Add Note',
                             style: GoogleFonts.inter(
-                              fontSize: 16,
+                              fontSize: 20,
                               fontWeight: FontWeight.w600,
+                              color: ColorConstants.primaryColor,
                             ),
                           ),
-                        ),
+                          const SizedBox(height: 20),
+                          // Title input field
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: ColorConstants.textFieldBorderColor
+                                  .withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: ColorConstants.textFieldBorderColor
+                                    .withValues(alpha: 0.3),
+                              ),
+                            ),
+                            child: TextField(
+                              controller: titleController,
+                              decoration: InputDecoration(
+                                hintText: 'Enter note title...',
+                                hintStyle: GoogleFonts.inter(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  color: ColorConstants.greyColor,
+                                ),
+                                border: InputBorder.none,
+                              ),
+                              style: GoogleFonts.inter(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: ColorConstants.blackColor,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          // Note input field
+                          Container(
+                            height:
+                                300, // Set specific height for the text field
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              color: ColorConstants.textFieldBorderColor
+                                  .withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: ColorConstants.textFieldBorderColor
+                                    .withValues(alpha: 0.3),
+                              ),
+                            ),
+                            child: TextField(
+                              controller: noteController,
+                              maxLines: null,
+                              expands: true,
+                              textAlignVertical: TextAlignVertical.top,
+                              decoration: InputDecoration(
+                                hintText: 'Write your note here...',
+                                hintStyle: GoogleFonts.inter(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  color: ColorConstants.greyColor,
+                                ),
+                                border: InputBorder.none,
+                              ),
+                              style: GoogleFonts.inter(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: ColorConstants.blackColor,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          // Submit button
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                final title = titleController.text.trim();
+                                final content = noteController.text.trim();
+
+                                if (title.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Please enter a title for your note',
+                                      ),
+                                      backgroundColor: Colors.orange,
+                                      duration: const Duration(seconds: 2),
+                                    ),
+                                  );
+                                } else if (content.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Please enter some content for your note',
+                                      ),
+                                      backgroundColor: Colors.orange,
+                                      duration: const Duration(seconds: 2),
+                                    ),
+                                  );
+                                } else {
+                                  // Trigger note creation
+                                  _notesBloc.add(
+                                    NoteAdded(
+                                      noteTitle: title,
+                                      noteContent: content,
+                                    ),
+                                  );
+
+                                  Navigator.pop(context);
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: ColorConstants.primaryColor,
+                                foregroundColor: ColorConstants.whiteColor,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: Text(
+                                'Submit to Cloud',
+                                style: GoogleFonts.inter(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-      ),
     );
   }
 
@@ -295,7 +320,7 @@ class _NotesScreenState extends State<NotesScreen> {
               const SizedBox(height: 20),
               // Notes List
               Expanded(
-                                  child: BlocListener<NotesBloc, NotesState>(
+                child: BlocListener<NotesBloc, NotesState>(
                   listener: (context, state) {
                     if (state is NotesFailure) {
                       // Check if it's an authentication error
@@ -405,7 +430,9 @@ class _NotesScreenState extends State<NotesScreen> {
                         // Show error message for note creation failure
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('Failed to create note: ${state.error}'),
+                            content: Text(
+                              'Failed to create note: ${state.error}',
+                            ),
                             backgroundColor: Colors.red,
                             duration: const Duration(seconds: 3),
                           ),
@@ -451,8 +478,14 @@ class _NotesScreenState extends State<NotesScreen> {
                           );
                         }
 
-                        return ListView.builder(
+                        return GridView.builder(
                           padding: const EdgeInsets.symmetric(horizontal: 26),
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            childAspectRatio: 0.85,
+                          ),
                           itemCount: state.notes.length,
                           itemBuilder: (context, index) {
                             final note = state.notes[index];
@@ -465,12 +498,13 @@ class _NotesScreenState extends State<NotesScreen> {
                                 );
                               },
                               child: Container(
-                                margin: const EdgeInsets.only(bottom: 12),
-                                padding: const EdgeInsets.all(16),
+                                padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  color: ColorConstants.textFieldBorderColor
-                                      .withValues(alpha: 0.3),
+                                  color: ColorConstants.allEventsTitleBackGroundColor,
                                   borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: ColorConstants.primaryColor,
+                                  ),
                                 ),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -478,66 +512,36 @@ class _NotesScreenState extends State<NotesScreen> {
                                     Text(
                                       note.noteTitle,
                                       style: GoogleFonts.inter(
-                                        fontSize: 16,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.w600,
                                         color: ColorConstants.textColor,
                                       ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    const SizedBox(height: 8),
+                                    const SizedBox(height: 6),
+                                    Expanded(
+                                      child: Text(
+                                        note.noteContent,
+                                        style: GoogleFonts.inter(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400,
+                                          color: ColorConstants.greyColor,
+                                        ),
+                                        maxLines: 3,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
                                     Text(
-                                      note.noteContent,
+                                      'By: ${note.username}',
                                       style: GoogleFonts.inter(
-                                        fontSize: 14,
+                                        fontSize: 10,
                                         fontWeight: FontWeight.w400,
                                         color: ColorConstants.greyColor,
                                       ),
-                                      maxLines: 3,
+                                      maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'By: ${note.username}',
-                                              style: GoogleFonts.inter(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w400,
-                                                color: ColorConstants.greyColor,
-                                              ),
-                                            ),
-                                            Text(
-                                              'Created: ${note.createdAt}',
-                                              style: GoogleFonts.inter(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w400,
-                                                color: ColorConstants.greyColor,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        IconButton(
-                                          onPressed: () {
-                                            GenericYetToImplementPopUpWidget.show(
-                                              context,
-                                              title: 'Note Options',
-                                              message:
-                                                  'Note options menu is coming soon!',
-                                            );
-                                          },
-                                          icon: const Icon(
-                                            Icons.more_vert,
-                                            size: 20,
-                                          ),
-                                          padding: EdgeInsets.zero,
-                                          constraints: const BoxConstraints(),
-                                        ),
-                                      ],
                                     ),
                                   ],
                                 ),
@@ -598,14 +602,14 @@ class _NotesScreenState extends State<NotesScreen> {
           padding: EdgeInsets.only(
             bottom: 80,
           ), // Account for bottom nav bar height
-                      child: FloatingActionButton(
-              onPressed: () {
-                _showAddNoteBottomSheet(context);
-              },
-              backgroundColor: ColorConstants.primaryColor,
-              shape: const CircleBorder(),
-              child: const Icon(Icons.add, color: ColorConstants.whiteColor),
-            ),
+          child: FloatingActionButton(
+            onPressed: () {
+              _showAddNoteBottomSheet(context);
+            },
+            backgroundColor: ColorConstants.primaryColor,
+            shape: const CircleBorder(),
+            child: const Icon(Icons.add, color: ColorConstants.whiteColor),
+          ),
         ),
       ),
     );
