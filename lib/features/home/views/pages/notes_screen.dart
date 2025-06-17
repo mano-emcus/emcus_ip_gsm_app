@@ -6,6 +6,7 @@ import 'package:emcus_ipgsm_app/utils/widgets/generic_yet_to_implement_pop_up_wi
 import 'package:emcus_ipgsm_app/features/notes/bloc/notes_bloc.dart';
 import 'package:emcus_ipgsm_app/features/notes/bloc/notes_event.dart';
 import 'package:emcus_ipgsm_app/features/notes/bloc/notes_state.dart';
+import 'package:emcus_ipgsm_app/features/notes/models/note_entry.dart';
 import 'package:emcus_ipgsm_app/features/auth/sign_in/views/sign_in_screen.dart';
 
 class NotesScreen extends StatefulWidget {
@@ -31,6 +32,245 @@ class _NotesScreenState extends State<NotesScreen> {
     _searchController.dispose();
     _notesBloc.close();
     super.dispose();
+  }
+
+  void _showNoteDetailsBottomSheet(BuildContext context, NoteEntry note) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.8,
+            ),
+            child: IntrinsicHeight(
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: ColorConstants.whiteColor,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 20,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Handle bar
+                      Center(
+                        child: Container(
+                          width: 40,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: ColorConstants.greyColor.withValues(
+                              alpha: 0.3,
+                            ),
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      // Title
+                      Text(
+                        'Note Details',
+                        style: GoogleFonts.inter(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: ColorConstants.primaryColor,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      // Note Title
+                      Text(
+                        'Title',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: ColorConstants.blackColor,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: ColorConstants.textFieldBorderColor
+                              .withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: ColorConstants.textFieldBorderColor
+                                .withValues(alpha: 0.3),
+                          ),
+                        ),
+                        child: Text(
+                          note.noteTitle,
+                          style: GoogleFonts.inter(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: ColorConstants.blackColor,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      // Note Content
+                      Text(
+                        'Content',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: ColorConstants.blackColor,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        width: double.infinity,
+                        height: 200,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: ColorConstants.textFieldBorderColor
+                              .withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: ColorConstants.textFieldBorderColor
+                                .withValues(alpha: 0.3),
+                          ),
+                        ),
+                        child: SingleChildScrollView(
+                          child: Text(
+                            note.noteContent,
+                            style: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: ColorConstants.blackColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      // Note Details
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Created By',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: ColorConstants.greyColor,
+                                  ),
+                                ),
+                                Text(
+                                  note.username,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: ColorConstants.blackColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Company',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: ColorConstants.greyColor,
+                                  ),
+                                ),
+                                Text(
+                                  note.company,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: ColorConstants.blackColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Created At',
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: ColorConstants.greyColor,
+                            ),
+                          ),
+                          Text(
+                            note.createdAt,
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: ColorConstants.blackColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      // Close button
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: ColorConstants.primaryColor,
+                            foregroundColor: ColorConstants.whiteColor,
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 16,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: Text(
+                            'Close',
+                            style: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   void _showAddNoteBottomSheet(BuildContext context) {
@@ -491,11 +731,7 @@ class _NotesScreenState extends State<NotesScreen> {
                             final note = state.notes[index];
                             return GestureDetector(
                               onTap: () {
-                                GenericYetToImplementPopUpWidget.show(
-                                  context,
-                                  title: 'Note Details',
-                                  message: 'Note details view is coming soon!',
-                                );
+                                _showNoteDetailsBottomSheet(context, note);
                               },
                               child: Container(
                                 padding: const EdgeInsets.all(12),
