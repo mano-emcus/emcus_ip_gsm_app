@@ -1,96 +1,38 @@
-import 'package:emcus_ipgsm_app/core/services/auth_manager.dart';
 import 'package:emcus_ipgsm_app/features/home/views/pages/home_screen.dart';
 import 'package:emcus_ipgsm_app/features/home/views/pages/notes_screen.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_bloc.dart';
+import 'package:emcus_ipgsm_app/features/sites/views/site_dashboard_screen.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class DashBoardScreen extends StatefulWidget {
-  const DashBoardScreen({super.key});
+class SitesScreen extends StatefulWidget {
+  const SitesScreen({super.key});
 
   @override
-  State<DashBoardScreen> createState() => _DashBoardScreenState();
+  State<SitesScreen> createState() => _SitesScreenState();
 }
 
-class _DashBoardScreenState extends State<DashBoardScreen> {
+class _SitesScreenState extends State<SitesScreen> {
   int _selectedIndex = 0;
 
   List<Widget> get _screens => [
     BlocProvider(
       create: (context) => LogsBloc(),
-      child: const HomeScreen(),
+      child: SiteDashboardScreen(siteName: 'Emcus'),
     ),
-
+    const SitesScreen(),
     const NotesScreen(),
   ];
 
   void _onItemTapped(int index) {
-    if (index == 2) {
-      _showLogoutDialog(context);
-      return;
-    } else {
-      setState(() {
-        _selectedIndex = index;
-      });
-    }
+    setState(() {
+      _selectedIndex = index;
+    });
   }
-
-  void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            'Logout',
-            style: GoogleFonts.inter(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: ColorConstants.textColor,
-            ),
-          ),
-          content: Text(
-            'Are you sure you want to logout?',
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: ColorConstants.textColor,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                'Cancel',
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () async {
-                Navigator.of(context).pop(); // Close dialog first
-                await AuthManager().logout(context);
-              },
-              child: Text(
-                'Logout',
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: ColorConstants.primaryColor,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,17 +58,27 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
-                  'assets/svgs/home_icon.svg',
+                  'assets/svgs/dashboard_icon.svg',
                   height: 24,
                   width: 24,
                   colorFilter: ColorFilter.mode(
-                    _selectedIndex == 0
-                        ? ColorConstants.primaryColor
-                        : Colors.grey,
+                    _selectedIndex == 0 ? ColorConstants.primaryColor : Colors.grey,
                     BlendMode.srcIn,
                   ),
                 ),
-                label: 'Home',
+                label: 'Dashboard',
+              ),
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset(
+                  'assets/svgs/all_logs_icon.svg',
+                  height: 24,
+                  width: 24,
+                  colorFilter: ColorFilter.mode(
+                    _selectedIndex == 1 ? ColorConstants.primaryColor : Colors.grey,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                label: 'Sites',
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
@@ -134,18 +86,13 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   height: 24,
                   width: 24,
                   colorFilter: ColorFilter.mode(
-                    _selectedIndex == 1
-                        ? ColorConstants.primaryColor
-                        : Colors.grey,
+                    _selectedIndex == 2 ? ColorConstants.primaryColor : Colors.grey,
                     BlendMode.srcIn,
                   ),
                 ),
                 label: 'Notes',
               ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.logout, color: ColorConstants.blackColor),
-                label: 'Logout',
-              ),
+              
             ],
             currentIndex: _selectedIndex,
             selectedItemColor: ColorConstants.primaryColor,
