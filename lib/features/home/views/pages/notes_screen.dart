@@ -84,7 +84,9 @@ class _NotesScreenState extends State<NotesScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 26),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
+                    color: ColorConstants.textFieldBorderColor.withValues(
+                      alpha: 0.3,
+                    ),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: TextField(
@@ -98,7 +100,10 @@ class _NotesScreenState extends State<NotesScreen> {
                       ),
                       prefixIcon: const Icon(Icons.search),
                       border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
                     ),
                     onTap: () {
                       GenericYetToImplementPopUpWidget.show(
@@ -118,13 +123,19 @@ class _NotesScreenState extends State<NotesScreen> {
                     if (state is NotesFailure) {
                       // Check if it's an authentication error
                       if (state.error.contains('AuthenticationException') ||
-                          state.error.contains('No valid authentication token') ||
-                          state.error.contains('Missing Authorization header')) {
+                          state.error.contains(
+                            'No valid authentication token',
+                          ) ||
+                          state.error.contains(
+                            'Missing Authorization header',
+                          )) {
                         // Authentication failed, redirect to sign-in
                         Navigator.pushAndRemoveUntil(
                           context,
                           PageRouteBuilder(
-                            transitionDuration: const Duration(milliseconds: 600),
+                            transitionDuration: const Duration(
+                              milliseconds: 600,
+                            ),
                             pageBuilder:
                                 (context, animation, secondaryAnimation) =>
                                     const SignInScreen(),
@@ -144,7 +155,10 @@ class _NotesScreenState extends State<NotesScreen> {
                                     curve: Curves.easeInOutCubic,
                                   ),
                                 ),
-                                child: FadeTransition(opacity: animation, child: child),
+                                child: FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                ),
                               );
                             },
                           ),
@@ -154,7 +168,9 @@ class _NotesScreenState extends State<NotesScreen> {
                         // Show error message for other failures
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('Failed to load notes: ${state.error}'),
+                            content: Text(
+                              'Failed to load notes: ${state.error}',
+                            ),
                             backgroundColor: Colors.red,
                             duration: const Duration(seconds: 3),
                           ),
@@ -165,9 +181,7 @@ class _NotesScreenState extends State<NotesScreen> {
                   child: BlocBuilder<NotesBloc, NotesState>(
                     builder: (context, state) {
                       if (state is NotesLoading) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
+                        return const Center(child: CircularProgressIndicator());
                       } else if (state is NotesSuccess) {
                         if (state.notes.isEmpty) {
                           return Center(
@@ -201,7 +215,7 @@ class _NotesScreenState extends State<NotesScreen> {
                             ),
                           );
                         }
-                        
+
                         return ListView.builder(
                           padding: const EdgeInsets.symmetric(horizontal: 26),
                           itemCount: state.notes.length,
@@ -219,7 +233,8 @@ class _NotesScreenState extends State<NotesScreen> {
                                 margin: const EdgeInsets.only(bottom: 12),
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
-                                  color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
+                                  color: ColorConstants.textFieldBorderColor
+                                      .withValues(alpha: 0.3),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Column(
@@ -246,10 +261,12 @@ class _NotesScreenState extends State<NotesScreen> {
                                     ),
                                     const SizedBox(height: 8),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               'By: ${note.username}',
@@ -274,10 +291,14 @@ class _NotesScreenState extends State<NotesScreen> {
                                             GenericYetToImplementPopUpWidget.show(
                                               context,
                                               title: 'Note Options',
-                                              message: 'Note options menu is coming soon!',
+                                              message:
+                                                  'Note options menu is coming soon!',
                                             );
                                           },
-                                          icon: const Icon(Icons.more_vert, size: 20),
+                                          icon: const Icon(
+                                            Icons.more_vert,
+                                            size: 20,
+                                          ),
                                           padding: EdgeInsets.zero,
                                           constraints: const BoxConstraints(),
                                         ),
@@ -329,9 +350,7 @@ class _NotesScreenState extends State<NotesScreen> {
                           ),
                         );
                       } else {
-                        return const Center(
-                          child: Text('Welcome to Notes'),
-                        );
+                        return const Center(child: Text('Welcome to Notes'));
                       }
                     },
                   ),
@@ -340,15 +359,22 @@ class _NotesScreenState extends State<NotesScreen> {
             ],
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            GenericYetToImplementPopUpWidget.show(
-              context,
-              title: 'New Note',
-              message: 'Create new note feature is coming soon!',
-            );
-          },
-          child: const Icon(Icons.add),
+        floatingActionButton: Padding(
+          padding: EdgeInsets.only(
+            bottom: 80,
+          ), // Account for bottom nav bar height
+          child: FloatingActionButton(
+            onPressed: () {
+              GenericYetToImplementPopUpWidget.show(
+                context,
+                title: 'New Note',
+                message: 'Create new note feature is coming soon!',
+              );
+            },
+            backgroundColor: ColorConstants.primaryColor,
+            shape: const CircleBorder(),
+            child: const Icon(Icons.add, color: ColorConstants.whiteColor),
+          ),
         ),
       ),
     );
