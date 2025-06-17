@@ -230,7 +230,7 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: EdgeInsets.zero,
               crossAxisCount: 3,
               mainAxisSpacing: 16,
-              crossAxisSpacing: 16,
+              crossAxisSpacing: 8,
               childAspectRatio: 1.25,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -252,30 +252,31 @@ class _HomeScreenState extends State<HomeScreen> {
                         bottom: 9,
                         left: 10,
                       ),
-                      child: Column(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              fireCountText,
-                              style: GoogleFonts.inter(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w600,
-                                color: ColorConstants.blackColor,
+                          SvgPicture.asset('assets/svgs/fire_tile_icon.svg'),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                fireCountText,
+                                style: GoogleFonts.inter(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w600,
+                                  color: ColorConstants.blackColor,
+                                ),
                               ),
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Fire',
-                              style: GoogleFonts.inter(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: ColorConstants.fireTitleTextColor,
+                              Text(
+                                'Fire',
+                                style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: ColorConstants.fireTitleTextColor,
+                                ),
                               ),
-                            ),
+                            ],
                           ),
                         ],
                       ),
@@ -300,30 +301,31 @@ class _HomeScreenState extends State<HomeScreen> {
                         bottom: 9,
                         left: 10,
                       ),
-                      child: Column(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              faultCountText,
-                              style: GoogleFonts.inter(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w600,
-                                color: ColorConstants.blackColor,
+                          SvgPicture.asset('assets/svgs/fault_tile_icon.svg'),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                faultCountText,
+                                style: GoogleFonts.inter(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w600,
+                                  color: ColorConstants.blackColor,
+                                ),
                               ),
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Fault',
-                              style: GoogleFonts.inter(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: ColorConstants.faultTitleTextColor,
+                              Text(
+                                'Fault',
+                                style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: ColorConstants.faultTitleTextColor,
+                                ),
                               ),
-                            ),
+                            ],
                           ),
                         ],
                       ),
@@ -347,30 +349,31 @@ class _HomeScreenState extends State<HomeScreen> {
                         bottom: 9,
                         left: 10,
                       ),
-                      child: Column(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              allEventsCountText,
-                              style: GoogleFonts.inter(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w600,
-                                color: ColorConstants.blackColor,
+                          SvgPicture.asset('assets/svgs/all_event_tile_icon.svg'),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                allEventsCountText,
+                                style: GoogleFonts.inter(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w600,
+                                  color: ColorConstants.blackColor,
+                                ),
                               ),
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'All Events',
-                              style: GoogleFonts.inter(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: ColorConstants.allEventsTitleTextColor,
+                              Text(
+                                'Events',
+                                style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: ColorConstants.allEventsTitleTextColor,
+                                ),
                               ),
-                            ),
+                            ],
                           ),
                         ],
                       ),
