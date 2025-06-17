@@ -1,6 +1,7 @@
 import 'package:emcus_ipgsm_app/features/home/views/pages/home_screen.dart';
 import 'package:emcus_ipgsm_app/features/home/views/pages/notes_screen.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_bloc.dart';
+import 'package:emcus_ipgsm_app/features/logs/views/all_logs_screen.dart';
 import 'package:emcus_ipgsm_app/features/sites/views/all_site_screen.dart';
 import 'package:emcus_ipgsm_app/features/sites/views/site_dashboard_screen.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
@@ -24,7 +25,10 @@ class _SitesScreenState extends State<SitesScreen> {
       create: (context) => LogsBloc(),
       child: SiteDashboardScreen(siteName: 'Emcus Technologies'),
     ),
-    AllSitesScreen(fireCount: '10', faultCount: '10', allEventsCount: '10'),
+    BlocProvider(
+      create: (context) => LogsBloc(),
+      child: AllLogsScreen(),
+    ),
     const NotesScreen(),
   ];
 
