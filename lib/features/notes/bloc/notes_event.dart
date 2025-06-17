@@ -10,4 +10,17 @@ class NotesFetched extends NotesEvent {
   
   @override
   List<Object?> get props => [];
+}
+
+class NoteAdded extends NotesEvent {
+  NoteAdded({
+    required this.noteTitle,
+    required this.noteContent,
+  });
+  
+  final String noteTitle;
+  final String noteContent;
+  
+  @override
+  List<Object?> get props => [noteTitle, noteContent];
 } 

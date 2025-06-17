@@ -34,6 +34,7 @@ class _NotesScreenState extends State<NotesScreen> {
   }
 
   void _showAddNoteBottomSheet(BuildContext context) {
+    final TextEditingController titleController = TextEditingController();
     final TextEditingController noteController = TextEditingController();
     
     showModalBottomSheet(
@@ -47,7 +48,7 @@ class _NotesScreenState extends State<NotesScreen> {
         child: SingleChildScrollView(
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height * 0.7,
+              maxHeight: MediaQuery.of(context).size.height * 0.85,
             ),
             child: IntrinsicHeight(
               child: Container(
@@ -85,36 +86,64 @@ class _NotesScreenState extends State<NotesScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      // Note input field
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
-                            ),
+                      // Title input field
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
                           ),
-                          child: TextField(
-                            controller: noteController,
-                            maxLines: null,
-                            expands: true,
-                            textAlignVertical: TextAlignVertical.top,
-                            decoration: InputDecoration(
-                              hintText: 'Write your note here...',
-                              hintStyle: GoogleFonts.inter(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                                color: ColorConstants.greyColor,
-                              ),
-                              border: InputBorder.none,
-                            ),
-                            style: GoogleFonts.inter(
+                        ),
+                        child: TextField(
+                          controller: titleController,
+                          decoration: InputDecoration(
+                            hintText: 'Enter note title...',
+                            hintStyle: GoogleFonts.inter(
                               fontSize: 16,
                               fontWeight: FontWeight.w400,
-                              color: ColorConstants.blackColor,
+                              color: ColorConstants.greyColor,
                             ),
+                            border: InputBorder.none,
+                          ),
+                          style: GoogleFonts.inter(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: ColorConstants.blackColor,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      // Note input field
+                      Container(
+                        height: 300, // Set specific height for the text field
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
+                          ),
+                        ),
+                        child: TextField(
+                          controller: noteController,
+                          maxLines: null,
+                          expands: true,
+                          textAlignVertical: TextAlignVertical.top,
+                          decoration: InputDecoration(
+                            hintText: 'Write your note here...',
+                            hintStyle: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: ColorConstants.greyColor,
+                            ),
+                            border: InputBorder.none,
+                          ),
+                          style: GoogleFonts.inter(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                            color: ColorConstants.blackColor,
                           ),
                         ),
                       ),
@@ -123,27 +152,36 @@ class _NotesScreenState extends State<NotesScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {
-                            if (noteController.text.trim().isNotEmpty) {
-                              // TODO: Implement note submission logic
-                              Navigator.pop(context);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Note saved successfully!'),
-                                  backgroundColor: Colors.green,
-                                  duration: const Duration(seconds: 2),
-                                ),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Please enter some content for your note'),
-                                  backgroundColor: Colors.orange,
-                                  duration: const Duration(seconds: 2),
-                                ),
-                              );
-                            }
-                          },
+                                            onPressed: () {
+                    final title = titleController.text.trim();
+                    final content = noteController.text.trim();
+                    
+                    if (title.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Please enter a title for your note'),
+                          backgroundColor: Colors.orange,
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
+                    } else if (content.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Please enter some content for your note'),
+                          backgroundColor: Colors.orange,
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
+                    } else {
+                      // Trigger note creation
+                      _notesBloc.add(NoteAdded(
+                        noteTitle: title,
+                        noteContent: content,
+                      ));
+                      
+                      Navigator.pop(context);
+                    }
+                  },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorConstants.primaryColor,
                             foregroundColor: ColorConstants.whiteColor,
@@ -257,7 +295,7 @@ class _NotesScreenState extends State<NotesScreen> {
               const SizedBox(height: 20),
               // Notes List
               Expanded(
-                child: BlocListener<NotesBloc, NotesState>(
+                                  child: BlocListener<NotesBloc, NotesState>(
                   listener: (context, state) {
                     if (state is NotesFailure) {
                       // Check if it's an authentication error
@@ -315,11 +353,69 @@ class _NotesScreenState extends State<NotesScreen> {
                           ),
                         );
                       }
+                    } else if (state is NoteCreated) {
+                      // Show success message for note creation
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(state.message),
+                          backgroundColor: Colors.green,
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
+                    } else if (state is NoteCreationFailure) {
+                      // Check if it's an authentication error
+                      if (state.error.contains('AuthenticationException') ||
+                          state.error.contains('Authentication failed')) {
+                        // Authentication failed, redirect to sign-in
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          PageRouteBuilder(
+                            transitionDuration: const Duration(
+                              milliseconds: 600,
+                            ),
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    const SignInScreen(),
+                            transitionsBuilder: (
+                              context,
+                              animation,
+                              secondaryAnimation,
+                              child,
+                            ) {
+                              return SlideTransition(
+                                position: Tween<Offset>(
+                                  begin: const Offset(0.0, -0.15),
+                                  end: Offset.zero,
+                                ).animate(
+                                  CurvedAnimation(
+                                    parent: animation,
+                                    curve: Curves.easeInOutCubic,
+                                  ),
+                                ),
+                                child: FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                ),
+                              );
+                            },
+                          ),
+                          (Route<dynamic> route) => false,
+                        );
+                      } else {
+                        // Show error message for note creation failure
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Failed to create note: ${state.error}'),
+                            backgroundColor: Colors.red,
+                            duration: const Duration(seconds: 3),
+                          ),
+                        );
+                      }
                     }
                   },
                   child: BlocBuilder<NotesBloc, NotesState>(
                     builder: (context, state) {
-                      if (state is NotesLoading) {
+                      if (state is NotesLoading || state is NoteCreating) {
                         return const Center(child: CircularProgressIndicator());
                       } else if (state is NotesSuccess) {
                         if (state.notes.isEmpty) {

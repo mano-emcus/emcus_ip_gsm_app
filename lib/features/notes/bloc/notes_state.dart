@@ -25,4 +25,22 @@ class NotesFailure extends NotesState {
 
   @override
   List<Object?> get props => [error];
+}
+
+class NoteCreating extends NotesState {}
+
+class NoteCreated extends NotesState {
+  NoteCreated({required this.message});
+  final String message;
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class NoteCreationFailure extends NotesState {
+  NoteCreationFailure({required this.error});
+  final String error;
+
+  @override
+  List<Object?> get props => [error];
 } 

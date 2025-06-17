@@ -8,6 +8,7 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
     : _notesRepository = notesRepository ?? NotesRepository(),
       super(NotesInitial()) {
     on<NotesFetched>(_onNotesFetched);
+    on<NoteAdded>(_onNoteAdded);
   }
   final NotesRepository _notesRepository;
 
@@ -26,6 +27,27 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
       }
     } catch (e) {
       emit(NotesFailure(error: e.toString()));
+    }
+  }
+
+  Future<void> _onNoteAdded(
+    NoteAdded event,
+    Emitter<NotesState> emit,
+  ) async {
+    emit(NoteCreating());
+    try {
+      final response = await _notesRepository.createNote(
+        noteTitle: event.noteTitle,
+        noteContent: event.noteContent,
+      );
+
+      final message = response['message'] ?? 'Note created successfully';
+      emit(NoteCreated(message: message));
+      
+      // After successful creation, fetch the updated notes list
+      add(NotesFetched());
+    } catch (e) {
+      emit(NoteCreationFailure(error: e.toString()));
     }
   }
 } 
