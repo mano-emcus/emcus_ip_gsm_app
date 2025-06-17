@@ -1,8 +1,47 @@
+import 'package:emcus_ipgsm_app/core/services/auth_manager.dart';
 import 'package:emcus_ipgsm_app/features/auth/sign_in/views/sign_in_screen.dart';
+import 'package:emcus_ipgsm_app/features/home/views/dashboard_screen.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+// Custom page route for smooth transitions
+class SplashPageRoute<T> extends PageRouteBuilder<T> {
+  SplashPageRoute({
+    required this.child,
+    this.duration = const Duration(milliseconds: 800),
+  }) : super(
+         transitionDuration: duration,
+         reverseTransitionDuration: duration,
+         pageBuilder: (context, animation, secondaryAnimation) => child,
+       );
+  final Widget child;
+  final Duration duration;
+
+  @override
+  Widget buildTransitions(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    return FadeTransition(
+      opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: animation, curve: Curves.easeInOutCubic),
+      ),
+      child: SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(0.0, 0.1),
+          end: Offset.zero,
+        ).animate(
+          CurvedAnimation(parent: animation, curve: Curves.easeInOutCubic),
+        ),
+        child: child,
+      ),
+    );
+  }
+}
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -11,30 +50,112 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  final AuthManager _authManager = AuthManager();
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
+
   @override
   void initState() {
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const SignInScreen()),
-        );
-      }
-    });
     super.initState();
+    _initializeAnimations();
+    _initializeApp();
+  }
+
+  void _initializeAnimations() {
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 1200),
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.0, 0.6, curve: Curves.easeInOut),
+      ),
+    );
+
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.2, 0.8, curve: Curves.elasticOut),
+      ),
+    );
+
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _initializeApp() async {
+    // Wait for splash screen display duration and animation to complete
+    await Future.delayed(const Duration(seconds: 4));
+
+    if (!mounted) return;
+
+    // Check if user is already signed in
+    final isSignedIn = await _authManager.isAuthenticated();
+
+    // Add a small delay to ensure the splash animation completes before navigation
+    await Future.delayed(const Duration(milliseconds: 200));
+
+    if (!mounted) return;
+
+    if (isSignedIn) {
+      // User has valid token, navigate to dashboard
+      Navigator.pushReplacement(
+        context,
+        SplashPageRoute(
+          child: const DashBoardScreen(),
+          duration: const Duration(
+            milliseconds: 1000,
+          ), // Slightly longer for better effect
+        ),
+      );
+    } else {
+      // User doesn't have token, navigate to sign in
+      Navigator.pushReplacement(
+        context,
+        SplashPageRoute(
+          child: const SignInScreen(),
+          duration: const Duration(
+            milliseconds: 1000,
+          ), // Slightly longer for better effect
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ColorConstants.whiteColor,
       body: Center(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
+          children: <Widget>[
             SizedBox(height: MediaQuery.sizeOf(context).height * 0.3),
-            SvgPicture.asset('assets/svgs/emcus_logo.svg'),
-            Spacer(),
+            AnimatedBuilder(
+              animation: _animationController,
+              builder: (context, child) {
+                return FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: ScaleTransition(
+                    scale: _scaleAnimation,
+                    child: Hero(
+                      tag: 'emcus_logo',
+                      child: SvgPicture.asset('assets/svgs/emcus_logo.svg'),
+                    ),
+                  ),
+                );
+              },
+            ),
+            const Spacer(),
             Text(
               'Version 1.0',
               style: GoogleFonts.inter(
@@ -43,7 +164,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 color: ColorConstants.textColor,
               ),
             ),
-            SizedBox(height: 15),
+            const SizedBox(height: 15),
             Text(
               'Copyrighted, EMCUS & its Associates',
               style: GoogleFonts.inter(
@@ -55,7 +176,7 @@ class _SplashScreenState extends State<SplashScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
+              children: <Widget>[
                 Flexible(
                   child: SvgPicture.asset(
                     'assets/svgs/splash_bottom_left_icon.svg',

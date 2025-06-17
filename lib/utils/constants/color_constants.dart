@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ColorConstants {
-
-  //basic 
+  //basic
   static const Color blackColor = Color(0xFF000000);
   //white
   static const Color whiteColor = Color(0xFFFFFFFF);
@@ -17,4 +16,13 @@ class ColorConstants {
   static const Color backgroundColor = Color(0xFF000000);
   static const Color textColor = Color(0xFF3A3A3A);
   static const Color textFieldBorderColor = Color(0xFFD9D9D9);
+  static const Color fireTitleBackGroundColor = Color(0xFFFFF2F2);
+  static const Color fireTitleBorderColor = Color(0xFFE61C1C);
+  static const Color fireTitleTextColor = Color(0xFFE61C1C);
+  static const Color faultTitleBackGroundColor = Color(0xFFFFF4C7);
+  static const Color faultTitleBorderColor = Color(0xFFE2A41E);
+  static const Color faultTitleTextColor = Color(0xFFA27005);
+  static const Color allEventsTitleBackGroundColor = Color(0xFFF2F3FF);
+  static const Color allEventsTitleBorderColor = Color(0xFF2E3188);
+  static const Color allEventsTitleTextColor = Color(0xFF3A3A3A);
 }
