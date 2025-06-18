@@ -24,8 +24,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       create: (context) => LogsBloc(),
       child: const HomeScreen(),
     ),
-
-    const AllSitesScreen(fireCount: '10', faultCount: '10', allEventsCount: '10'),
+    BlocProvider(
+      create: (context) => LogsBloc(),
+      child: const AllSitesScreen(),
+    ),
   ];
 
   void _onItemTapped(int index) {

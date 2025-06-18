@@ -28,22 +28,23 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _fetchLogs();
     // Start polling logs when the screen loads (polls every 30 seconds)
-    _startPolling();
+    Future.delayed(const Duration(seconds: 30), () {
+      _startPolling();
+    });
   }
 
   @override
   void dispose() {
     // Stop polling when the screen is disposed
-    context.read<LogsBloc>().add(LogsPollingStop());
+    _stopPolling();
     super.dispose();
   }
 
   void _startPolling() {
     // Start polling with 30-second interval (you can customize this)
-    context.read<LogsBloc>().add(LogsPollingStarted(
-      interval: const Duration(seconds: 30),
-    ));
+    context.read<LogsBloc>().add(LogsPollingStarted());
   }
 
   void _stopPolling() {
@@ -131,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   // Calculate logo size and position based on scroll
                   final double logoSize =
-                      60 - (25 * scrollProgress); // 60 -> 35
+                      50 - (20 * scrollProgress); // 60 -> 35
                   final double topPadding =
                       statusBarHeight + (20 * (1 - scrollProgress));
 
@@ -430,10 +431,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => SitesScreen(),
-                  ),
+                  MaterialPageRoute(builder: (context) => SitesScreen()),
                 );
               },
               child: Container(

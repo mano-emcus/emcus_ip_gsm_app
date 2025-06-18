@@ -23,6 +23,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   late TextEditingController companyNameController;
   late TextEditingController emailController;
   bool isTermsAndConditions = false;
+  bool canSubmit = false;
 
   @override
   void initState() {
@@ -30,14 +31,52 @@ class _RegisterScreenState extends State<RegisterScreen> {
     fullNameController = TextEditingController();
     companyNameController = TextEditingController(text: 'Emcus Technologies');
     emailController = TextEditingController();
+    fullNameController.addListener(_updateCanSubmit);
+    companyNameController.addListener(_updateCanSubmit);
+    emailController.addListener(_updateCanSubmit);
+  }
+
+  void _updateCanSubmit() {
+    final fullName = fullNameController.text.trim();
+    final companyName = companyNameController.text.trim();
+    final email = emailController.text.trim();
+    final next =
+        fullName.isNotEmpty &&
+        companyName.isNotEmpty &&
+        email.isNotEmpty &&
+        isTermsAndConditions;
+    if (next != canSubmit) {
+      setState(() => canSubmit = next);
+    }
   }
 
   @override
   void dispose() {
+    fullNameController.removeListener(_updateCanSubmit);
+    companyNameController.removeListener(_updateCanSubmit);
+    emailController.removeListener(_updateCanSubmit);
     fullNameController.dispose();
     companyNameController.dispose();
     emailController.dispose();
     super.dispose();
+  }
+
+  bool _canSubmit() => canSubmit;
+
+  String _getValidationMessage() {
+    if (fullNameController.text.isEmpty) {
+      return 'Please enter your name';
+    }
+    if (companyNameController.text.isEmpty) {
+      return 'Please enter your company name';
+    }
+    if (emailController.text.isEmpty) {
+      return 'Please enter your email address';
+    }
+    if (!isTermsAndConditions) {
+      return 'Please agree to the terms and conditions to register';
+    }
+    return 'Please fill all the fields to register';
   }
 
   @override
@@ -148,6 +187,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     isTermsAndConditions =
                                         !isTermsAndConditions;
                                   });
+                                  _updateCanSubmit();
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.only(
@@ -238,14 +278,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               builder: (context, state) {
                                 return GestureDetector(
                                   onTap:
-                                      emailController.text.isNotEmpty &&
-                                              companyNameController
-                                                  .text
-                                                  .isNotEmpty &&
-                                              fullNameController
-                                                  .text
-                                                  .isNotEmpty &&
-                                              isTermsAndConditions
+                                      _canSubmit()
                                           ? () {
                                             if (state is! RegisterLoading) {
                                               context.read<RegisterBloc>().add(
@@ -269,17 +302,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                   ) => GenericYetToImplementPopUpWidget(
                                                     title: 'Register',
                                                     message:
-                                                        emailController
-                                                                    .text
-                                                                    .isEmpty ||
-                                                                companyNameController
-                                                                    .text
-                                                                    .isEmpty ||
-                                                                fullNameController
-                                                                    .text
-                                                                    .isEmpty
-                                                            ? 'Please fill all the fields to register'
-                                                            : 'Please agree to the terms and conditions to register',
+                                                        _getValidationMessage(),
                                                   ),
                                             );
                                           },

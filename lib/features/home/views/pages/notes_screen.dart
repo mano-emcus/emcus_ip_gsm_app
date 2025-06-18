@@ -836,7 +836,7 @@ class _NotesScreenState extends State<NotesScreen> {
         ),
         floatingActionButton: Padding(
           padding: EdgeInsets.only(
-            bottom: 80,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 120,
           ), // Account for bottom nav bar height
           child: FloatingActionButton(
             onPressed: () {

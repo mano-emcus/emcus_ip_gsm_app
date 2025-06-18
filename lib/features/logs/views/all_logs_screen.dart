@@ -25,14 +25,17 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
   @override
   void initState() {
     super.initState();
+    _fetchLogs();
     // Start polling logs when the screen loads (polls every 30 seconds)
-    _startPolling();
+    Future.delayed(const Duration(seconds: 30), () {
+      _startPolling();
+    });
   }
 
   @override
   void dispose() {
     // Stop polling when the screen is disposed
-    context.read<LogsBloc>().add(LogsPollingStop());
+    _stopPolling();
     _searchController.dispose();
     super.dispose();
   }
@@ -40,7 +43,6 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
   void _startPolling() {
     // Start polling with 30-second interval (you can customize this)
     context.read<LogsBloc>().add(LogsPollingStarted(
-      interval: const Duration(seconds: 30),
     ));
   }
 

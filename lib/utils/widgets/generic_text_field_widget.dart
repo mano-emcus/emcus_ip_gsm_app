@@ -2,7 +2,7 @@ import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class GenericTextFieldWidget extends StatelessWidget {
+class GenericTextFieldWidget extends StatefulWidget {
   const GenericTextFieldWidget({
     super.key,
     required this.labelText,
@@ -24,12 +24,32 @@ class GenericTextFieldWidget extends StatelessWidget {
   final bool? readOnly;
 
   @override
+  State<GenericTextFieldWidget> createState() => _GenericTextFieldWidgetState();
+}
+
+class _GenericTextFieldWidgetState extends State<GenericTextFieldWidget> {
+  late bool _isPasswordVisible;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize password visibility based on obscureText parameter
+    _isPasswordVisible = !(widget.obscureText ?? false);
+  }
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _isPasswordVisible = !_isPasswordVisible;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          labelText,
+          widget.labelText,
           style: GoogleFonts.inter(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -44,13 +64,13 @@ class GenericTextFieldWidget extends StatelessWidget {
             border: Border.all(color: ColorConstants.textFieldBorderColor),
           ),
           child: TextField(
-            readOnly: readOnly ?? false,
+            readOnly: widget.readOnly ?? false,
             onTapOutside: (event) {
               FocusScope.of(context).unfocus();
             },
-            controller: controller,
-            keyboardType: keyboardType,
-            obscureText: obscureText ?? false,
+            controller: widget.controller,
+            keyboardType: widget.keyboardType,
+            obscureText: widget.isPassword == true ? !_isPasswordVisible : (widget.obscureText ?? false),
             style: GoogleFonts.inter(
               fontSize: 16,
               fontWeight: FontWeight.w400,
@@ -58,14 +78,26 @@ class GenericTextFieldWidget extends StatelessWidget {
             ),
             obscuringCharacter: '*',
             decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 18),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
               border: InputBorder.none,
-              hintText: hintText,
+              hintText: widget.hintText,
               hintStyle: GoogleFonts.inter(
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
                 color: ColorConstants.greyColor,
               ),
+              suffixIcon: widget.isPassword == true
+                  ? IconButton(
+                      icon: Icon(
+                        _isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: ColorConstants.greyColor,
+                        size: 20,
+                      ),
+                      onPressed: _togglePasswordVisibility,
+                    )
+                  : null,
             ),
           ),
         ),

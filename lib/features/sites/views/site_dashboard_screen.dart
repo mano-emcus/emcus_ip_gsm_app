@@ -27,21 +27,23 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
   @override
   void initState() {
     super.initState();
+    _fetchLogs();
     // Start polling logs when the screen loads (polls every 30 seconds)
-    _startPolling();
+    Future.delayed(const Duration(seconds: 30), () {
+      _startPolling();
+    });
   }
 
   @override
   void dispose() {
     // Stop polling when the screen is disposed
-    context.read<LogsBloc>().add(LogsPollingStop());
+    _stopPolling();
     super.dispose();
   }
 
   void _startPolling() {
     // Start polling with 30-second interval (you can customize this)
     context.read<LogsBloc>().add(LogsPollingStarted(
-      interval: const Duration(seconds: 30),
     ));
   }
 
