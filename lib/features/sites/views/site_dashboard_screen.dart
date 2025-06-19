@@ -1,11 +1,9 @@
-import 'package:emcus_ipgsm_app/core/services/auth_manager.dart';
 import 'package:emcus_ipgsm_app/features/auth/sign_in/views/sign_in_screen.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_bloc.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_event.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_state.dart';
 import 'package:emcus_ipgsm_app/features/logs/models/log_entry.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
-import 'package:emcus_ipgsm_app/utils/widgets/generic_yet_to_implement_pop_up_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -23,7 +21,7 @@ class SiteDashboardScreen extends StatefulWidget {
 
 class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
   LogType selectedLogType = LogType.all;
-  
+
   @override
   void initState() {
     super.initState();
@@ -43,8 +41,7 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
 
   void _startPolling() {
     // Start polling with 30-second interval (you can customize this)
-    context.read<LogsBloc>().add(LogsPollingStarted(
-    ));
+    context.read<LogsBloc>().add(LogsPollingStarted());
   }
 
   void _stopPolling() {
@@ -90,15 +87,15 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
     }
   }
 
-  Color _getLogTypeBackgroundColor(LogEntry log) {
-    if (log.u16EventId >= 1001 && log.u16EventId <= 1007) {
-      return ColorConstants.fireTitleBackGroundColor;
-    } else if (log.u16EventId >= 2000 && log.u16EventId < 3000) {
-      return ColorConstants.faultTitleBackGroundColor;
-    } else {
-      return ColorConstants.allEventsTitleBackGroundColor;
-    }
-  }
+  // Color _getLogTypeBackgroundColor(LogEntry log) {
+  //   if (log.u16EventId >= 1001 && log.u16EventId <= 1007) {
+  //     return ColorConstants.fireTitleBackGroundColor;
+  //   } else if (log.u16EventId >= 2000 && log.u16EventId < 3000) {
+  //     return ColorConstants.faultTitleBackGroundColor;
+  //   } else {
+  //     return ColorConstants.allEventsTitleBackGroundColor;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -370,7 +367,9 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                SvgPicture.asset('assets/svgs/fault_tile_icon.svg'),
+                                SvgPicture.asset(
+                                  'assets/svgs/fault_tile_icon.svg',
+                                ),
                                 Text(
                                   faultCountText,
                                   style: GoogleFonts.inter(
@@ -486,7 +485,11 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.inbox_outlined, size: 64, color: Colors.grey[400]),
+                    Icon(
+                      Icons.inbox_outlined,
+                      size: 64,
+                      color: Colors.grey[400],
+                    ),
                     const SizedBox(height: 16),
                     Text(
                       'No ${selectedLogType.name.toLowerCase()} found',
@@ -503,7 +506,10 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
           }
 
           return SizedBox(
-            height: MediaQuery.of(context).size.height - MediaQuery.of(context).padding.bottom - 180,
+            height:
+                MediaQuery.of(context).size.height -
+                MediaQuery.of(context).padding.bottom -
+                180,
             child: ListView.builder(
               // shrinkWrap: true,
               // physics: const NeverScrollableScrollPhysics(),
@@ -642,9 +648,10 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
                     bottom: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: log.source.toLowerCase() == 'gsm'
-                        ? ColorConstants.gsmBackGroundColor
-                        : ColorConstants.primaryColor,
+                    color:
+                        log.source.toLowerCase() == 'gsm'
+                            ? ColorConstants.gsmBackGroundColor
+                            : ColorConstants.primaryColor,
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
@@ -708,212 +715,6 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildInfoItem(String label, String value, IconData icon) {
-    return Column(
-      children: [
-        Icon(icon, size: 20, color: ColorConstants.primaryColor),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: GoogleFonts.inter(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-            color: Colors.grey[600],
-          ),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          value,
-          style: GoogleFonts.inter(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: ColorConstants.textColor,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildRecentNotes() {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Recent Notes',
-              style: GoogleFonts.inter(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: ColorConstants.textColor,
-              ),
-            ),
-            SvgPicture.asset('assets/svgs/arrow_forward_icon.svg'),
-          ],
-        ),
-        const SizedBox(height: 12),
-        GridView.count(
-          padding: EdgeInsets.zero,
-          crossAxisCount: 3,
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
-          childAspectRatio: 1.25,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            GestureDetector(
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder:
-                      (context) => GenericYetToImplementPopUpWidget(
-                        title: 'Recent Notes',
-                        message: 'This feature is not yet implemented',
-                        onClose: () {},
-                      ),
-                );
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: ColorConstants.textFieldBorderColor.withValues(
-                    alpha: 0.3,
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder:
-                      (context) => GenericYetToImplementPopUpWidget(
-                        title: 'Recent Notes',
-                        message: 'This feature is not yet implemented',
-                        onClose: () {},
-                      ),
-                );
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: ColorConstants.textFieldBorderColor.withValues(
-                    alpha: 0.3,
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder:
-                      (context) => GenericYetToImplementPopUpWidget(
-                        title: 'Recent Notes',
-                        message: 'This feature is not yet implemented',
-                        onClose: () {},
-                      ),
-                );
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: ColorConstants.textFieldBorderColor.withValues(
-                    alpha: 0.3,
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildLogoutButton() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: ElevatedButton(
-        onPressed: () => _showLogoutDialog(context),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: ColorConstants.primaryColor,
-          foregroundColor: ColorConstants.whiteColor,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          elevation: 2,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.logout, size: 20),
-            const SizedBox(width: 8),
-            Text(
-              'Logout',
-              style: GoogleFonts.inter(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            'Logout',
-            style: GoogleFonts.inter(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: ColorConstants.textColor,
-            ),
-          ),
-          content: Text(
-            'Are you sure you want to logout?',
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: ColorConstants.textColor,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                'Cancel',
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () async {
-                Navigator.of(context).pop(); // Close dialog first
-                await AuthManager().logout(context);
-              },
-              child: Text(
-                'Logout',
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: ColorConstants.primaryColor,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
     );
   }
 }

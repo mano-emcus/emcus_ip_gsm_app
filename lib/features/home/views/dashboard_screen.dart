@@ -1,6 +1,5 @@
 import 'package:emcus_ipgsm_app/core/services/auth_manager.dart';
 import 'package:emcus_ipgsm_app/features/home/views/pages/home_screen.dart';
-import 'package:emcus_ipgsm_app/features/home/views/pages/notes_screen.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_bloc.dart';
 import 'package:emcus_ipgsm_app/features/sites/views/all_site_screen.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
@@ -20,10 +19,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   int _selectedIndex = 0;
 
   List<Widget> get _screens => [
-    BlocProvider(
-      create: (context) => LogsBloc(),
-      child: const HomeScreen(),
-    ),
+    BlocProvider(create: (context) => LogsBloc(), child: const HomeScreen()),
     BlocProvider(
       create: (context) => LogsBloc(),
       child: const AllSitesScreen(),

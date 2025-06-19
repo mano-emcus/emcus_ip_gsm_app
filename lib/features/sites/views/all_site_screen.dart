@@ -43,7 +43,7 @@ class _AllSitesScreenState extends State<AllSitesScreen> {
     context.read<LogsBloc>().add(LogsPollingStop());
   }
 
-   void _fetchLogs() {
+  void _fetchLogs() {
     context.read<LogsBloc>().add(LogsFetched());
   }
 
@@ -68,10 +68,14 @@ class _AllSitesScreenState extends State<AllSitesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding:  EdgeInsets.only(left: 17, right: 17, top: MediaQuery.of(context).padding.top + 16),
+        padding: EdgeInsets.only(
+          left: 17,
+          right: 17,
+          top: MediaQuery.of(context).padding.top + 16,
+        ),
         child: _buildRecentSites(),
       ),
-    );  
+    );
   }
 
   Widget _buildRecentSites() {
@@ -82,9 +86,9 @@ class _AllSitesScreenState extends State<AllSitesScreen> {
         String allEventsCountText = '-';
 
         if (state is LogsSuccess) {
-          int fireCount = _getFireCount(state.logs);
-          int faultCount = _getFaultCount(state.logs);
-          int allEventsCount = _getAllEventsCount(state.logs);
+          final int fireCount = _getFireCount(state.logs);
+          final int faultCount = _getFaultCount(state.logs);
+          final int allEventsCount = _getAllEventsCount(state.logs);
           fireCountText = fireCount.toString();
           faultCountText = faultCount.toString();
           allEventsCountText = allEventsCount.toString();
@@ -121,7 +125,9 @@ class _AllSitesScreenState extends State<AllSitesScreen> {
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
+                  color: ColorConstants.textFieldBorderColor.withValues(
+                    alpha: 0.3,
+                  ),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Padding(

@@ -327,7 +327,9 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                           const Spacer(),
                           Divider(
-                            color: ColorConstants.blackColor.withOpacity(0.2),
+                            color: ColorConstants.blackColor.withValues(
+                              alpha: 0.2,
+                            ),
                             thickness: 1,
                           ),
                           const SizedBox(height: 20),
