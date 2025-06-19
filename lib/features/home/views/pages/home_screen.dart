@@ -9,7 +9,6 @@ import 'package:emcus_ipgsm_app/features/notes/bloc/notes_state.dart';
 import 'package:emcus_ipgsm_app/features/notes/models/note_entry.dart';
 import 'package:emcus_ipgsm_app/features/sites/sites_screen.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
-import 'package:emcus_ipgsm_app/utils/widgets/generic_yet_to_implement_pop_up_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
