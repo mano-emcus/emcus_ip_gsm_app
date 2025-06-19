@@ -67,6 +67,7 @@ class _AllSitesScreenState extends State<AllSitesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ColorConstants.whiteColor,
       body: Padding(
         padding: EdgeInsets.only(
           left: 17,
@@ -100,19 +101,19 @@ class _AllSitesScreenState extends State<AllSitesScreen> {
 
         return Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Recent Sites',
-                  style: GoogleFonts.inter(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: ColorConstants.textColor,
-                  ),
+            const SizedBox(height: 16),
+            SvgPicture.asset('assets/svgs/emcus_logo.svg'),
+            const SizedBox(height: 16),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Sites',
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: ColorConstants.textColor,
                 ),
-                SvgPicture.asset('assets/svgs/arrow_forward_icon.svg'),
-              ],
+              ),
             ),
             const SizedBox(height: 24),
             GestureDetector(
