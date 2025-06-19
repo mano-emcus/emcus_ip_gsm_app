@@ -17,9 +17,12 @@ class AllSitesScreen extends StatefulWidget {
 }
 
 class _AllSitesScreenState extends State<AllSitesScreen> {
+  LogsBloc? _logsBloc; // Add this field to store the bloc reference
+
   @override
   void initState() {
     super.initState();
+    _logsBloc = context.read<LogsBloc>(); // Store the bloc reference
     _fetchLogs();
     // Start polling logs when the screen loads (polls every 30 seconds)
     Future.delayed(const Duration(seconds: 30), () {
@@ -36,15 +39,15 @@ class _AllSitesScreenState extends State<AllSitesScreen> {
 
   void _startPolling() {
     // Start polling with 30-second interval (you can customize this)
-    context.read<LogsBloc>().add(LogsPollingStarted());
+    _logsBloc?.add(LogsPollingStarted()); // Use stored reference
   }
 
   void _stopPolling() {
-    context.read<LogsBloc>().add(LogsPollingStop());
+    _logsBloc?.add(LogsPollingStop()); // Use stored reference instead of context.read
   }
 
   void _fetchLogs() {
-    context.read<LogsBloc>().add(LogsFetched());
+    _logsBloc?.add(LogsFetched()); // Use stored reference
   }
 
   // Helper methods to calculate log counts based on event IDs

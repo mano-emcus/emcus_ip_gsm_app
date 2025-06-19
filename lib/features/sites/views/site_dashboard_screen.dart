@@ -21,10 +21,12 @@ class SiteDashboardScreen extends StatefulWidget {
 
 class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
   LogType selectedLogType = LogType.all;
+  LogsBloc? _logsBloc;
 
   @override
   void initState() {
     super.initState();
+    _logsBloc = context.read<LogsBloc>();
     _fetchLogs();
     // Start polling logs when the screen loads (polls every 30 seconds)
     Future.delayed(const Duration(seconds: 30), () {
@@ -41,15 +43,15 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
 
   void _startPolling() {
     // Start polling with 30-second interval (you can customize this)
-    context.read<LogsBloc>().add(LogsPollingStarted());
+    _logsBloc?.add(LogsPollingStarted());
   }
 
   void _stopPolling() {
-    context.read<LogsBloc>().add(LogsPollingStop());
+    _logsBloc?.add(LogsPollingStop());
   }
 
   void _fetchLogs() {
-    context.read<LogsBloc>().add(LogsFetched());
+    _logsBloc?.add(LogsFetched());
   }
 
   List<LogEntry> _filterLogs(List<LogEntry> logs) {
@@ -501,7 +503,7 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
                 const SizedBox(height: 8),
                 ElevatedButton(
                   onPressed: () {
-                    context.read<LogsBloc>().add(LogsFetched());
+                    _fetchLogs();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: ColorConstants.primaryColor,

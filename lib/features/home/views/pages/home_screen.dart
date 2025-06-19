@@ -29,11 +29,13 @@ class _HomeScreenState extends State<HomeScreen> {
   String faultCountText = '-';
   String allEventsCountText = '-';
   late NotesBloc _notesBloc;
+  LogsBloc? _logsBloc;
 
   @override
   void initState() {
     super.initState();
     _notesBloc = NotesBloc();
+    _logsBloc = context.read<LogsBloc>();
     _fetchLogs();
     _fetchNotes();
     // Start polling logs when the screen loads (polls every 30 seconds)
@@ -52,15 +54,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _startPolling() {
     // Start polling with 30-second interval (you can customize this)
-    context.read<LogsBloc>().add(LogsPollingStarted());
+    _logsBloc?.add(LogsPollingStarted());
   }
 
   void _stopPolling() {
-    context.read<LogsBloc>().add(LogsPollingStop());
+    _logsBloc?.add(LogsPollingStop());
   }
 
   void _fetchLogs() {
-    context.read<LogsBloc>().add(LogsFetched());
+    _logsBloc?.add(LogsFetched());
   }
 
   void _fetchNotes() {

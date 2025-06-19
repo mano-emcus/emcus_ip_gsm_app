@@ -21,10 +21,12 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
   LogFilter selectedFilter = LogFilter.all;
   final TextEditingController _searchController = TextEditingController();
   String searchQuery = '';
+  LogsBloc? _logsBloc;
 
   @override
   void initState() {
     super.initState();
+    _logsBloc = context.read<LogsBloc>();
     _fetchLogs();
     // Start polling logs when the screen loads (polls every 30 seconds)
     Future.delayed(const Duration(seconds: 30), () {
@@ -42,16 +44,15 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
 
   void _startPolling() {
     // Start polling with 30-second interval (you can customize this)
-    context.read<LogsBloc>().add(LogsPollingStarted(
-    ));
+    _logsBloc?.add(LogsPollingStarted());
   }
 
   void _stopPolling() {
-    context.read<LogsBloc>().add(LogsPollingStop());
+    _logsBloc?.add(LogsPollingStop());
   }
 
   void _fetchLogs() {
-    context.read<LogsBloc>().add(LogsFetched());
+    _logsBloc?.add(LogsFetched());
   }
 
   List<LogEntry> _filterLogs(List<LogEntry> logs) {
