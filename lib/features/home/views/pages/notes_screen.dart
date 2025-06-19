@@ -283,6 +283,8 @@ class _NotesScreenState extends State<NotesScreen> {
     final TextEditingController titleController = TextEditingController();
     final TextEditingController noteController = TextEditingController();
 
+    selectedCategory = NoteCategory.generalNotes;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
