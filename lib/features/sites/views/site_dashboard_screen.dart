@@ -477,7 +477,7 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
             ),
           );
         } else if (state is LogsSuccess) {
-          final filteredLogs = _filterLogs(state.logs);
+          final filteredLogs = _filterLogs(state.logs).reversed.toList();
 
           if (filteredLogs.isEmpty) {
             return Center(
