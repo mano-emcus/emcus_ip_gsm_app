@@ -593,11 +593,6 @@ class _NotesScreenState extends State<NotesScreen> {
                                                 titleController.text.trim();
                                             final content =
                                                 noteController.text.trim();
-                                            print('title: ${title.isEmpty}');
-                                            print(
-                                              'content: ${content.isEmpty}',
-                                            );
-
                                             if (title.isEmpty) {
                                               ScaffoldMessenger.of(
                                                 context,
