@@ -87,16 +87,6 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
     }
   }
 
-  // Color _getLogTypeBackgroundColor(LogEntry log) {
-  //   if (log.u16EventId >= 1001 && log.u16EventId <= 1007) {
-  //     return ColorConstants.fireTitleBackGroundColor;
-  //   } else if (log.u16EventId >= 2000 && log.u16EventId < 3000) {
-  //     return ColorConstants.faultTitleBackGroundColor;
-  //   } else {
-  //     return ColorConstants.allEventsTitleBackGroundColor;
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return BlocListener<LogsBloc, LogsState>(
@@ -153,7 +143,6 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
         body: CustomScrollView(
           physics: const NeverScrollableScrollPhysics(),
           slivers: [
-            _buildSiteAppBar(),
             SliverList(
               delegate: SliverChildListDelegate([
                 Divider(
@@ -168,9 +157,8 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
                 delegate: SliverChildListDelegate([
                   const SizedBox(height: 20),
                   _buildDashboardContent(selectedLogType),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: 10),
                   _buildEventLogs(),
-
                   const SizedBox(height: 100),
                 ]),
               ),
@@ -202,36 +190,6 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
     setState(() {
       selectedLogType = logType;
     });
-  }
-
-  Widget _buildSiteAppBar() {
-    return SliverAppBar(
-      leading: IconButton(
-        onPressed: () => Navigator.pop(context),
-        icon: const Icon(
-          Icons.arrow_back_ios_new_rounded,
-          color: ColorConstants.textColor,
-        ),
-      ),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.refresh, color: ColorConstants.primaryColor),
-          onPressed: () {
-            context.read<LogsBloc>().add(LogsFetched());
-          },
-        ),
-      ],
-      centerTitle: true,
-      title: Text(
-        widget.siteName,
-        style: GoogleFonts.inter(
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-          color: ColorConstants.primaryColor,
-        ),
-      ),
-      backgroundColor: ColorConstants.whiteColor,
-    );
   }
 
   Widget _buildDashboardContent(LogType selectedLogType) {
@@ -510,14 +468,19 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
                 MediaQuery.of(context).size.height -
                 MediaQuery.of(context).padding.bottom -
                 180,
-            child: ListView.builder(
-              // shrinkWrap: true,
-              // physics: const NeverScrollableScrollPhysics(),
-              itemCount: filteredLogs.length,
-              itemBuilder: (context, index) {
-                final log = filteredLogs[index];
-                return _buildLogCard(log);
+            child: RefreshIndicator(
+              backgroundColor: ColorConstants.whiteColor,
+              color: ColorConstants.primaryColor,
+              onRefresh: () async {
+                _fetchLogs();
               },
+              child: ListView.builder(
+                itemCount: filteredLogs.length,
+                itemBuilder: (context, index) {
+                  final log = filteredLogs[index];
+                  return _buildLogCard(log);
+                },
+              ),
             ),
           );
         } else if (state is LogsFailure) {

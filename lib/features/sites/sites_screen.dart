@@ -36,6 +36,7 @@ class _SitesScreenState extends State<SitesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: _buildSiteAppBar(),
       extendBody: true,
       body: _screens[_selectedIndex],
       bottomNavigationBar: Container(
@@ -117,6 +118,28 @@ class _SitesScreenState extends State<SitesScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  AppBar _buildSiteAppBar() {
+    return AppBar(
+      leading: IconButton(
+        onPressed: () => Navigator.pop(context),
+        icon: const Icon(
+          Icons.arrow_back_ios_new_rounded,
+          color: ColorConstants.textColor,
+        ),
+      ),
+      centerTitle: true,
+      title: Text(
+        'Emcus Technologies',
+        style: GoogleFonts.inter(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: ColorConstants.primaryColor,
+        ),
+      ),
+      backgroundColor: ColorConstants.whiteColor,
     );
   }
 }
