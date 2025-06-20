@@ -4,6 +4,7 @@ import 'package:emcus_ipgsm_app/core/config/api_config.dart';
 import 'package:emcus_ipgsm_app/core/endpoints/auth_endpoints.dart';
 import 'package:emcus_ipgsm_app/core/services/auth_manager.dart';
 import 'package:emcus_ipgsm_app/core/utils/api_logger.dart';
+import 'package:emcus_ipgsm_app/features/notes/views/notes_screen.dart';
 import 'package:emcus_ipgsm_app/features/notes/models/notes_response.dart';
 import 'package:http/http.dart' as http;
 
@@ -70,6 +71,7 @@ class NotesRepository {
   Future<Map<String, dynamic>> createNote({
     required String noteTitle,
     required String noteContent,
+    required NoteCategory noteTag,
   }) async {
     try {
       // Get the stored ID token for authorization
@@ -87,6 +89,7 @@ class NotesRepository {
       final body = jsonEncode({
         'noteTitle': noteTitle,
         'noteContent': noteContent,
+        'category': noteTag == NoteCategory.generalNotes ? 'general' : noteTag == NoteCategory.infoNotes ? 'info' : 'issue',
       });
 
       ApiLogger.logRequest(

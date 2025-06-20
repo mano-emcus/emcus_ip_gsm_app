@@ -1,4 +1,4 @@
-import 'package:emcus_ipgsm_app/features/home/views/pages/notes_screen.dart';
+import 'package:emcus_ipgsm_app/features/notes/views/notes_screen.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_bloc.dart';
 import 'package:emcus_ipgsm_app/features/logs/views/all_logs_screen.dart';
 import 'package:emcus_ipgsm_app/features/sites/views/site_dashboard_screen.dart';
