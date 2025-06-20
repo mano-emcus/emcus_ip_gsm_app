@@ -1,3 +1,4 @@
+import 'package:emcus_ipgsm_app/features/logs/bloc/logs_bloc.dart';
 import 'package:emcus_ipgsm_app/features/notes/widgets/note_grid_view_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -21,21 +22,24 @@ class NotesScreen extends StatefulWidget {
 
 class _NotesScreenState extends State<NotesScreen> {
   final TextEditingController _searchController = TextEditingController();
-  late NotesBloc _notesBloc;
   late NoteCategory selectedCategory;
+  NotesBloc? _notesBloc;
 
   @override
   void initState() {
     super.initState();
+    _notesBloc = context.read<NotesBloc>();
+    _fetchNotes();
     selectedCategory = NoteCategory.generalNotes;
-    _notesBloc = NotesBloc();
-    _notesBloc.add(NotesFetched());
+  }
+
+  void _fetchNotes() {
+    _notesBloc?.add(NotesFetched());
   }
 
   @override
   void dispose() {
     _searchController.dispose();
-    _notesBloc.close();
     super.dispose();
   }
 
@@ -403,7 +407,9 @@ class _NotesScreenState extends State<NotesScreen> {
                                               );
                                             } else {
                                               // Trigger note creation
-                                              _notesBloc.add(
+                                              BlocProvider.of<NotesBloc>(
+                                                      context)
+                                                  .add(
                                                 NoteAdded(
                                                   noteTitle: title,
                                                   noteContent: content,
@@ -460,308 +466,307 @@ class _NotesScreenState extends State<NotesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => _notesBloc,
-      child: Scaffold(
-        backgroundColor: ColorConstants.whiteColor,
-        body: SafeArea(
-          child: Column(
-            children: [
-              // Header
-              Padding(
-                padding: const EdgeInsets.all(26),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Notes',
-                      style: GoogleFonts.inter(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                        color: ColorConstants.blackColor,
-                      ),
+    return Scaffold(
+      backgroundColor: ColorConstants.whiteColor,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Header
+            Padding(
+              padding: const EdgeInsets.all(26),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Notes',
+                    style: GoogleFonts.inter(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700,
+                      color: ColorConstants.blackColor,
                     ),
-                    Row(
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            _notesBloc.add(NotesFetched());
-                          },
-                          icon: const Icon(Icons.refresh_outlined),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            GenericYetToImplementPopUpWidget.show(
-                              context,
-                              title: 'Settings',
-                              message: 'Note settings feature is coming soon!',
+                  ),
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          _fetchNotes();
+                        },
+                        icon: const Icon(Icons.refresh_outlined),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          GenericYetToImplementPopUpWidget.show(
+                            context,
+                            title: 'Settings',
+                            message: 'Note settings feature is coming soon!',
+                          );
+                        },
+                        icon: const Icon(Icons.settings_outlined),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            // Search Bar
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 26),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: ColorConstants.textFieldBorderColor.withValues(
+                    alpha: 0.3,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Search notes...',
+                    hintStyle: GoogleFonts.inter(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: ColorConstants.greyColor,
+                    ),
+                    prefixIcon: const Icon(Icons.search),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                  ),
+                  onTap: () {
+                    GenericYetToImplementPopUpWidget.show(
+                      context,
+                      title: 'Search',
+                      message: 'Search functionality is coming soon!',
+                    );
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            // Notes List
+            Expanded(
+              child: BlocListener<NotesBloc, NotesState>(
+                listener: (context, state) {
+                  if (state is NotesFailure) {
+                    // Check if it's an authentication error
+                    if (state.error.contains('AuthenticationException') ||
+                        state.error.contains(
+                          'No valid authentication token',
+                        ) ||
+                        state.error.contains(
+                          'Missing Authorization header',
+                        )) {
+                      // Authentication failed, redirect to sign-in
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        PageRouteBuilder(
+                          transitionDuration: const Duration(
+                            milliseconds: 600,
+                          ),
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  const SignInScreen(),
+                          transitionsBuilder: (
+                            context,
+                            animation,
+                            secondaryAnimation,
+                            child,
+                          ) {
+                            return SlideTransition(
+                              position: Tween<Offset>(
+                                begin: const Offset(0.0, -0.15),
+                                end: Offset.zero,
+                              ).animate(
+                                CurvedAnimation(
+                                  parent: animation,
+                                  curve: Curves.easeInOutCubic,
+                                ),
+                              ),
+                              child: FadeTransition(
+                                opacity: animation,
+                                child: child,
+                              ),
                             );
                           },
-                          icon: const Icon(Icons.settings_outlined),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              // Search Bar
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 26),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: ColorConstants.textFieldBorderColor.withValues(
-                      alpha: 0.3,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'Search notes...',
-                      hintStyle: GoogleFonts.inter(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        color: ColorConstants.greyColor,
-                      ),
-                      prefixIcon: const Icon(Icons.search),
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                    ),
-                    onTap: () {
-                      GenericYetToImplementPopUpWidget.show(
-                        context,
-                        title: 'Search',
-                        message: 'Search functionality is coming soon!',
+                        (Route<dynamic> route) => false,
                       );
-                    },
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              // Notes List
-              Expanded(
-                child: BlocListener<NotesBloc, NotesState>(
-                  listener: (context, state) {
-                    if (state is NotesFailure) {
-                      // Check if it's an authentication error
-                      if (state.error.contains('AuthenticationException') ||
-                          state.error.contains(
-                            'No valid authentication token',
-                          ) ||
-                          state.error.contains(
-                            'Missing Authorization header',
-                          )) {
-                        // Authentication failed, redirect to sign-in
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          PageRouteBuilder(
-                            transitionDuration: const Duration(
-                              milliseconds: 600,
-                            ),
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                                    const SignInScreen(),
-                            transitionsBuilder: (
-                              context,
-                              animation,
-                              secondaryAnimation,
-                              child,
-                            ) {
-                              return SlideTransition(
-                                position: Tween<Offset>(
-                                  begin: const Offset(0.0, -0.15),
-                                  end: Offset.zero,
-                                ).animate(
-                                  CurvedAnimation(
-                                    parent: animation,
-                                    curve: Curves.easeInOutCubic,
-                                  ),
-                                ),
-                                child: FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                ),
-                              );
-                            },
-                          ),
-                          (Route<dynamic> route) => false,
-                        );
-                      } else {
-                        // Show error message for other failures
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Failed to load notes: ${state.error}',
-                            ),
-                            backgroundColor: Colors.red,
-                            duration: const Duration(seconds: 3),
-                          ),
-                        );
-                      }
-                    } else if (state is NoteCreated) {
-                      // Show success message for note creation
+                    } else {
+                      // Show error message for other failures
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(state.message),
-                          backgroundColor: Colors.green,
-                          duration: const Duration(seconds: 2),
+                          content: Text(
+                            'Failed to load notes: ${state.error}',
+                          ),
+                          backgroundColor: Colors.red,
+                          duration: const Duration(seconds: 3),
                         ),
                       );
-                    } else if (state is NoteCreationFailure) {
-                      // Check if it's an authentication error
-                      if (state.error.contains('AuthenticationException') ||
-                          state.error.contains('Authentication failed')) {
-                        // Authentication failed, redirect to sign-in
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          PageRouteBuilder(
-                            transitionDuration: const Duration(
-                              milliseconds: 600,
-                            ),
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                                    const SignInScreen(),
-                            transitionsBuilder: (
-                              context,
-                              animation,
-                              secondaryAnimation,
-                              child,
-                            ) {
-                              return SlideTransition(
-                                position: Tween<Offset>(
-                                  begin: const Offset(0.0, -0.15),
-                                  end: Offset.zero,
-                                ).animate(
-                                  CurvedAnimation(
-                                    parent: animation,
-                                    curve: Curves.easeInOutCubic,
-                                  ),
-                                ),
-                                child: FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                ),
-                              );
-                            },
-                          ),
-                          (Route<dynamic> route) => false,
-                        );
-                      } else {
-                        // Show error message for note creation failure
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Failed to create note: ${state.error}',
-                            ),
-                            backgroundColor: Colors.red,
-                            duration: const Duration(seconds: 3),
-                          ),
-                        );
-                      }
                     }
-                  },
-                  child: BlocBuilder<NotesBloc, NotesState>(
-                    builder: (context, state) {
-                      if (state is NotesLoading || state is NoteCreating) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (state is NotesSuccess) {
-                        if (state.notes.isEmpty) {
-                          return Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.note_alt_outlined,
-                                  size: 64,
-                                  color: ColorConstants.greyColor,
+                  } else if (state is NoteCreated) {
+                    // Show success message for note creation
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(state.message),
+                        backgroundColor: Colors.green,
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
+                  } else if (state is NoteCreationFailure) {
+                    // Check if it's an authentication error
+                    if (state.error.contains('AuthenticationException') ||
+                        state.error.contains('Authentication failed')) {
+                      // Authentication failed, redirect to sign-in
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        PageRouteBuilder(
+                          transitionDuration: const Duration(
+                            milliseconds: 600,
+                          ),
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  const SignInScreen(),
+                          transitionsBuilder: (
+                            context,
+                            animation,
+                            secondaryAnimation,
+                            child,
+                          ) {
+                            return SlideTransition(
+                              position: Tween<Offset>(
+                                begin: const Offset(0.0, -0.15),
+                                end: Offset.zero,
+                              ).animate(
+                                CurvedAnimation(
+                                  parent: animation,
+                                  curve: Curves.easeInOutCubic,
                                 ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  'No notes available',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: ColorConstants.greyColor,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  'Create your first note by tapping the + button',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    color: ColorConstants.greyColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-                        return NoteGridViewWidget(notes: state.notes);
-                      } else if (state is NotesFailure) {
+                              ),
+                              child: FadeTransition(
+                                opacity: animation,
+                                child: child,
+                              ),
+                            );
+                          },
+                        ),
+                        (Route<dynamic> route) => false,
+                      );
+                    } else {
+                      // Show error message for note creation failure
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Failed to create note: ${state.error}',
+                          ),
+                          backgroundColor: Colors.red,
+                          duration: const Duration(seconds: 3),
+                        ),
+                      );
+                    }
+                  }
+                },
+                child: BlocBuilder<NotesBloc, NotesState>(
+                  builder: (context, state) {
+                    if (state is NotesLoading || state is NoteCreating) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is NotesSuccess) {
+                      if (state.notes.isEmpty) {
                         return Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(
-                                Icons.error_outline,
+                                Icons.note_alt_outlined,
                                 size: 64,
-                                color: Colors.red,
+                                color: ColorConstants.greyColor,
                               ),
                               const SizedBox(height: 16),
                               Text(
-                                'Failed to load notes',
+                                'No notes available',
                                 style: GoogleFonts.inter(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500,
-                                  color: Colors.red,
+                                  color: ColorConstants.greyColor,
                                 ),
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                state.error,
+                                'Create your first note by tapping the + button',
                                 style: GoogleFonts.inter(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w400,
                                   color: ColorConstants.greyColor,
                                 ),
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(height: 16),
-                              ElevatedButton(
-                                onPressed: () {
-                                  _notesBloc.add(NotesFetched());
-                                },
-                                child: Text('Retry'),
                               ),
                             ],
                           ),
                         );
-                      } else {
-                        return const Center(child: Text('Welcome to Notes'));
                       }
-                    },
-                  ),
+                      return NoteGridViewWidget(notes: state.notes);
+                    } else if (state is NotesFailure) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.error_outline,
+                              size: 64,
+                              color: Colors.red,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              'Failed to load notes',
+                              style: GoogleFonts.inter(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.red,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              state.error,
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                color: ColorConstants.greyColor,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 16),
+                            ElevatedButton(
+                              onPressed: () {
+                                BlocProvider.of<NotesBloc>(context).add(
+                                  NotesFetched(),
+                                );
+                              },
+                              child: Text('Retry'),
+                            ),
+                          ],
+                        ),
+                      );
+                    } else {
+                      return const Center(child: Text('Welcome to Notes'));
+                    }
+                  },
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-        floatingActionButton: Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom + 100,
-          ), // Account for bottom nav bar height
-          child: FloatingActionButton(
-            onPressed: () {
-              _showAddNoteBottomSheet(context);
-            },
-            backgroundColor: ColorConstants.primaryColor,
-            shape: const CircleBorder(),
-            child: const Icon(Icons.add, color: ColorConstants.whiteColor),
-          ),
+      ),
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom + 100,
+        ), // Account for bottom nav bar height
+        child: FloatingActionButton(
+          onPressed: () {
+            _showAddNoteBottomSheet(context);
+          },
+          backgroundColor: ColorConstants.primaryColor,
+          shape: const CircleBorder(),
+          child: const Icon(Icons.add, color: ColorConstants.whiteColor),
         ),
       ),
     );

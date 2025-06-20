@@ -81,335 +81,330 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => RegisterBloc(),
-      child: BlocListener<RegisterBloc, RegisterState>(
-        listener: (context, state) {
-          if (state is RegisterSuccess) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder:
-                    (context) => VerifyOtpScreen(email: emailController.text),
-              ),
-            );
-          } else if (state is RegisterFailure) {
-            showDialog(
-              context: context,
-              builder:
-                  (context) => GenericYetToImplementPopUpWidget(
-                    title: 'Registration Failed',
-                    message: state.error,
-                  ),
-            );
-          }
-        },
-        child: Scaffold(
-          resizeToAvoidBottomInset: true,
-          backgroundColor: ColorConstants.whiteColor,
-          body: LayoutBuilder(
-            builder: (context, constraints) {
-              return SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight:
-                        MediaQuery.of(context).size.height -
-                        MediaQuery.of(context).padding.top -
-                        MediaQuery.of(context).padding.bottom,
-                  ),
-                  child: IntrinsicHeight(
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 46 + MediaQuery.of(context).padding.top,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 26),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Register',
-                                style: GoogleFonts.inter(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: ColorConstants.blackColor,
-                                ),
+    return BlocListener<RegisterBloc, RegisterState>(
+      listener: (context, state) {
+        if (state is RegisterSuccess) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => VerifyOtpScreen(email: emailController.text),
+            ),
+          );
+        } else if (state is RegisterFailure) {
+          showDialog(
+            context: context,
+            builder: (context) => GenericYetToImplementPopUpWidget(
+              title: 'Registration Failed',
+              message: state.error,
+            ),
+          );
+        }
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        backgroundColor: ColorConstants.whiteColor,
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight:
+                      MediaQuery.of(context).size.height -
+                      MediaQuery.of(context).padding.top -
+                      MediaQuery.of(context).padding.bottom,
+                ),
+                child: IntrinsicHeight(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 46 + MediaQuery.of(context).padding.top,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 26),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Register',
+                              style: GoogleFonts.inter(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: ColorConstants.blackColor,
                               ),
-                              SvgPicture.asset(
-                                'assets/svgs/emcus_logo.svg',
-                                width: 147,
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 22),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 26),
-                          child: GenericTextFieldWidget(
-                            labelText: 'Name',
-                            hintText: 'Enter your Name',
-                            controller: fullNameController,
-                            keyboardType: TextInputType.name,
-                          ),
-                        ),
-                        const SizedBox(height: 14),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 26),
-                          child: GenericTextFieldWidget(
-                            labelText: 'Company Name',
-                            hintText: 'Enter your Company Name',
-                            controller: companyNameController,
-                            keyboardType: TextInputType.name,
-                            readOnly: true,
-                          ),
-                        ),
-                        const SizedBox(height: 14),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 26),
-                          child: GenericTextFieldWidget(
-                            labelText: 'Email Address',
-                            hintText: 'Enter your email address',
-                            controller: emailController,
-                            keyboardType: TextInputType.emailAddress,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        // Terms & Conditions checkbox with wrapping text
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 26),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    isTermsAndConditions =
-                                        !isTermsAndConditions;
-                                  });
-                                  _updateCanSubmit();
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: 2,
-                                    right: 10,
-                                  ),
-                                  child: Container(
-                                    width: 18,
-                                    height: 18,
-                                    decoration: BoxDecoration(
-                                      color:
-                                          isTermsAndConditions
-                                              ? ColorConstants.primaryColor
-                                              : ColorConstants.whiteColor,
-                                      borderRadius: BorderRadius.circular(4),
-                                      border: Border.all(
-                                        color:
-                                            ColorConstants.textFieldBorderColor,
-                                      ),
-                                    ),
-                                    child:
-                                        isTermsAndConditions
-                                            ? const Center(
-                                              child: Icon(
-                                                Icons.check,
-                                                color:
-                                                    ColorConstants.whiteColor,
-                                                size: 12,
-                                              ),
-                                            )
-                                            : null,
-                                  ),
-                                ),
-                              ),
-
-                              Flexible(
-                                child: RichText(
-                                  text: TextSpan(
-                                    children: [
-                                      TextSpan(
-                                        text:
-                                            'By registering you are agreeing with the EMCUS ',
-                                        style: GoogleFonts.inter(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                          color: ColorConstants.blackColor,
-                                        ),
-                                      ),
-                                      TextSpan(
-                                        text: 'Terms & Condition',
-                                        style: GoogleFonts.inter(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                          color: ColorConstants.primaryColor,
-                                          decoration: TextDecoration.underline,
-                                        ),
-                                      ),
-                                      TextSpan(
-                                        text: ' and ',
-                                        style: GoogleFonts.inter(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                          color: ColorConstants.blackColor,
-                                        ),
-                                      ),
-                                      TextSpan(
-                                        text: 'Privacy Policy',
-                                        style: GoogleFonts.inter(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                          color: ColorConstants.primaryColor,
-                                          decoration: TextDecoration.underline,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 39),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 26),
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: BlocBuilder<RegisterBloc, RegisterState>(
-                              builder: (context, state) {
-                                return GestureDetector(
-                                  onTap:
-                                      _canSubmit()
-                                          ? () {
-                                            if (state is! RegisterLoading) {
-                                              context.read<RegisterBloc>().add(
-                                                RegisterSubmitted(
-                                                  fullName:
-                                                      fullNameController.text,
-                                                  companyName:
-                                                      companyNameController
-                                                          .text,
-                                                  email: emailController.text,
-                                                ),
-                                              );
-                                            }
-                                          }
-                                          : () {
-                                            showDialog(
-                                              context: context,
-                                              builder:
-                                                  (
-                                                    context,
-                                                  ) => GenericYetToImplementPopUpWidget(
-                                                    title: 'Register',
-                                                    message:
-                                                        _getValidationMessage(),
-                                                  ),
-                                            );
-                                          },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: ColorConstants.primaryColor,
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 24,
-                                        vertical: 16,
-                                      ),
-                                      child:
-                                          state is RegisterLoading
-                                              ? const SizedBox(
-                                                height: 20,
-                                                width: 20,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                      color:
-                                                          ColorConstants
-                                                              .whiteColor,
-                                                      strokeWidth: 2,
-                                                    ),
-                                              )
-                                              : Text(
-                                                'Register',
-                                                style: GoogleFonts.inter(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500,
-                                                  color:
-                                                      ColorConstants.whiteColor,
-                                                ),
-                                              ),
-                                    ),
-                                  ),
-                                );
-                              },
                             ),
-                          ),
+                            SvgPicture.asset(
+                              'assets/svgs/emcus_logo.svg',
+                              width: 147,
+                            ),
+                          ],
                         ),
-                        const Spacer(),
-                        Divider(
-                          color: ColorConstants.blackColor.withValues(
-                            alpha: 0.2,
-                          ),
-                          thickness: 1,
+                      ),
+                      const SizedBox(height: 22),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 26),
+                        child: GenericTextFieldWidget(
+                          labelText: 'Name',
+                          hintText: 'Enter your Name',
+                          controller: fullNameController,
+                          keyboardType: TextInputType.name,
                         ),
-                        const SizedBox(height: 20),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 26),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Already have an account?',
-                                style: GoogleFonts.inter(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w400,
-                                  color: ColorConstants.blackColor,
+                      ),
+                      const SizedBox(height: 14),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 26),
+                        child: GenericTextFieldWidget(
+                          labelText: 'Company Name',
+                          hintText: 'Enter your Company Name',
+                          controller: companyNameController,
+                          keyboardType: TextInputType.name,
+                          readOnly: true,
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 26),
+                        child: GenericTextFieldWidget(
+                          labelText: 'Email Address',
+                          hintText: 'Enter your email address',
+                          controller: emailController,
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      // Terms & Conditions checkbox with wrapping text
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 26),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  isTermsAndConditions =
+                                      !isTermsAndConditions;
+                                });
+                                _updateCanSubmit();
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  top: 2,
+                                  right: 10,
                                 ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) => const SignInScreen(),
-                                    ),
-                                  );
-                                },
                                 child: Container(
+                                  width: 18,
+                                  height: 18,
                                   decoration: BoxDecoration(
+                                    color:
+                                        isTermsAndConditions
+                                            ? ColorConstants.primaryColor
+                                            : ColorConstants.whiteColor,
+                                    borderRadius: BorderRadius.circular(4),
                                     border: Border.all(
                                       color:
                                           ColorConstants.textFieldBorderColor,
                                     ),
-                                    borderRadius: BorderRadius.circular(100),
                                   ),
-                                  child: const Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 8,
+                                  child:
+                                      isTermsAndConditions
+                                          ? const Center(
+                                            child: Icon(
+                                              Icons.check,
+                                              color:
+                                                  ColorConstants.whiteColor,
+                                              size: 12,
+                                            ),
+                                          )
+                                          : null,
+                                ),
+                              ),
+                            ),
+
+                            Flexible(
+                              child: RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text:
+                                          'By registering you are agreeing with the EMCUS ',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400,
+                                        color: ColorConstants.blackColor,
+                                      ),
                                     ),
-                                    child: Text(
-                                      'Sign In Here',
-                                      style: TextStyle(
-                                        fontSize: 16,
+                                    TextSpan(
+                                      text: 'Terms & Condition',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 12,
                                         fontWeight: FontWeight.w400,
                                         color: ColorConstants.primaryColor,
+                                        decoration: TextDecoration.underline,
                                       ),
+                                    ),
+                                    TextSpan(
+                                      text: ' and ',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400,
+                                        color: ColorConstants.blackColor,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: 'Privacy Policy',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400,
+                                        color: ColorConstants.primaryColor,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 39),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 26),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: BlocBuilder<RegisterBloc, RegisterState>(
+                            builder: (context, state) {
+                              return GestureDetector(
+                                onTap:
+                                    _canSubmit()
+                                        ? () {
+                                          if (state is! RegisterLoading) {
+                                            context.read<RegisterBloc>().add(
+                                              RegisterSubmitted(
+                                                fullName:
+                                                    fullNameController.text,
+                                                companyName:
+                                                    companyNameController
+                                                        .text,
+                                                email: emailController.text,
+                                              ),
+                                            );
+                                          }
+                                        }
+                                        : () {
+                                          showDialog(
+                                            context: context,
+                                            builder:
+                                                (
+                                                  context,
+                                                ) => GenericYetToImplementPopUpWidget(
+                                                  title: 'Register',
+                                                  message:
+                                                      _getValidationMessage(),
+                                                ),
+                                          );
+                                        },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: ColorConstants.primaryColor,
+                                    borderRadius: BorderRadius.circular(100),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 24,
+                                      vertical: 16,
+                                    ),
+                                    child:
+                                        state is RegisterLoading
+                                            ? const SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child:
+                                                  CircularProgressIndicator(
+                                                    color:
+                                                        ColorConstants
+                                                            .whiteColor,
+                                                    strokeWidth: 2,
+                                                  ),
+                                            )
+                                            : Text(
+                                              'Register',
+                                              style: GoogleFonts.inter(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                                color:
+                                                    ColorConstants.whiteColor,
+                                              ),
+                                            ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      Divider(
+                        color: ColorConstants.blackColor.withValues(
+                          alpha: 0.2,
+                        ),
+                        thickness: 1,
+                      ),
+                      const SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 26),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Already have an account?',
+                              style: GoogleFonts.inter(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: ColorConstants.blackColor,
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => const SignInScreen(),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color:
+                                        ColorConstants.textFieldBorderColor,
+                                  ),
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
+                                child: const Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 8,
+                                  ),
+                                  child: Text(
+                                    'Sign In Here',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                      color: ColorConstants.primaryColor,
                                     ),
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

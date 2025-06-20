@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:emcus_ipgsm_app/features/logs/models/log_entry.dart';
 
 abstract class LogsEvent extends Equatable {
   @override
@@ -12,24 +13,17 @@ class LogsFetched extends LogsEvent {
   List<Object?> get props => [];
 }
 
-class LogsPollingStarted extends LogsEvent {
-  LogsPollingStarted({this.interval = const Duration(seconds: 30)});
-  final Duration interval;
-  
-  @override
-  List<Object?> get props => [interval];
-}
-
-class LogsPollingStop extends LogsEvent {
-  LogsPollingStop();
-  
-  @override
-  List<Object?> get props => [];
-}
-
 class LogsRefresh extends LogsEvent {
   LogsRefresh();
   
   @override
   List<Object?> get props => [];
+}
+
+class LogsNewLogReceived extends LogsEvent {
+  LogsNewLogReceived(this.newLog);
+  final LogEntry newLog;
+
+  @override
+  List<Object?> get props => [newLog];
 } 

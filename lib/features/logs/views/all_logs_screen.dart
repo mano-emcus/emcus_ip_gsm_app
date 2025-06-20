@@ -7,6 +7,7 @@ import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:emcus_ipgsm_app/core/services/socket_service.dart';
 
 enum LogFilter { all, fire, fault }
 
@@ -22,33 +23,34 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
   final TextEditingController _searchController = TextEditingController();
   String searchQuery = '';
   LogsBloc? _logsBloc;
+  bool _isSocketConnected = false;
 
   @override
   void initState() {
     super.initState();
     _logsBloc = context.read<LogsBloc>();
     _fetchLogs();
-    // Start polling logs when the screen loads (polls every 30 seconds)
-    Future.delayed(const Duration(seconds: 30), () {
-      _startPolling();
-    });
+    // Listen to socket connection status
+    final socket = SocketService().socket;
+    if (socket != null) {
+      _isSocketConnected = socket.connected;
+      socket.on('connect', (_) {
+        setState(() {
+          _isSocketConnected = true;
+        });
+      });
+      socket.on('disconnect', (_) {
+        setState(() {
+          _isSocketConnected = false;
+        });
+      });
+    }
   }
 
   @override
   void dispose() {
-    // Stop polling when the screen is disposed
-    _stopPolling();
     _searchController.dispose();
     super.dispose();
-  }
-
-  void _startPolling() {
-    // Start polling with 30-second interval (you can customize this)
-    _logsBloc?.add(LogsPollingStarted());
-  }
-
-  void _stopPolling() {
-    _logsBloc?.add(LogsPollingStop());
   }
 
   void _fetchLogs() {
@@ -181,6 +183,31 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
         body: SafeArea(
           child: Column(
             children: [
+              // TEMP SOCKET STATUS INDICATOR
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 12,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: _isSocketConnected ? Colors.green : Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      _isSocketConnected ? 'Socket Connected' : 'Socket Disconnected',
+                      style: TextStyle(
+                        color: _isSocketConnected ? Colors.green : Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               // Header
               _buildHeader(),
               

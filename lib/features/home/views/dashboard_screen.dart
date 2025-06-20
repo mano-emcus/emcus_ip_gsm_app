@@ -19,11 +19,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   int _selectedIndex = 0;
 
   List<Widget> get _screens => [
-    BlocProvider(create: (context) => LogsBloc(), child: const HomeScreen()),
-    BlocProvider(
-      create: (context) => LogsBloc(),
-      child: const AllSitesScreen(),
-    ),
+    const HomeScreen(),
+    const AllSitesScreen(),
   ];
 
   void _onItemTapped(int index) {

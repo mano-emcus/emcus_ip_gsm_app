@@ -43,11 +43,9 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
 
   void _startPolling() {
     // Start polling with 30-second interval (you can customize this)
-    _logsBloc?.add(LogsPollingStarted());
   }
 
   void _stopPolling() {
-    _logsBloc?.add(LogsPollingStop());
   }
 
   void _fetchLogs() {

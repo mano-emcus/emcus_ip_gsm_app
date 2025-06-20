@@ -54,11 +54,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _startPolling() {
     // Start polling with 30-second interval (you can customize this)
-    _logsBloc?.add(LogsPollingStarted());
+    // _logsBloc?.add(LogsPollingStarted());
   }
 
   void _stopPolling() {
-    _logsBloc?.add(LogsPollingStop());
+    // _logsBloc?.add(LogsPollingStop());
   }
 
   void _fetchLogs() {
@@ -71,180 +71,177 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [BlocProvider<NotesBloc>(create: (context) => _notesBloc)],
-      child: MultiBlocListener(
-        listeners: [
-          BlocListener<LogsBloc, LogsState>(
-            listener: (context, state) {
-              if (state is LogsFailure) {
-                // Check if it's an authentication error
-                if (state.error.contains('AuthenticationException') ||
-                    state.error.contains('No valid authentication token') ||
-                    state.error.contains('Missing Authorization header')) {
-                  // Authentication failed, redirect to sign-in
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    PageRouteBuilder(
-                      transitionDuration: const Duration(milliseconds: 600),
-                      pageBuilder:
-                          (context, animation, secondaryAnimation) =>
-                              const SignInScreen(),
-                      transitionsBuilder: (
-                        context,
-                        animation,
-                        secondaryAnimation,
-                        child,
-                      ) {
-                        return SlideTransition(
-                          position: Tween<Offset>(
-                            begin: const Offset(0.0, -0.15),
-                            end: Offset.zero,
-                          ).animate(
-                            CurvedAnimation(
-                              parent: animation,
-                              curve: Curves.easeInOutCubic,
-                            ),
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<LogsBloc, LogsState>(
+          listener: (context, state) {
+            if (state is LogsFailure) {
+              // Check if it's an authentication error
+              if (state.error.contains('AuthenticationException') ||
+                  state.error.contains('No valid authentication token') ||
+                  state.error.contains('Missing Authorization header')) {
+                // Authentication failed, redirect to sign-in
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  PageRouteBuilder(
+                    transitionDuration: const Duration(milliseconds: 600),
+                    pageBuilder:
+                        (context, animation, secondaryAnimation) =>
+                            const SignInScreen(),
+                    transitionsBuilder: (
+                      context,
+                      animation,
+                      secondaryAnimation,
+                      child,
+                    ) {
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(0.0, -0.15),
+                          end: Offset.zero,
+                        ).animate(
+                          CurvedAnimation(
+                            parent: animation,
+                            curve: Curves.easeInOutCubic,
                           ),
-                          child: FadeTransition(
-                            opacity: animation,
-                            child: child,
-                          ),
-                        );
-                      },
-                    ),
-                    (Route<dynamic> route) => false,
-                  );
-                } else {
-                  // Show error message for other failures
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Failed to load logs: ${state.error}'),
-                      backgroundColor: Colors.red,
-                      duration: const Duration(seconds: 3),
-                    ),
-                  );
-                }
+                        ),
+                        child: FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        ),
+                      );
+                    },
+                  ),
+                  (Route<dynamic> route) => false,
+                );
+              } else {
+                // Show error message for other failures
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Failed to load logs: ${state.error}'),
+                    backgroundColor: Colors.red,
+                    duration: const Duration(seconds: 3),
+                  ),
+                );
               }
-            },
-          ),
-          BlocListener<NotesBloc, NotesState>(
-            listener: (context, state) {
-              if (state is NotesFailure) {
-                // Check if it's an authentication error
-                if (state.error.contains('AuthenticationException') ||
-                    state.error.contains('No valid authentication token') ||
-                    state.error.contains('Missing Authorization header')) {
-                  // Authentication failed, redirect to sign-in
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    PageRouteBuilder(
-                      transitionDuration: const Duration(milliseconds: 600),
-                      pageBuilder:
-                          (context, animation, secondaryAnimation) =>
-                              const SignInScreen(),
-                      transitionsBuilder: (
-                        context,
-                        animation,
-                        secondaryAnimation,
-                        child,
-                      ) {
-                        return SlideTransition(
-                          position: Tween<Offset>(
-                            begin: const Offset(0.0, -0.15),
-                            end: Offset.zero,
-                          ).animate(
-                            CurvedAnimation(
-                              parent: animation,
-                              curve: Curves.easeInOutCubic,
-                            ),
+            }
+          },
+        ),
+        BlocListener<NotesBloc, NotesState>(
+          listener: (context, state) {
+            if (state is NotesFailure) {
+              // Check if it's an authentication error
+              if (state.error.contains('AuthenticationException') ||
+                  state.error.contains('No valid authentication token') ||
+                  state.error.contains('Missing Authorization header')) {
+                // Authentication failed, redirect to sign-in
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  PageRouteBuilder(
+                    transitionDuration: const Duration(milliseconds: 600),
+                    pageBuilder:
+                        (context, animation, secondaryAnimation) =>
+                            const SignInScreen(),
+                    transitionsBuilder: (
+                      context,
+                      animation,
+                      secondaryAnimation,
+                      child,
+                    ) {
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(0.0, -0.15),
+                          end: Offset.zero,
+                        ).animate(
+                          CurvedAnimation(
+                            parent: animation,
+                            curve: Curves.easeInOutCubic,
                           ),
-                          child: FadeTransition(
-                            opacity: animation,
-                            child: child,
-                          ),
-                        );
-                      },
-                    ),
-                    (Route<dynamic> route) => false,
-                  );
-                }
+                        ),
+                        child: FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        ),
+                      );
+                    },
+                  ),
+                  (Route<dynamic> route) => false,
+                );
               }
-            },
-          ),
-        ],
-        child: Scaffold(
-          backgroundColor: ColorConstants.whiteColor,
-          body: CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                backgroundColor: ColorConstants.whiteColor,
-                surfaceTintColor: ColorConstants.whiteColor,
-                elevation: 0,
-                pinned: true,
-                expandedHeight: 120,
-                automaticallyImplyLeading: false,
-                flexibleSpace: LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                    final double appBarHeight = constraints.biggest.height;
-                    final double statusBarHeight =
-                        MediaQuery.of(context).padding.top;
-                    final double minHeight = kToolbarHeight + statusBarHeight;
-                    final double maxHeight = 120 + statusBarHeight;
+            }
+          },
+        ),
+      ],
+      child: Scaffold(
+        backgroundColor: ColorConstants.whiteColor,
+        body: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              backgroundColor: ColorConstants.whiteColor,
+              surfaceTintColor: ColorConstants.whiteColor,
+              elevation: 0,
+              pinned: true,
+              expandedHeight: 120,
+              automaticallyImplyLeading: false,
+              flexibleSpace: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  final double appBarHeight = constraints.biggest.height;
+                  final double statusBarHeight =
+                      MediaQuery.of(context).padding.top;
+                  final double minHeight = kToolbarHeight + statusBarHeight;
+                  final double maxHeight = 120 + statusBarHeight;
 
-                    // Calculate scroll progress (0.0 = fully expanded, 1.0 = fully collapsed)
-                    final double scrollProgress = ((maxHeight - appBarHeight) /
-                            (maxHeight - minHeight))
-                        .clamp(0.0, 1.0);
+                  // Calculate scroll progress (0.0 = fully expanded, 1.0 = fully collapsed)
+                  final double scrollProgress = ((maxHeight - appBarHeight) /
+                          (maxHeight - minHeight))
+                      .clamp(0.0, 1.0);
 
-                    // Calculate logo size and position based on scroll
-                    final double logoSize =
-                        50 - (20 * scrollProgress); // 60 -> 35
-                    final double topPadding =
-                        statusBarHeight + (20 * (1 - scrollProgress));
+                  // Calculate logo size and position based on scroll
+                  final double logoSize =
+                      50 - (20 * scrollProgress); // 60 -> 35
+                  final double topPadding =
+                      statusBarHeight + (20 * (1 - scrollProgress));
 
-                    return Container(
-                      color: ColorConstants.whiteColor,
-                      child: Align(
-                        alignment:
-                            scrollProgress > 0.5
-                                ? Alignment.bottomCenter
-                                : Alignment.center,
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                            top: scrollProgress > 0.5 ? 0 : topPadding,
-                            bottom: scrollProgress > 0.5 ? 16 : 0,
-                          ),
-                          child: Hero(
-                            tag: 'emcus_logo',
-                            child: SvgPicture.asset(
-                              'assets/svgs/emcus_logo.svg',
-                              height: logoSize,
-                            ),
+                  return Container(
+                    color: ColorConstants.whiteColor,
+                    child: Align(
+                      alignment:
+                          scrollProgress > 0.5
+                              ? Alignment.bottomCenter
+                              : Alignment.center,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          top: scrollProgress > 0.5 ? 0 : topPadding,
+                          bottom: scrollProgress > 0.5 ? 16 : 0,
+                        ),
+                        child: Hero(
+                          tag: 'emcus_logo',
+                          child: SvgPicture.asset(
+                            'assets/svgs/emcus_logo.svg',
+                            height: logoSize,
                           ),
                         ),
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 26),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate([
-                    const SizedBox(height: 20),
-                    _buildDashboardContent(),
-                    const SizedBox(height: 39),
-                    _buildRecentSites(),
-                    const SizedBox(height: 39),
-                    _buildRecentNotes(),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 26),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  const SizedBox(height: 20),
+                  _buildDashboardContent(),
+                  const SizedBox(height: 39),
+                  _buildRecentSites(),
+                  const SizedBox(height: 39),
+                  _buildRecentNotes(),
 
-                    const SizedBox(height: 100),
-                  ]),
-                ),
+                  const SizedBox(height: 100),
+                ]),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

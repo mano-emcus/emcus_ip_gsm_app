@@ -1,24 +1,37 @@
 import 'dart:async';
+import 'package:emcus_ipgsm_app/core/config/api_config.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_event.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_state.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_repository.dart';
+import 'package:emcus_ipgsm_app/core/services/socket_service.dart';
+import 'package:emcus_ipgsm_app/features/logs/models/log_entry.dart';
 
 class LogsBloc extends Bloc<LogsEvent, LogsState> {
   LogsBloc({LogsRepository? logsRepository})
     : _logsRepository = logsRepository ?? LogsRepository(),
       super(LogsInitial()) {
     on<LogsFetched>(_onLogsFetched);
-    on<LogsPollingStarted>(_onLogsPollingStarted);
-    on<LogsPollingStop>(_onLogsPollingStop);
     on<LogsRefresh>(_onLogsRefresh);
+    on<LogsNewLogReceived>(_onNewLogReceived);
+
+    // Connect to socket and listen for new logs
+    final socketService = SocketService();
+    socketService.connect('https://ipgsm.emcus.co.in');
+    socketService.onNewLog((data) {
+      try {
+        final newLog = LogEntry.fromJson(data);
+        add(LogsNewLogReceived(newLog));
+      } catch (e) {
+        print('Failed to parse new log: $e');
+      }
+    });
   }
   final LogsRepository _logsRepository;
-  Timer? _pollingTimer;
 
   @override
   Future<void> close() {
-    _pollingTimer?.cancel();
+    // SocketService().disconnect();
     return super.close();
   }
 
@@ -40,34 +53,6 @@ class LogsBloc extends Bloc<LogsEvent, LogsState> {
     }
   }
 
-  Future<void> _onLogsPollingStarted(
-    LogsPollingStarted event,
-    Emitter<LogsState> emit,
-  ) async {
-    // Cancel any existing timer
-    _pollingTimer?.cancel();
-    
-    // Fetch logs immediately
-    add(LogsFetched());
-    
-    // Start periodic polling
-    _pollingTimer = Timer.periodic(event.interval, (timer) {
-      if (!isClosed) {
-        add(LogsRefresh());
-      } else {
-        timer.cancel();
-      }
-    });
-  }
-
-  Future<void> _onLogsPollingStop(
-    LogsPollingStop event,
-    Emitter<LogsState> emit,
-  ) async {
-    _pollingTimer?.cancel();
-    _pollingTimer = null;
-  }
-
   Future<void> _onLogsRefresh(
     LogsRefresh event,
     Emitter<LogsState> emit,
@@ -83,6 +68,17 @@ class LogsBloc extends Bloc<LogsEvent, LogsState> {
       }
     } catch (e) {
       emit(LogsFailure(error: e.toString()));
+    }
+  }
+
+  Future<void> _onNewLogReceived(
+    LogsNewLogReceived event,
+    Emitter<LogsState> emit,
+  ) async {
+    if (state is LogsSuccess) {
+      final currentLogs = List<LogEntry>.from((state as LogsSuccess).logs);
+      currentLogs.insert(0, event.newLog);
+      emit(LogsSuccess(logs: currentLogs, message: 'New log received'));
     }
   }
 }
