@@ -25,4 +25,8 @@ class ColorConstants {
   static const Color allEventsTitleBackGroundColor = Color(0xFFF2F3FF);
   static const Color allEventsTitleBorderColor = Color(0xFF2E3188);
   static const Color allEventsTitleTextColor = Color(0xFF3A3A3A);
+  static const Color gsmBackGroundColor = Color(0xFF3542D7);
+  static const Color issueNotesBackGroundColor = Color(0xFFE61C1C);
+  static const Color infoNotesBackGroundColor = Color(0xFF1C8BE6);
+  static const Color generalNotesBackGroundColor = Color(0xFF3EB26A);
 }

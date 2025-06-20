@@ -39,6 +39,7 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
       final response = await _notesRepository.createNote(
         noteTitle: event.noteTitle,
         noteContent: event.noteContent,
+        noteTag: event.noteTag,
       );
 
       final message = response['message'] ?? 'Note created successfully';

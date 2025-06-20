@@ -98,8 +98,13 @@ class LogEntry {
     return '${u8Hours.toString().padLeft(2, '0')}:${u8Minutes.toString().padLeft(2, '0')}:${u8Seconds.toString().padLeft(2, '0')}';
   }
 
-  /// Get formatted date and time string
+  /// Get formatted date and time string in format: 2024-02-08 01:42:16 AM
   String get formattedDateTime {
-    return '$formattedDate $formattedTime';
+    // Convert to 12-hour format with AM/PM
+    final int hour12 =
+        u8Hours == 0 ? 12 : (u8Hours > 12 ? u8Hours - 12 : u8Hours);
+    final String amPm = u8Hours < 12 ? 'AM' : 'PM';
+
+    return '$u8Year-${u8Month.toString().padLeft(2, '0')}-${u8Date.toString().padLeft(2, '0')} ${hour12.toString().padLeft(2, '0')}:${u8Minutes.toString().padLeft(2, '0')}:${u8Seconds.toString().padLeft(2, '0')} $amPm';
   }
 }

@@ -1,4 +1,4 @@
-package com.example.emcus_ipgsm_app
+package com.emcus.emcus_ipgsm_app
 
 import io.flutter.embedding.android.FlutterActivity
 

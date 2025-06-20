@@ -1,3 +1,5 @@
+import 'package:emcus_ipgsm_app/features/notes/views/notes_screen.dart';
+
 class NoteEntry {
   NoteEntry({
     required this.id,
@@ -6,6 +8,7 @@ class NoteEntry {
     required this.company,
     required this.username,
     required this.createdAt,
+    required this.noteTag,
   });
 
   factory NoteEntry.fromJson(Map<String, dynamic> json) {
@@ -16,6 +19,7 @@ class NoteEntry {
       company: json['company'] as String,
       username: json['username'] as String,
       createdAt: json['createdAt'] as String,
+      noteTag: json['category'] == 'general' ? NoteCategory.generalNotes : json['category'] == 'info' ? NoteCategory.infoNotes : NoteCategory.issueNotes,
     );
   }
 
@@ -25,6 +29,7 @@ class NoteEntry {
   final String company;
   final String username;
   final String createdAt;
+  final NoteCategory noteTag;
 
   Map<String, dynamic> toJson() {
     return {
@@ -34,6 +39,7 @@ class NoteEntry {
       'company': company,
       'username': username,
       'createdAt': createdAt,
+      'category': noteTag,
     };
   }
 } 

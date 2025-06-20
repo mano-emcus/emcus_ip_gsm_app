@@ -19,7 +19,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     try {
       final response = await _registerRepository.register(
         fullName: event.fullName,
-        companyName: event.companyName,
+        companyName: 'Gemini',
         email: event.email,
       );
 

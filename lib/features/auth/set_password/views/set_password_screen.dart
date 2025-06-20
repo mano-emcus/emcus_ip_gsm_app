@@ -138,6 +138,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                             controller: passwordController,
                             keyboardType: TextInputType.visiblePassword,
                             obscureText: true,
+                            isPassword: true,
                           ),
                         ),
                         const SizedBox(height: 14),
@@ -149,6 +150,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                             controller: confirmPasswordController,
                             keyboardType: TextInputType.visiblePassword,
                             obscureText: true,
+                            isPassword: true,
                           ),
                         ),
                         if (_showPasswordMismatchError)
