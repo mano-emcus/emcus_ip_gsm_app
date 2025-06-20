@@ -46,15 +46,37 @@ class NoteGridViewWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        note.noteTitle,
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: ColorConstants.textColor,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      Row(
+                        children: [
+                          Container(
+                            width: 12,
+                            height: 12,
+                            decoration: BoxDecoration(
+                              color:
+                                  note.noteTag == NoteCategory.generalNotes
+                                      ? ColorConstants
+                                          .generalNotesBackGroundColor
+                                      : note.noteTag == NoteCategory.infoNotes
+                                      ? ColorConstants.infoNotesBackGroundColor
+                                      : ColorConstants
+                                          .issueNotesBackGroundColor,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              note.noteTitle,
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: ColorConstants.textColor,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 6),
                       Expanded(
@@ -137,10 +159,11 @@ class NoteGridViewWidget extends StatelessWidget {
                         Container(
                           width: 12,
                           height: 12,
-                          decoration:  BoxDecoration(
-                            color: note.noteTag == NoteCategory.generalNotes
-                                ? ColorConstants.generalNotesBackGroundColor
-                                : note.noteTag == NoteCategory.infoNotes
+                          decoration: BoxDecoration(
+                            color:
+                                note.noteTag == NoteCategory.generalNotes
+                                    ? ColorConstants.generalNotesBackGroundColor
+                                    : note.noteTag == NoteCategory.infoNotes
                                     ? ColorConstants.infoNotesBackGroundColor
                                     : ColorConstants.issueNotesBackGroundColor,
                             shape: BoxShape.circle,
@@ -198,8 +221,7 @@ class NoteGridViewWidget extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder:
-          (context) => NoteDetailsViewBottomSheetWidget(note: note),
+      builder: (context) => NoteDetailsViewBottomSheetWidget(note: note),
     );
   }
 }

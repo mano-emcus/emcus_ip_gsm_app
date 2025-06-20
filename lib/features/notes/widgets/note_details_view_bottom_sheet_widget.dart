@@ -1,4 +1,5 @@
 import 'package:emcus_ipgsm_app/features/notes/models/note_entry.dart';
+import 'package:emcus_ipgsm_app/features/notes/views/notes_screen.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -218,20 +219,41 @@ class NoteDetailsViewBottomSheetWidget extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Created At',
+                                'Note Category',
                                 style: GoogleFonts.inter(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
                                   color: ColorConstants.greyColor,
                                 ),
                               ),
-                              Text(
-                                note.createdAt,
-                                style: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: ColorConstants.blackColor,
-                                ),
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 12,
+                                    height: 12,
+                                    decoration: BoxDecoration(
+                                      color: note.noteTag == NoteCategory.generalNotes
+                                          ? ColorConstants.generalNotesBackGroundColor
+                                          : note.noteTag == NoteCategory.infoNotes
+                                              ? ColorConstants.infoNotesBackGroundColor
+                                              : ColorConstants.issueNotesBackGroundColor,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    note.noteTag == NoteCategory.generalNotes
+                                        ? 'General'
+                                        : note.noteTag == NoteCategory.infoNotes
+                                            ? 'Info'
+                                            : 'Issue',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: ColorConstants.blackColor,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
