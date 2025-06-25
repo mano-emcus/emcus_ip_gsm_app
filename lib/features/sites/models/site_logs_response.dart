@@ -1,0 +1,50 @@
+import 'package:emcus_ipgsm_app/features/logs/models/log_entry.dart';
+
+class SiteLogsResponse {
+  SiteLogsResponse({
+    required this.statusCode,
+    required this.message,
+    required this.data,
+  });
+
+  factory SiteLogsResponse.fromJson(Map<String, dynamic> json) {
+    return SiteLogsResponse(
+      statusCode: json['statusCode'] as int,
+      message: json['message'] as String,
+      data: (json['data'] as List?)?.map((item) => SiteLogsData.fromJson(item as Map<String, dynamic>)).toList() ?? [],
+    );
+  }
+
+  final int statusCode;
+  final String message;
+  final List<SiteLogsData> data;
+}
+
+class SiteLogsData {
+  SiteLogsData({
+    required this.fireCount,
+    required this.faultCount,
+    required this.allCount,
+    required this.fire,
+    required this.fault,
+    required this.all,
+  });
+
+  factory SiteLogsData.fromJson(Map<String, dynamic> json) {
+    return SiteLogsData(
+      fireCount: json['fireCount'] as int,
+      faultCount: json['faultCount'] as int,
+      allCount: json['allCount'] as int,
+      fire: (json['fire'] as List?)?.cast<LogEntry>() ?? [],
+      fault: (json['fault'] as List?)?.cast<LogEntry>() ?? [],
+      all: (json['all'] as List?)?.cast<LogEntry>() ?? [],
+    );
+  }
+
+  final int fireCount;
+  final int faultCount;
+  final int allCount;
+  final List<LogEntry> fire;
+  final List<LogEntry> fault;
+  final List<LogEntry> all;
+} 

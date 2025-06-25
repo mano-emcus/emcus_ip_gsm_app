@@ -3,6 +3,10 @@ import 'package:emcus_ipgsm_app/features/logs/bloc/logs_bloc.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_event.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_state.dart';
 import 'package:emcus_ipgsm_app/features/logs/models/log_entry.dart';
+import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_bloc.dart';
+import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_event.dart';
+import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_state.dart';
+import 'package:emcus_ipgsm_app/features/sites/models/sites_response.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,8 +16,8 @@ import 'package:google_fonts/google_fonts.dart';
 enum LogType { fire, fault, all }
 
 class SiteDashboardScreen extends StatefulWidget {
-  const SiteDashboardScreen({super.key, required this.siteName});
-  final String siteName;
+  const SiteDashboardScreen({super.key, required this.siteData});
+  final SiteData siteData;
 
   @override
   State<SiteDashboardScreen> createState() => _SiteDashboardScreenState();
@@ -21,13 +25,14 @@ class SiteDashboardScreen extends StatefulWidget {
 
 class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
   LogType selectedLogType = LogType.all;
-  LogsBloc? _logsBloc;
+  // LogsBloc? _logsBloc;
+  SiteLogsBloc? _siteLogsBloc;
 
   @override
   void initState() {
     super.initState();
-    _logsBloc = context.read<LogsBloc>();
-    _fetchLogs();
+    _siteLogsBloc = context.read<SiteLogsBloc>();
+    _fetchSiteLogs();
     // Start polling logs when the screen loads (polls every 30 seconds)
     Future.delayed(const Duration(seconds: 30), () {
       _startPolling();
@@ -48,29 +53,25 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
   void _stopPolling() {
   }
 
-  void _fetchLogs() {
-    _logsBloc?.add(LogsFetched());
+  void _fetchSiteLogs() {
+    _siteLogsBloc?.add(SiteLogsFetched(siteId: widget.siteData.id));
   }
 
-  List<LogEntry> _filterLogs(List<LogEntry> logs) {
+  List<LogEntry> _filterLogs({required List<LogEntry> fireLogs, required List<LogEntry> faultLogs, required List<LogEntry> allLogs}) {
     switch (selectedLogType) {
       case LogType.fire:
-        return logs
-            .where((log) => log.u16EventId >= 1001 && log.u16EventId <= 1007)
-            .toList();
+        return fireLogs;
       case LogType.fault:
-        return logs
-            .where((log) => log.u16EventId >= 2000 && log.u16EventId < 3000)
-            .toList();
+        return faultLogs;
       case LogType.all:
-        return logs;
+        return allLogs;
     }
   }
 
-  String _getLogTypeText(LogEntry log) {
-    if (log.u16EventId >= 1001 && log.u16EventId <= 1007) {
+  String _getLogTypeText() {
+    if (selectedLogType == LogType.fire) {
       return 'Fire';
-    } else if (log.u16EventId >= 2000 && log.u16EventId < 3000) {
+    } else if (selectedLogType == LogType.fault) {
       return 'Fault';
     } else {
       return 'Event';
@@ -207,7 +208,7 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
           ),
         ),
         const SizedBox(height: 16),
-        BlocBuilder<LogsBloc, LogsState>(
+        BlocBuilder<SiteLogsBloc, SiteLogsState>(
           builder: (context, state) {
             int fireCount = 0;
             int faultCount = 0;
@@ -216,14 +217,14 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
             String faultCountText = '-';
             String allEventsCountText = '-';
 
-            if (state is LogsSuccess) {
-              fireCount = _getFireCount(state.logs);
-              faultCount = _getFaultCount(state.logs);
-              allEventsCount = _getAllEventsCount(state.logs);
+            if (state is SiteLogsSuccess) {
+              fireCount = state.logs[0].fireCount;
+              faultCount = state.logs[0].faultCount;
+              allEventsCount = state.logs[0].allCount;
               fireCountText = fireCount.toString();
               faultCountText = faultCount.toString();
               allEventsCountText = allEventsCount.toString();
-            } else if (state is LogsLoading) {
+            } else if (state is SiteLogsLoading) {
               fireCountText = '...';
               faultCountText = '...';
               allEventsCountText = '...';
@@ -422,9 +423,9 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
   }
 
   Widget _buildEventLogs() {
-    return BlocBuilder<LogsBloc, LogsState>(
+    return BlocBuilder<SiteLogsBloc, SiteLogsState>(
       builder: (context, state) {
-        if (state is LogsLoading) {
+        if (state is SiteLogsLoading) {
           return Padding(
             padding: const EdgeInsets.only(top: 100),
             child: const Center(
@@ -433,9 +434,11 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
               ),
             ),
           );
-        } else if (state is LogsSuccess) {
-          final filteredLogs = _filterLogs(state.logs).reversed.toList();
-
+        } else if (state is SiteLogsSuccess) {
+          final fireLogs = state.logs[0].fire.reversed.toList();
+          final faultLogs = state.logs[0].fault.reversed.toList();
+          final allLogs = state.logs[0].all.reversed.toList();
+          final filteredLogs = _filterLogs(fireLogs: fireLogs, faultLogs: faultLogs, allLogs: allLogs);
           if (filteredLogs.isEmpty) {
             return Center(
               child: Padding(
@@ -472,7 +475,7 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
               backgroundColor: ColorConstants.whiteColor,
               color: ColorConstants.primaryColor,
               onRefresh: () async {
-                _fetchLogs();
+                _fetchSiteLogs();
               },
               child: ListView.builder(
                 itemCount: filteredLogs.length,
@@ -483,7 +486,7 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
               ),
             ),
           );
-        } else if (state is LogsFailure) {
+        } else if (state is SiteLogsFailure) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -501,7 +504,7 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
                 const SizedBox(height: 8),
                 ElevatedButton(
                   onPressed: () {
-                    _fetchLogs();
+                    _fetchSiteLogs();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: ColorConstants.primaryColor,
@@ -666,7 +669,7 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  _getLogTypeText(log),
+                  _getLogTypeText(),
                   style: GoogleFonts.inter(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,

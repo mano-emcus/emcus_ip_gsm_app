@@ -1,4 +1,3 @@
-import 'package:emcus_ipgsm_app/features/logs/bloc/logs_bloc.dart';
 import 'package:emcus_ipgsm_app/features/notes/widgets/note_grid_view_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';

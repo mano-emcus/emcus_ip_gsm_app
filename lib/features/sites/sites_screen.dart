@@ -1,5 +1,13 @@
 import 'package:emcus_ipgsm_app/features/notes/views/notes_screen.dart';
 import 'package:emcus_ipgsm_app/features/logs/views/all_logs_screen.dart';
+import 'package:emcus_ipgsm_app/features/sites/bloc/devices/site_devices_bloc.dart';
+import 'package:emcus_ipgsm_app/features/sites/bloc/devices/site_devices_event.dart';
+import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_bloc.dart';
+import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_event.dart';
+import 'package:emcus_ipgsm_app/features/sites/bloc/notes/site_notes_bloc.dart';
+import 'package:emcus_ipgsm_app/features/sites/bloc/notes/site_notes_event.dart';
+import 'package:emcus_ipgsm_app/features/sites/bloc/site/sites_bloc.dart';
+import 'package:emcus_ipgsm_app/features/sites/models/sites_response.dart';
 import 'package:emcus_ipgsm_app/features/sites/views/site_dashboard_screen.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +16,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SitesScreen extends StatefulWidget {
-  const SitesScreen({super.key});
+  const SitesScreen({super.key, required this.siteData});
+  final SiteData siteData;
 
   @override
   State<SitesScreen> createState() => _SitesScreenState();
@@ -16,9 +25,12 @@ class SitesScreen extends StatefulWidget {
 
 class _SitesScreenState extends State<SitesScreen> {
   int _selectedIndex = 0;
+  SiteLogsBloc? _siteLogsBloc;
+  SiteNotesBloc? _siteNotesBloc;
+  SiteDevicesBloc? _siteDevicesBloc;
 
   List<Widget> get _screens => [
-    SiteDashboardScreen(siteName: 'Emcus Technologies'),
+    SiteDashboardScreen(siteData: widget.siteData),
     AllLogsScreen(),
     const NotesScreen(),
   ];
@@ -27,6 +39,29 @@ class _SitesScreenState extends State<SitesScreen> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  @override
+  void initState() {
+    _siteLogsBloc = context.read<SiteLogsBloc>();
+    _siteNotesBloc = context.read<SiteNotesBloc>();
+    _siteLogsBloc = context.read<SiteLogsBloc>();
+    _fetchSiteLogs();
+    _fetchSiteNotes();
+    _fetchSiteDevices();
+    super.initState();
+  }
+
+  void _fetchSiteLogs() {
+    _siteLogsBloc?.add(SiteLogsFetched(siteId: widget.siteData.id));
+  }
+
+  void _fetchSiteNotes() {
+    _siteNotesBloc?.add(SiteNotesFetched(siteId: widget.siteData.id));
+  }
+
+  void _fetchSiteDevices() {
+    _siteDevicesBloc?.add(SiteDevicesFetched(siteId: widget.siteData.id));
   }
 
   @override
@@ -128,7 +163,7 @@ class _SitesScreenState extends State<SitesScreen> {
       ),
       centerTitle: true,
       title: Text(
-        'Emcus Technologies',
+        widget.siteData.siteName,
         style: GoogleFonts.inter(
           fontSize: 20,
           fontWeight: FontWeight.w600,

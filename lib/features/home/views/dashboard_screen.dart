@@ -1,10 +1,8 @@
 import 'package:emcus_ipgsm_app/core/services/auth_manager.dart';
 import 'package:emcus_ipgsm_app/features/home/views/pages/home_screen.dart';
-import 'package:emcus_ipgsm_app/features/logs/bloc/logs_bloc.dart';
 import 'package:emcus_ipgsm_app/features/sites/views/all_site_screen.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 

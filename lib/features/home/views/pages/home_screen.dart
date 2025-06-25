@@ -7,7 +7,10 @@ import 'package:emcus_ipgsm_app/features/notes/bloc/notes_bloc.dart';
 import 'package:emcus_ipgsm_app/features/notes/bloc/notes_event.dart';
 import 'package:emcus_ipgsm_app/features/notes/bloc/notes_state.dart';
 import 'package:emcus_ipgsm_app/features/notes/widgets/note_grid_view_widget.dart';
-import 'package:emcus_ipgsm_app/features/sites/sites_screen.dart';
+import 'package:emcus_ipgsm_app/features/sites/bloc/site/sites_bloc.dart';
+import 'package:emcus_ipgsm_app/features/sites/bloc/site/sites_event.dart';
+import 'package:emcus_ipgsm_app/features/sites/bloc/site/sites_state.dart';
+import 'package:emcus_ipgsm_app/features/sites/widgets/site_card.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,17 +28,20 @@ class _HomeScreenState extends State<HomeScreen> {
   int fireCount = 0;
   int faultCount = 0;
   int allEventsCount = 0;
-  String fireCountText = '-';
-  String faultCountText = '-';
-  String allEventsCountText = '-';
+  String fireCountText = '...';
+  String faultCountText = '...';
+  String allEventsCountText = '...';
   late NotesBloc _notesBloc;
   LogsBloc? _logsBloc;
+  SitesBloc? _sitesBloc;
 
   @override
   void initState() {
     super.initState();
     _notesBloc = NotesBloc();
     _logsBloc = context.read<LogsBloc>();
+    _sitesBloc = context.read<SitesBloc>();
+    _fetchSites();
     _fetchLogs();
     _fetchNotes();
     // Start polling logs when the screen loads (polls every 30 seconds)
@@ -67,6 +73,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _fetchNotes() {
     _notesBloc.add(NotesFetched());
+  }
+
+  void _fetchSites() {
+    _sitesBloc?.add(SitesFetched());
   }
 
   @override
@@ -104,10 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             curve: Curves.easeInOutCubic,
                           ),
                         ),
-                        child: FadeTransition(
-                          opacity: animation,
-                          child: child,
-                        ),
+                        child: FadeTransition(opacity: animation, child: child),
                       );
                     },
                   ),
@@ -157,10 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             curve: Curves.easeInOutCubic,
                           ),
                         ),
-                        child: FadeTransition(
-                          opacity: animation,
-                          child: child,
-                        ),
+                        child: FadeTransition(opacity: animation, child: child),
                       );
                     },
                   ),
@@ -461,155 +465,192 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildRecentSites() {
-    return BlocBuilder<LogsBloc, LogsState>(
-      builder: (context, state) {
-        if (state is LogsSuccess) {
-          fireCount = _getFireCount(state.logs);
-          faultCount = _getFaultCount(state.logs);
-          allEventsCount = _getAllEventsCount(state.logs);
-          fireCountText = fireCount.toString();
-          faultCountText = faultCount.toString();
-          allEventsCountText = allEventsCount.toString();
-        } else if (state is LogsLoading) {
-          fireCountText = '...';
-          faultCountText = '...';
-          allEventsCountText = '...';
-        }
-        return Column(
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Recent Sites',
-                  style: GoogleFonts.inter(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: ColorConstants.textColor,
-                  ),
-                ),
-                SvgPicture.asset('assets/svgs/arrow_forward_icon.svg'),
-              ],
-            ),
-            const SizedBox(height: 12),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SitesScreen()),
-                );
-              },
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: ColorConstants.textFieldBorderColor.withValues(
-                    alpha: 0.3,
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 17,
-                    right: 17,
-                    top: 13,
-                    bottom: 15,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Emcus Technologies',
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: ColorConstants.primaryColor,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: 'Fire : ',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      color: ColorConstants.textColor,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: fireCountText,
-                                    style: GoogleFonts.inter(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                      color: ColorConstants.textColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: 'Fault : ',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      color: ColorConstants.textColor,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: faultCountText,
-                                    style: GoogleFonts.inter(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                      color: ColorConstants.textColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: 'All Events : ',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      color: ColorConstants.textColor,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: allEventsCountText,
-                                    style: GoogleFonts.inter(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                      color: ColorConstants.textColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+            Text(
+              'Recent Sites',
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: ColorConstants.textColor,
               ),
             ),
+            SvgPicture.asset('assets/svgs/arrow_forward_icon.svg'),
           ],
-        );
-      },
+        ),
+        const SizedBox(height: 12),
+
+        BlocBuilder<SitesBloc, SitesState>(
+          builder: (context, state) {
+            return Column(
+              children: [
+                if (state is SitesLoading)
+                  const Center(
+                    child: CircularProgressIndicator(
+                      color: ColorConstants.primaryColor,
+                    ),
+                  )
+                else if (state is SitesSuccess)
+                  ...state.sites.map((site) => SiteCard(site: site))
+                else if (state is SitesFailure)
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.error_outline,
+                          size: 48,
+                          color: Colors.grey[400],
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Failed to load sites',
+                          style: GoogleFonts.inter(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextButton(
+                          onPressed: _fetchSites,
+                          child: Text(
+                            'Retry',
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: ColorConstants.primaryColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                else
+                  const SizedBox.shrink(),
+              ],
+            );
+          },
+        ),
+        // GestureDetector(
+        //   onTap: () {
+        //     Navigator.push(
+        //       context,
+        //       MaterialPageRoute(builder: (context) => SitesScreen(siteName: 'Emcus Technologies')),
+        //     );
+        //   },
+        //   child: Container(
+        //     width: double.infinity,
+        //     decoration: BoxDecoration(
+        //       color: ColorConstants.textFieldBorderColor.withValues(
+        //         alpha: 0.3,
+        //       ),
+        //       borderRadius: BorderRadius.circular(8),
+        //     ),
+        //     child: Padding(
+        //       padding: const EdgeInsets.only(
+        //         left: 17,
+        //         right: 17,
+        //         top: 13,
+        //         bottom: 15,
+        //       ),
+        //       child: Column(
+        //         crossAxisAlignment: CrossAxisAlignment.start,
+        //         children: [
+        //           Text(
+        //             'Emcus Technologies',
+        //             style: GoogleFonts.inter(
+        //               fontSize: 14,
+        //               fontWeight: FontWeight.w600,
+        //               color: ColorConstants.primaryColor,
+        //             ),
+        //           ),
+        //           SizedBox(height: 8),
+        //           Row(
+        //             children: [
+        //               Expanded(
+        //                 child: RichText(
+        //                   text: TextSpan(
+        //                     children: [
+        //                       TextSpan(
+        //                         text: 'Fire : ',
+        //                         style: GoogleFonts.inter(
+        //                           fontSize: 12,
+        //                           fontWeight: FontWeight.w400,
+        //                           color: ColorConstants.textColor,
+        //                         ),
+        //                       ),
+        //                       TextSpan(
+        //                         text: fireCountText,
+        //                         style: GoogleFonts.inter(
+        //                           fontSize: 12,
+        //                           fontWeight: FontWeight.w700,
+        //                           color: ColorConstants.textColor,
+        //                         ),
+        //                       ),
+        //                     ],
+        //                   ),
+        //                 ),
+        //               ),
+        //               Expanded(
+        //                 child: RichText(
+        //                   text: TextSpan(
+        //                     children: [
+        //                       TextSpan(
+        //                         text: 'Fault : ',
+        //                         style: GoogleFonts.inter(
+        //                           fontSize: 12,
+        //                           fontWeight: FontWeight.w400,
+        //                           color: ColorConstants.textColor,
+        //                         ),
+        //                       ),
+        //                       TextSpan(
+        //                         text: faultCountText,
+        //                         style: GoogleFonts.inter(
+        //                           fontSize: 12,
+        //                           fontWeight: FontWeight.w700,
+        //                           color: ColorConstants.textColor,
+        //                         ),
+        //                       ),
+        //                     ],
+        //                   ),
+        //                 ),
+        //               ),
+        //               Expanded(
+        //                 child: RichText(
+        //                   text: TextSpan(
+        //                     children: [
+        //                       TextSpan(
+        //                         text: 'All Events : ',
+        //                         style: GoogleFonts.inter(
+        //                           fontSize: 12,
+        //                           fontWeight: FontWeight.w400,
+        //                           color: ColorConstants.textColor,
+        //                         ),
+        //                       ),
+        //                       TextSpan(
+        //                         text: allEventsCountText,
+        //                         style: GoogleFonts.inter(
+        //                           fontSize: 12,
+        //                           fontWeight: FontWeight.w700,
+        //                           color: ColorConstants.textColor,
+        //                         ),
+        //                       ),
+        //                     ],
+        //                   ),
+        //                 ),
+        //               ),
+        //             ],
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //   ),
+        // ),
+      ],
     );
   }
 

@@ -1,13 +1,15 @@
 import 'package:emcus_ipgsm_app/features/sites/sites_screen.dart';
+import 'package:emcus_ipgsm_app/features/sites/bloc/site/sites_bloc.dart';
+import 'package:emcus_ipgsm_app/features/sites/bloc/site/sites_event.dart';
+import 'package:emcus_ipgsm_app/features/sites/bloc/site/sites_state.dart';
+import 'package:emcus_ipgsm_app/features/sites/models/sites_response.dart';
+import 'package:emcus_ipgsm_app/features/auth/sign_in/views/sign_in_screen.dart';
+import 'package:emcus_ipgsm_app/features/sites/widgets/site_card.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:emcus_ipgsm_app/features/logs/bloc/logs_bloc.dart';
-import 'package:emcus_ipgsm_app/features/logs/bloc/logs_event.dart';
-import 'package:emcus_ipgsm_app/features/logs/bloc/logs_state.dart';
-import 'package:emcus_ipgsm_app/features/logs/models/log_entry.dart';
 
 class AllSitesScreen extends StatefulWidget {
   const AllSitesScreen({super.key});
@@ -17,89 +19,87 @@ class AllSitesScreen extends StatefulWidget {
 }
 
 class _AllSitesScreenState extends State<AllSitesScreen> {
-  LogsBloc? _logsBloc; // Add this field to store the bloc reference
+  SitesBloc? _sitesBloc;
 
   @override
   void initState() {
     super.initState();
-    _logsBloc = context.read<LogsBloc>(); // Store the bloc reference
-    _fetchLogs();
-    // Start polling logs when the screen loads (polls every 30 seconds)
-    Future.delayed(const Duration(seconds: 30), () {
-      _startPolling();
-    });
+    _sitesBloc = context.read<SitesBloc>();
+    _fetchSites();
   }
 
-  @override
-  void dispose() {
-    // Stop polling when the screen is disposed
-    _stopPolling();
-    super.dispose();
-  }
-
-  void _startPolling() {
-    // Start polling with 30-second interval (you can customize this)
-  }
-
-  void _stopPolling() {
-  }
-
-  void _fetchLogs() {
-    _logsBloc?.add(LogsFetched()); // Use stored reference
-  }
-
-  // Helper methods to calculate log counts based on event IDs
-  int _getFireCount(List<LogEntry> logs) {
-    return logs
-        .where((log) => log.u16EventId >= 1001 && log.u16EventId <= 1007)
-        .length;
-  }
-
-  int _getFaultCount(List<LogEntry> logs) {
-    return logs
-        .where((log) => log.u16EventId >= 2000 && log.u16EventId < 3000)
-        .length;
-  }
-
-  int _getAllEventsCount(List<LogEntry> logs) {
-    return logs.length;
+  void _fetchSites() {
+    _sitesBloc?.add(SitesFetched());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ColorConstants.whiteColor,
-      body: Padding(
-        padding: EdgeInsets.only(
-          left: 17,
-          right: 17,
-          top: MediaQuery.of(context).padding.top + 16,
+    return BlocListener<SitesBloc, SitesState>(
+      listener: (context, state) {
+        if (state is SitesFailure) {
+          // Check if it's an authentication error
+          if (state.error.contains('AuthenticationException') ||
+              state.error.contains('No valid authentication token') ||
+              state.error.contains('Missing Authorization header')) {
+            // Authentication failed, redirect to sign-in
+            Navigator.pushAndRemoveUntil(
+              context,
+              PageRouteBuilder(
+                transitionDuration: const Duration(milliseconds: 600),
+                pageBuilder:
+                    (context, animation, secondaryAnimation) =>
+                        const SignInScreen(),
+                transitionsBuilder: (
+                  context,
+                  animation,
+                  secondaryAnimation,
+                  child,
+                ) {
+                  return SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(0.0, -0.15),
+                      end: Offset.zero,
+                    ).animate(
+                      CurvedAnimation(
+                        parent: animation,
+                        curve: Curves.easeInOutCubic,
+                      ),
+                    ),
+                    child: FadeTransition(opacity: animation, child: child),
+                  );
+                },
+              ),
+              (Route<dynamic> route) => false,
+            );
+          } else {
+            // Show error message for other failures
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Failed to load sites: ${state.error}'),
+                backgroundColor: Colors.red,
+                duration: const Duration(seconds: 3),
+              ),
+            );
+          }
+        }
+      },
+      child: Scaffold(
+        backgroundColor: ColorConstants.whiteColor,
+        body: Padding(
+          padding: EdgeInsets.only(
+            left: 17,
+            right: 17,
+            top: MediaQuery.of(context).padding.top + 16,
+          ),
+          child: _buildSitesList(),
         ),
-        child: _buildRecentSites(),
       ),
     );
   }
 
-  Widget _buildRecentSites() {
-    return BlocBuilder<LogsBloc, LogsState>(
+  Widget _buildSitesList() {
+    return BlocBuilder<SitesBloc, SitesState>(
       builder: (context, state) {
-        String fireCountText = '-';
-        String faultCountText = '-';
-        String allEventsCountText = '-';
-
-        if (state is LogsSuccess) {
-          final int fireCount = _getFireCount(state.logs);
-          final int faultCount = _getFaultCount(state.logs);
-          final int allEventsCount = _getAllEventsCount(state.logs);
-          fireCountText = fireCount.toString();
-          faultCountText = faultCount.toString();
-          allEventsCountText = allEventsCount.toString();
-        } else if (state is LogsLoading) {
-          fireCountText = '...';
-          faultCountText = '...';
-          allEventsCountText = '...';
-        }
-
         return Column(
           children: [
             const SizedBox(height: 16),
@@ -117,121 +117,50 @@ class _AllSitesScreenState extends State<AllSitesScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SitesScreen()),
-                );
-              },
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: ColorConstants.textFieldBorderColor.withValues(
-                    alpha: 0.3,
-                  ),
-                  borderRadius: BorderRadius.circular(8),
+            if (state is SitesLoading)
+              const Center(
+                child: CircularProgressIndicator(
+                  color: ColorConstants.primaryColor,
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 17,
-                    right: 17,
-                    top: 13,
-                    bottom: 15,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Emcus',
+              )
+            else if (state is SitesSuccess)
+              ...state.sites.map((site) => SiteCard(site: site))
+            else if (state is SitesFailure)
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      size: 48,
+                      color: Colors.grey[400],
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Failed to load sites',
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    TextButton(
+                      onPressed: _fetchSites,
+                      child: Text(
+                        'Retry',
                         style: GoogleFonts.inter(
                           fontSize: 14,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w500,
                           color: ColorConstants.primaryColor,
                         ),
                       ),
-                      SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: 'Fire : ',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      color: ColorConstants.textColor,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: fireCountText,
-                                    style: GoogleFonts.inter(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                      color: ColorConstants.textColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: 'Fault : ',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      color: ColorConstants.textColor,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: faultCountText,
-                                    style: GoogleFonts.inter(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                      color: ColorConstants.textColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: 'All Events : ',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      color: ColorConstants.textColor,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: allEventsCountText,
-                                    style: GoogleFonts.inter(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                      color: ColorConstants.textColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ),
-            ),
+              )
+            else
+              const SizedBox.shrink(),
           ],
         );
       },

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:emcus_ipgsm_app/core/config/api_config.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_event.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_state.dart';
@@ -23,7 +22,7 @@ class LogsBloc extends Bloc<LogsEvent, LogsState> {
         final newLog = LogEntry.fromJson(data);
         add(LogsNewLogReceived(newLog));
       } catch (e) {
-        print('Failed to parse new log: $e');
+        throw Exception('Failed to parse new log: $e');
       }
     });
   }
