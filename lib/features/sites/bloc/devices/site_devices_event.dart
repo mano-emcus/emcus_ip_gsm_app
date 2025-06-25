@@ -6,8 +6,8 @@ abstract class SiteDevicesEvent extends Equatable {
 }
 
 class SiteDevicesFetched extends SiteDevicesEvent {
-  final int siteId;
   SiteDevicesFetched({required this.siteId});
+  final int siteId;
 
   @override
   List<Object?> get props => [siteId];

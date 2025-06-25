@@ -6,8 +6,8 @@ abstract class SiteNotesEvent extends Equatable {
 }
 
 class SiteNotesFetched extends SiteNotesEvent {
-  final int siteId;
   SiteNotesFetched({required this.siteId});
+  final int siteId;
 
   @override
   List<Object?> get props => [siteId];

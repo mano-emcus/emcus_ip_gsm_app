@@ -1,6 +1,5 @@
 import 'package:emcus_ipgsm_app/features/auth/sign_in/views/sign_in_screen.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_bloc.dart';
-import 'package:emcus_ipgsm_app/features/logs/bloc/logs_event.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_state.dart';
 import 'package:emcus_ipgsm_app/features/logs/models/log_entry.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_bloc.dart';
@@ -170,22 +169,22 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
     );
   }
 
-  // Helper methods to calculate log counts based on event IDs
-  int _getFireCount(List<LogEntry> logs) {
-    return logs
-        .where((log) => log.u16EventId >= 1001 && log.u16EventId <= 1007)
-        .length;
-  }
+  // // Helper methods to calculate log counts based on event IDs
+  // int _getFireCount(List<LogEntry> logs) {
+  //   return logs
+  //       .where((log) => log.u16EventId >= 1001 && log.u16EventId <= 1007)
+  //       .length;
+  // }
 
-  int _getFaultCount(List<LogEntry> logs) {
-    return logs
-        .where((log) => log.u16EventId >= 2000 && log.u16EventId < 3000)
-        .length;
-  }
+  // int _getFaultCount(List<LogEntry> logs) {
+  //   return logs
+  //       .where((log) => log.u16EventId >= 2000 && log.u16EventId < 3000)
+  //       .length;
+  // }
 
-  int _getAllEventsCount(List<LogEntry> logs) {
-    return logs.length;
-  }
+  // int _getAllEventsCount(List<LogEntry> logs) {
+  //   return logs.length;
+  // }
 
   void _selectLogType(LogType logType) {
     setState(() {
