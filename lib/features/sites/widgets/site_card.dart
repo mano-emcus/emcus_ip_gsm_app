@@ -1,27 +1,35 @@
+import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_bloc.dart';
+import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_event.dart';
+import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_state.dart';
 import 'package:emcus_ipgsm_app/features/sites/models/sites_response.dart';
 import 'package:emcus_ipgsm_app/features/sites/sites_screen.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SiteCard extends StatefulWidget {
-  const SiteCard({
-    super.key,
-    required this.site,
-    this.fireCount,
-    this.faultCount,
-    this.allEventsCount,
-  });
-  final SiteData site;
-  final String? fireCount;
-  final String? faultCount;
-  final String? allEventsCount;
+  const SiteCard({super.key, required this.siteData});
+  final SiteData siteData;
 
   @override
   State<SiteCard> createState() => _SiteCardState();
 }
 
 class _SiteCardState extends State<SiteCard> {
+  SiteLogsBloc? _siteLogsBloc;
+
+  @override
+  void initState() {
+    _siteLogsBloc = context.read<SiteLogsBloc>();
+    _fetchSiteLogs();
+    super.initState();
+  }
+
+  void _fetchSiteLogs() {
+    _siteLogsBloc?.add(SiteLogsFetched(siteId: widget.siteData.id));
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -29,7 +37,7 @@ class _SiteCardState extends State<SiteCard> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => SitesScreen(siteData: widget.site),
+            builder: (context) => SitesScreen(siteData: widget.siteData),
           ),
         );
       },
@@ -49,7 +57,7 @@ class _SiteCardState extends State<SiteCard> {
                 children: [
                   Expanded(
                     child: Text(
-                      widget.site.siteName,
+                      widget.siteData.siteName,
                       style: GoogleFonts.inter(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -69,7 +77,7 @@ class _SiteCardState extends State<SiteCard> {
                 children: [
                   Expanded(
                     child: Text(
-                      widget.site.siteLocation,
+                      widget.siteData.siteLocation,
                       style: GoogleFonts.inter(
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
@@ -79,7 +87,7 @@ class _SiteCardState extends State<SiteCard> {
                   ),
                   Expanded(
                     child: Text(
-                      widget.site.company,
+                      widget.siteData.company,
                       style: GoogleFonts.inter(
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
@@ -87,10 +95,10 @@ class _SiteCardState extends State<SiteCard> {
                       ),
                     ),
                   ),
-                  if (widget.site.users.isNotEmpty) ...[
+                  if (widget.siteData.users.isNotEmpty) ...[
                     Expanded(
                       child: Text(
-                        'Users: ${widget.site.users.length}',
+                        'Users: ${widget.siteData.users.length}',
                         style: GoogleFonts.inter(
                           fontSize: 12,
                           fontWeight: FontWeight.w400,
@@ -102,41 +110,129 @@ class _SiteCardState extends State<SiteCard> {
                 ],
               ),
               const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Fire: ${widget.fireCount}',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: ColorConstants.textColor,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      'Fault: ${widget.faultCount}',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: ColorConstants.textColor,
-                      ),
-                    ),
-                  ),
-                  if (widget.site.users.isNotEmpty) ...[
-                    Expanded(
-                      child: Text(
-                        'All Events: ${widget.allEventsCount}',
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          color: ColorConstants.textColor,
+              BlocBuilder<SiteLogsBloc, SiteLogsState>(
+                builder: (context, state) {
+                  if (state is SiteLogsLoading) {
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Fire: ...',
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: ColorConstants.textColor,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ],
-                ],
+                        Expanded(
+                          child: Text(
+                            'Fault: ...',
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: ColorConstants.textColor,
+                            ),
+                          ),
+                        ),
+                        if (widget.siteData.users.isNotEmpty) ...[
+                          Expanded(
+                            child: Text(
+                              'All Events: ...',
+                              style: GoogleFonts.inter(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                                color: ColorConstants.textColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    );
+                  }
+                  if (state is SiteLogsSuccess) {
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text:
+                                      'Fire: ',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                    color: ColorConstants.textColor,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: state.logs[0].fireCount.toString(),
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: ColorConstants.textColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text:
+                                      'Fault: ',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                    color: ColorConstants.textColor,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: state.logs[0].faultCount.toString(),
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: ColorConstants.textColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text:
+                                      'All Events: ',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                    color: ColorConstants.textColor,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: state.logs[0].allCount.toString(),
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: ColorConstants.textColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
               ),
             ],
           ),

@@ -494,7 +494,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   )
                 else if (state is SitesSuccess)
-                  ...state.sites.map((site) => SiteCard(site: site))
+                  ...state.sites.map((site) => SiteCard(siteData: site))
                 else if (state is SitesFailure)
                   Center(
                     child: Column(

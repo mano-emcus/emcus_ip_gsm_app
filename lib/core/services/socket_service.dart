@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
 class SocketService {
