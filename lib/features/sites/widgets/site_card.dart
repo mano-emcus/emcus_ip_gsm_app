@@ -74,6 +74,7 @@ class _SiteCardState extends State<SiteCard> {
               ),
               const SizedBox(height: 8),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: Text(
@@ -83,6 +84,7 @@ class _SiteCardState extends State<SiteCard> {
                         fontWeight: FontWeight.w400,
                         color: ColorConstants.textColor,
                       ),
+                      maxLines: 1,
                     ),
                   ),
                   Expanded(

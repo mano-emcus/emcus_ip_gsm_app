@@ -1,4 +1,8 @@
 import 'package:emcus_ipgsm_app/features/notes/widgets/note_grid_view_widget.dart';
+import 'package:emcus_ipgsm_app/features/sites/bloc/notes/site_notes_bloc.dart';
+import 'package:emcus_ipgsm_app/features/sites/bloc/notes/site_notes_event.dart';
+import 'package:emcus_ipgsm_app/features/sites/bloc/notes/site_notes_state.dart';
+import 'package:emcus_ipgsm_app/features/sites/models/sites_response.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,28 +16,29 @@ import 'package:emcus_ipgsm_app/features/auth/sign_in/views/sign_in_screen.dart'
 
 enum NoteCategory { issueNotes, infoNotes, generalNotes }
 
-class NotesScreen extends StatefulWidget {
-  const NotesScreen({super.key});
+class SiteNotesScreen extends StatefulWidget {
+  const SiteNotesScreen({super.key, required this.siteData});
+  final SiteData siteData;
 
   @override
-  State<NotesScreen> createState() => _NotesScreenState();
+  State<SiteNotesScreen> createState() => _SiteNotesScreenState();
 }
 
-class _NotesScreenState extends State<NotesScreen> {
+class _SiteNotesScreenState extends State<SiteNotesScreen> {
   final TextEditingController _searchController = TextEditingController();
   late NoteCategory selectedCategory;
-  NotesBloc? _notesBloc;
+  SiteNotesBloc? _siteNotesBloc;
 
   @override
   void initState() {
     super.initState();
-    _notesBloc = context.read<NotesBloc>();
+    _siteNotesBloc = context.read<SiteNotesBloc>();
     _fetchNotes();
     selectedCategory = NoteCategory.generalNotes;
   }
 
   void _fetchNotes() {
-    _notesBloc?.add(NotesFetched());
+    _siteNotesBloc?.add(SiteNotesFetched(siteId: widget.siteData.id));
   }
 
   @override
@@ -546,9 +551,9 @@ class _NotesScreenState extends State<NotesScreen> {
             const SizedBox(height: 20),
             // Notes List
             Expanded(
-              child: BlocListener<NotesBloc, NotesState>(
+              child: BlocListener<SiteNotesBloc, SiteNotesState>(
                 listener: (context, state) {
-                  if (state is NotesFailure) {
+                  if (state is SiteNoteFailure) {
                     // Check if it's an authentication error
                     if (state.error.contains('AuthenticationException') ||
                         state.error.contains(
@@ -604,7 +609,7 @@ class _NotesScreenState extends State<NotesScreen> {
                         ),
                       );
                     }
-                  } else if (state is NoteCreated) {
+                  } else if (state is SiteNoteCreateSuccess) {
                     // Show success message for note creation
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -613,7 +618,7 @@ class _NotesScreenState extends State<NotesScreen> {
                         duration: const Duration(seconds: 2),
                       ),
                     );
-                  } else if (state is NoteCreationFailure) {
+                  } else if (state is SiteNoteCreateFailure) {
                     // Check if it's an authentication error
                     if (state.error.contains('AuthenticationException') ||
                         state.error.contains('Authentication failed')) {
@@ -666,11 +671,11 @@ class _NotesScreenState extends State<NotesScreen> {
                     }
                   }
                 },
-                child: BlocBuilder<NotesBloc, NotesState>(
+                child: BlocBuilder<SiteNotesBloc, SiteNotesState>(
                   builder: (context, state) {
-                    if (state is NotesLoading || state is NoteCreating) {
+                    if (state is SiteNoteLoading || state is SiteNoteCreateLoading) {
                       return const Center(child: CircularProgressIndicator());
-                    } else if (state is NotesSuccess) {
+                    } else if (state is SiteNoteSuccess) {
                       if (state.notes.isEmpty) {
                         return Center(
                           child: Column(
@@ -704,7 +709,7 @@ class _NotesScreenState extends State<NotesScreen> {
                         );
                       }
                       return NoteGridViewWidget(notes: state.notes);
-                    } else if (state is NotesFailure) {
+                    } else if (state is SiteNoteFailure) {
                       return Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,

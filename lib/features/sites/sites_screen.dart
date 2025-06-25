@@ -31,7 +31,7 @@ class _SitesScreenState extends State<SitesScreen> {
   List<Widget> get _screens => [
     SiteDashboardScreen(siteData: widget.siteData),
     AllLogsScreen(),
-    const NotesScreen(),
+    SiteNotesScreen(siteData: widget.siteData,),
   ];
 
   void _onItemTapped(int index) {

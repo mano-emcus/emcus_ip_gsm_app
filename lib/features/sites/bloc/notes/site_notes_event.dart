@@ -12,3 +12,19 @@ class SiteNotesFetched extends SiteNotesEvent {
   @override
   List<Object?> get props => [siteId];
 }
+
+class SiteNoteCreated extends SiteNotesEvent {
+  SiteNoteCreated({
+    required this.siteId,
+    required this.noteTitle,
+    required this.noteContent,
+    required this.category,
+  });
+  final int siteId;
+  final String noteTitle;
+  final String noteContent;
+  final String category;
+
+  @override
+  List<Object?> get props => [siteId, noteTitle, noteContent, category];
+}

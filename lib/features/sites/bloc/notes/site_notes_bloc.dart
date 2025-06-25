@@ -8,6 +8,7 @@ class SiteNotesBloc extends Bloc<SiteNotesEvent, SiteNotesState> {
       : _siteNoteRepository = siteNoteRepository ?? SiteNoteRepository(),
         super(SiteNoteInitial()) {
     on<SiteNotesFetched>(_onSiteNotesFetched);
+    on<SiteNoteCreated>(_onSiteNoteCreated);
   }
   final SiteNoteRepository _siteNoteRepository;
 
@@ -25,6 +26,28 @@ class SiteNotesBloc extends Bloc<SiteNotesEvent, SiteNotesState> {
       }
     } catch (e) {
       emit(SiteNoteFailure(error: e.toString()));
+    }
+  }
+
+  Future<void> _onSiteNoteCreated(
+    SiteNoteCreated event,
+    Emitter<SiteNotesState> emit,
+  ) async {
+    emit(SiteNoteCreateLoading());
+    try {
+      final response = await _siteNoteRepository.createSiteNote(
+        siteId: event.siteId,
+        noteTitle: event.noteTitle,
+        noteContent: event.noteContent,
+        category: event.category,
+      );
+      if (response.statusCode == 1) {
+        emit(SiteNoteCreateSuccess(notes: response.data, message: response.message));
+      } else {
+        emit(SiteNoteCreateFailure(error: response.message));
+      }
+    } catch (e) {
+      emit(SiteNoteCreateFailure(error: e.toString()));
     }
   }
 }

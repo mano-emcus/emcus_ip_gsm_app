@@ -1,4 +1,4 @@
-import 'site_note_entry.dart';
+import 'package:emcus_ipgsm_app/features/notes/models/note_entry.dart';
 
 class SiteNotesResponse {
   factory SiteNotesResponse.fromJson(Map<String, dynamic> json) {
@@ -7,7 +7,7 @@ class SiteNotesResponse {
       message: json['message'] as String,
       data: json['data'] != null
           ? (json['data'] as List)
-              .map((item) => SiteNoteEntry.fromJson(item as Map<String, dynamic>))
+              .map((item) => NoteEntry.fromJson(item as Map<String, dynamic>))
               .toList()
           : [],
     );
@@ -20,7 +20,7 @@ class SiteNotesResponse {
   });
   final int statusCode;
   final String message;
-  final List<SiteNoteEntry> data;
+  final List<NoteEntry> data;
 
   Map<String, dynamic> toJson() {
     return {

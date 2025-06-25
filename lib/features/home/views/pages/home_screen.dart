@@ -31,14 +31,14 @@ class _HomeScreenState extends State<HomeScreen> {
   String fireCountText = '...';
   String faultCountText = '...';
   String allEventsCountText = '...';
-  late NotesBloc _notesBloc;
+  NotesBloc? _notesBloc;
   LogsBloc? _logsBloc;
   SitesBloc? _sitesBloc;
 
   @override
   void initState() {
     super.initState();
-    _notesBloc = NotesBloc();
+    _notesBloc = context.read<NotesBloc>();
     _logsBloc = context.read<LogsBloc>();
     _sitesBloc = context.read<SitesBloc>();
     _fetchSites();
@@ -54,7 +54,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     // Stop polling when the screen is disposed
     _stopPolling();
-    _notesBloc.close();
     super.dispose();
   }
 
@@ -72,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _fetchNotes() {
-    _notesBloc.add(NotesFetched());
+    _notesBloc?.add(NotesFetched());
   }
 
   void _fetchSites() {
@@ -674,6 +673,7 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 12),
         BlocBuilder<NotesBloc, NotesState>(
           builder: (context, state) {
+            print('the home note state is : $state');
             if (state is NotesLoading) {
               return GridView.count(
                 padding: EdgeInsets.zero,
@@ -696,10 +696,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               );
-            } else if (state is NotesSuccess) {
+            } 
+            else if (state is NotesSuccess) {
               // Get the most recent 3 notes
               return NoteGridViewWidget(notes: state.notes, isHomeScreen: true);
-            } else {
+            } 
+            else {
               // Error or initial state - show empty containers
               return GridView.count(
                 padding: EdgeInsets.zero,
