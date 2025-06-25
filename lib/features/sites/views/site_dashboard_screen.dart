@@ -5,7 +5,6 @@ import 'package:emcus_ipgsm_app/features/logs/models/log_entry.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_bloc.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_event.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_state.dart';
-import 'package:emcus_ipgsm_app/features/sites/models/sites_response.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,8 +14,8 @@ import 'package:google_fonts/google_fonts.dart';
 enum LogType { fire, fault, all }
 
 class SiteDashboardScreen extends StatefulWidget {
-  const SiteDashboardScreen({super.key, required this.siteData});
-  final SiteData siteData;
+  const SiteDashboardScreen({super.key, required this.siteId});
+  final int siteId;
 
   @override
   State<SiteDashboardScreen> createState() => _SiteDashboardScreenState();
@@ -53,7 +52,7 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
   }
 
   void _fetchSiteLogs() {
-    _siteLogsBloc?.add(SiteLogsFetched(siteId: widget.siteData.id));
+    _siteLogsBloc?.add(SiteLogsFetched(siteId: widget.siteId));
   }
 
   List<LogEntry> _filterLogs({required List<LogEntry> fireLogs, required List<LogEntry> faultLogs, required List<LogEntry> allLogs}) {

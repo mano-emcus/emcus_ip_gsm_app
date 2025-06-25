@@ -2,7 +2,6 @@ import 'package:emcus_ipgsm_app/features/notes/widgets/note_grid_view_widget.dar
 import 'package:emcus_ipgsm_app/features/sites/bloc/notes/site_notes_bloc.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/notes/site_notes_event.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/notes/site_notes_state.dart';
-import 'package:emcus_ipgsm_app/features/sites/models/sites_response.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,14 +10,13 @@ import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:emcus_ipgsm_app/utils/widgets/generic_yet_to_implement_pop_up_widget.dart';
 import 'package:emcus_ipgsm_app/features/notes/bloc/notes_bloc.dart';
 import 'package:emcus_ipgsm_app/features/notes/bloc/notes_event.dart';
-import 'package:emcus_ipgsm_app/features/notes/bloc/notes_state.dart';
 import 'package:emcus_ipgsm_app/features/auth/sign_in/views/sign_in_screen.dart';
 
 enum NoteCategory { issueNotes, infoNotes, generalNotes }
 
 class SiteNotesScreen extends StatefulWidget {
-  const SiteNotesScreen({super.key, required this.siteData});
-  final SiteData siteData;
+  const SiteNotesScreen({super.key, required this.siteId});
+  final int siteId;
 
   @override
   State<SiteNotesScreen> createState() => _SiteNotesScreenState();
@@ -38,7 +36,7 @@ class _SiteNotesScreenState extends State<SiteNotesScreen> {
   }
 
   void _fetchNotes() {
-    _siteNotesBloc?.add(SiteNotesFetched(siteId: widget.siteData.id));
+    _siteNotesBloc?.add(SiteNotesFetched(siteId: widget.siteId));
   }
 
   @override

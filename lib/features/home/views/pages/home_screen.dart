@@ -673,7 +673,6 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 12),
         BlocBuilder<NotesBloc, NotesState>(
           builder: (context, state) {
-            print('the home note state is : $state');
             if (state is NotesLoading) {
               return GridView.count(
                 padding: EdgeInsets.zero,

@@ -1,5 +1,4 @@
 import 'package:emcus_ipgsm_app/features/notes/views/notes_screen.dart';
-import 'package:emcus_ipgsm_app/features/logs/views/all_logs_screen.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/devices/site_devices_bloc.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/devices/site_devices_event.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_bloc.dart';
@@ -7,6 +6,7 @@ import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_event.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/notes/site_notes_bloc.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/notes/site_notes_event.dart';
 import 'package:emcus_ipgsm_app/features/sites/models/sites_response.dart';
+import 'package:emcus_ipgsm_app/features/sites/views/all_devices_screen.dart';
 import 'package:emcus_ipgsm_app/features/sites/views/site_dashboard_screen.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:flutter/material.dart';
@@ -29,9 +29,9 @@ class _SitesScreenState extends State<SitesScreen> {
   SiteDevicesBloc? _siteDevicesBloc;
 
   List<Widget> get _screens => [
-    SiteDashboardScreen(siteData: widget.siteData),
-    AllLogsScreen(),
-    SiteNotesScreen(siteData: widget.siteData,),
+    SiteDashboardScreen(siteId: widget.siteData.id),
+    AllDevicesScreen(siteId: widget.siteData.id,),
+    SiteNotesScreen(siteId: widget.siteData.id,),
   ];
 
   void _onItemTapped(int index) {
@@ -102,18 +102,12 @@ class _SitesScreenState extends State<SitesScreen> {
                 label: 'Dashboard',
               ),
               BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  'assets/svgs/all_logs_icon.svg',
-                  height: 24,
-                  width: 24,
-                  colorFilter: ColorFilter.mode(
-                    _selectedIndex == 1
-                        ? ColorConstants.primaryColor
-                        : Colors.grey,
-                    BlendMode.srcIn,
-                  ),
+                icon: Icon(
+                  Icons.memory,
+                  size: 24,
+                  color: _selectedIndex == 1 ? ColorConstants.primaryColor : Colors.grey[600],
                 ),
-                label: 'All Logs',
+                label: 'All Devices',
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(

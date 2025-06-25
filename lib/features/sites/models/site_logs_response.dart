@@ -35,9 +35,9 @@ class SiteLogsData {
       fireCount: json['fireCount'] as int,
       faultCount: json['faultCount'] as int,
       allCount: json['allCount'] as int,
-      fire: (json['fire'] as List?)?.cast<LogEntry>() ?? [],
-      fault: (json['fault'] as List?)?.cast<LogEntry>() ?? [],
-      all: (json['all'] as List?)?.cast<LogEntry>() ?? [],
+      fire: (json['fire'] as List?)?.map((item) => LogEntry.fromJson(item as Map<String, dynamic>)).toList() ?? [],
+      fault: (json['fault'] as List?)?.map((item) => LogEntry.fromJson(item as Map<String, dynamic>)).toList() ?? [],
+      all: (json['all'] as List?)?.map((item) => LogEntry.fromJson(item as Map<String, dynamic>)).toList() ?? [],
     );
   }
 

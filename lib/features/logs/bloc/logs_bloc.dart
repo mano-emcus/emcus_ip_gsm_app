@@ -14,17 +14,17 @@ class LogsBloc extends Bloc<LogsEvent, LogsState> {
     on<LogsRefresh>(_onLogsRefresh);
     on<LogsNewLogReceived>(_onNewLogReceived);
 
-    // Connect to socket and listen for new logs
-    final socketService = SocketService();
-    socketService.connect('https://ipgsm.emcus.co.in');
-    socketService.onNewLog((data) {
-      try {
-        final newLog = LogEntry.fromJson(data);
-        add(LogsNewLogReceived(newLog));
-      } catch (e) {
-        throw Exception('Failed to parse new log: $e');
-      }
-    });
+    // // Connect to socket and listen for new logs
+    // final socketService = SocketService();
+    // socketService.connect('https://ipgsm.emcus.co.in');
+    // socketService.onNewLog((data) {
+    //   try {
+    //     final newLog = LogEntry.fromJson(data);
+    //     add(LogsNewLogReceived(newLog));
+    //   } catch (e) {
+    //     throw Exception('Failed to parse new log: $e');
+    //   }
+    // });
   }
   final LogsRepository _logsRepository;
 

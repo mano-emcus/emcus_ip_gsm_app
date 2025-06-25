@@ -16,7 +16,6 @@ class NoteGridViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('the notes are : ${notes.length}');
     final reversedNotes = notes.reversed.toList();
     final notesToShow =
         isHomeScreen == true ? reversedNotes.take(3).toList() : reversedNotes;
