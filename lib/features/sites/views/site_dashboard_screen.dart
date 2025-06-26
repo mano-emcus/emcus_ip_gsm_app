@@ -66,14 +66,15 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
     }
   }
 
-  String _getLogTypeText() {
-    if (selectedLogType == LogType.fire) {
-      return 'Fire';
-    } else if (selectedLogType == LogType.fault) {
+  String _getLogTypeText(LogEntry log) {
+    if (log.u16EventId >= 1001 && log.u16EventId <= 1007) {
+       return 'Fire';
+    } else if (log.u16EventId >= 2000 && log.u16EventId < 3000) {
       return 'Fault';
     } else {
       return 'Event';
     }
+    
   }
 
   Color _getLogTypeColor(LogEntry log) {
@@ -436,7 +437,7 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
           final fireLogs = state.logs[0].fire.reversed.toList();
           final faultLogs = state.logs[0].fault.reversed.toList();
           final allLogs = state.logs[0].all.reversed.toList();
-          final filteredLogs = _filterLogs(fireLogs: fireLogs, faultLogs: faultLogs, allLogs: allLogs);
+          final filteredLogs = _filterLogs(fireLogs: fireLogs, faultLogs: faultLogs, allLogs: allLogs).reversed.toList();
           if (filteredLogs.isEmpty) {
             return Center(
               child: Padding(
@@ -667,7 +668,7 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  _getLogTypeText(),
+                  _getLogTypeText(log),
                   style: GoogleFonts.inter(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,

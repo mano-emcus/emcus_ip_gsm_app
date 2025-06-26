@@ -105,7 +105,6 @@ class SiteNoteRepository {
     } on FormatException {
       throw Exception('Invalid response format');
     } catch (e) {
-      print('the error is $e');
       throw Exception('Failed to create site note: ${e.toString()}');
     }
   }
