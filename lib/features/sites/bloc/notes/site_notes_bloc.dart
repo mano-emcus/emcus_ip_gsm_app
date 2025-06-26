@@ -42,7 +42,8 @@ class SiteNotesBloc extends Bloc<SiteNotesEvent, SiteNotesState> {
         category: event.category,
       );
       if (response.statusCode == 1) {
-        emit(SiteNoteCreateSuccess(notes: response.data, message: response.message));
+        emit(SiteNoteCreateSuccess(messages: response.data, message: response.message));
+        add(SiteNotesFetched(siteId: event.siteId));
       } else {
         emit(SiteNoteCreateFailure(error: response.message));
       }

@@ -1,3 +1,4 @@
+import 'package:emcus_ipgsm_app/features/notes/bloc/notes_state.dart';
 import 'package:emcus_ipgsm_app/features/notes/widgets/note_grid_view_widget.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/notes/site_notes_bloc.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/notes/site_notes_event.dart';
@@ -409,13 +410,23 @@ class _SiteNotesScreenState extends State<SiteNotesScreen> {
                                               );
                                             } else {
                                               // Trigger note creation
-                                              BlocProvider.of<NotesBloc>(
-                                                      context)
-                                                  .add(
-                                                NoteAdded(
+                                              BlocProvider.of<SiteNotesBloc>(
+                                                context,
+                                              ).add(
+                                                SiteNoteCreated(
+                                                  siteId: widget.siteId,
                                                   noteTitle: title,
                                                   noteContent: content,
-                                                  noteTag: selectedCategory,
+                                                  category:
+                                                      selectedCategory ==
+                                                              NoteCategory
+                                                                  .generalNotes
+                                                          ? 'general'
+                                                          : selectedCategory ==
+                                                              NoteCategory
+                                                                  .infoNotes
+                                                          ? 'info'
+                                                          : 'issue',
                                                 ),
                                               );
 
@@ -554,19 +565,13 @@ class _SiteNotesScreenState extends State<SiteNotesScreen> {
                   if (state is SiteNoteFailure) {
                     // Check if it's an authentication error
                     if (state.error.contains('AuthenticationException') ||
-                        state.error.contains(
-                          'No valid authentication token',
-                        ) ||
-                        state.error.contains(
-                          'Missing Authorization header',
-                        )) {
+                        state.error.contains('No valid authentication token') ||
+                        state.error.contains('Missing Authorization header')) {
                       // Authentication failed, redirect to sign-in
                       Navigator.pushAndRemoveUntil(
                         context,
                         PageRouteBuilder(
-                          transitionDuration: const Duration(
-                            milliseconds: 600,
-                          ),
+                          transitionDuration: const Duration(milliseconds: 600),
                           pageBuilder:
                               (context, animation, secondaryAnimation) =>
                                   const SignInScreen(),
@@ -599,9 +604,7 @@ class _SiteNotesScreenState extends State<SiteNotesScreen> {
                       // Show error message for other failures
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(
-                            'Failed to load notes: ${state.error}',
-                          ),
+                          content: Text('Failed to load notes: ${state.error}'),
                           backgroundColor: Colors.red,
                           duration: const Duration(seconds: 3),
                         ),
@@ -624,9 +627,7 @@ class _SiteNotesScreenState extends State<SiteNotesScreen> {
                       Navigator.pushAndRemoveUntil(
                         context,
                         PageRouteBuilder(
-                          transitionDuration: const Duration(
-                            milliseconds: 600,
-                          ),
+                          transitionDuration: const Duration(milliseconds: 600),
                           pageBuilder:
                               (context, animation, secondaryAnimation) =>
                                   const SignInScreen(),
@@ -671,7 +672,8 @@ class _SiteNotesScreenState extends State<SiteNotesScreen> {
                 },
                 child: BlocBuilder<SiteNotesBloc, SiteNotesState>(
                   builder: (context, state) {
-                    if (state is SiteNoteLoading || state is SiteNoteCreateLoading) {
+                    if (state is SiteNoteLoading ||
+                        state is SiteNoteCreateLoading) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state is SiteNoteSuccess) {
                       if (state.notes.isEmpty) {
@@ -739,9 +741,9 @@ class _SiteNotesScreenState extends State<SiteNotesScreen> {
                             const SizedBox(height: 16),
                             ElevatedButton(
                               onPressed: () {
-                                BlocProvider.of<NotesBloc>(context).add(
-                                  NotesFetched(),
-                                );
+                                BlocProvider.of<NotesBloc>(
+                                  context,
+                                ).add(NotesFetched());
                               },
                               child: Text('Retry'),
                             ),

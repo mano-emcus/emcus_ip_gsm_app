@@ -107,7 +107,7 @@ class _SitesScreenState extends State<SitesScreen> {
                   size: 24,
                   color: _selectedIndex == 1 ? ColorConstants.primaryColor : Colors.grey[600],
                 ),
-                label: 'All Devices',
+                label: 'Devices',
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(

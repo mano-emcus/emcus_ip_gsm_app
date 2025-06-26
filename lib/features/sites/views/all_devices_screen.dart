@@ -5,7 +5,6 @@ import 'package:emcus_ipgsm_app/features/sites/models/site_devices_response.dart
 import 'package:emcus_ipgsm_app/features/auth/sign_in/views/sign_in_screen.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

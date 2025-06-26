@@ -1,5 +1,4 @@
 import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_bloc.dart';
-import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_event.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_state.dart';
 import 'package:emcus_ipgsm_app/features/sites/models/sites_response.dart';
 import 'package:emcus_ipgsm_app/features/sites/sites_screen.dart';
@@ -17,19 +16,6 @@ class SiteCard extends StatefulWidget {
 }
 
 class _SiteCardState extends State<SiteCard> {
-  SiteLogsBloc? _siteLogsBloc;
-
-  @override
-  void initState() {
-    _siteLogsBloc = context.read<SiteLogsBloc>();
-    _fetchSiteLogs();
-    super.initState();
-  }
-
-  void _fetchSiteLogs() {
-    _siteLogsBloc?.add(SiteLogsFetched(siteId: widget.siteData.id));
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

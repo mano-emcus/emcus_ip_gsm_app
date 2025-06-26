@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_bloc.dart';
+import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_event.dart';
 
 class AllSitesScreen extends StatefulWidget {
   const AllSitesScreen({super.key});
@@ -122,7 +124,10 @@ class _AllSitesScreenState extends State<AllSitesScreen> {
                 ),
               )
             else if (state is SitesSuccess)
-              ...state.sites.map((site) => SiteCard(siteData: site))
+              ...state.sites.map((site) => BlocProvider(
+                create: (context) => SiteLogsBloc()..add(SiteLogsFetched(siteId: site.id)),
+                child: SiteCard(siteData: site),
+              ))
             else if (state is SitesFailure)
               Center(
                 child: Column(

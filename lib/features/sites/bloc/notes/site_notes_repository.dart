@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 
 class SiteNoteRepository {
   SiteNoteRepository({AuthManager? authManager})
-      : _authManager = authManager ?? AuthManager();
+    : _authManager = authManager ?? AuthManager();
   final AuthManager _authManager;
 
   Future<SiteNotesResponse> fetchSiteNotes({required int siteId}) async {
@@ -28,10 +28,7 @@ class SiteNoteRepository {
         headers: headers,
         body: null,
       );
-      final response = await http.get(
-        Uri.parse(url),
-        headers: headers,
-      );
+      final response = await http.get(Uri.parse(url), headers: headers);
       ApiLogger.logResponse(
         statusCode: response.statusCode,
         headers: response.headers,
@@ -55,7 +52,7 @@ class SiteNoteRepository {
     }
   }
 
-  Future<SiteNotesResponse> createSiteNote({
+  Future<SiteNoteCreationResponse> createSiteNote({
     required int siteId,
     required String noteTitle,
     required String noteContent,
@@ -71,8 +68,9 @@ class SiteNoteRepository {
         'Authorization': 'Bearer $idToken',
         'Content-Type': 'application/json',
       };
-      final url = 'https://ipgsm.emcus.co.in/api/sites/$siteId/notes';
+      final url = 'https://ipgsm.emcus.co.in/api/sites/note';
       final body = jsonEncode({
+        'siteId': siteId.toString(),
         'noteTitle': noteTitle,
         'noteContent': noteContent,
         'category': category,
@@ -94,8 +92,8 @@ class SiteNoteRepository {
         body: response.body,
       );
       final Map<String, dynamic> responseData = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        return SiteNotesResponse.fromJson(responseData);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return SiteNoteCreationResponse.fromJson(responseData);
       } else if (response.statusCode == 401) {
         await _authManager.logoutSilent();
         throw Exception('Authentication failed. Please sign in again.');
@@ -107,6 +105,7 @@ class SiteNoteRepository {
     } on FormatException {
       throw Exception('Invalid response format');
     } catch (e) {
+      print('the error is $e');
       throw Exception('Failed to create site note: ${e.toString()}');
     }
   }

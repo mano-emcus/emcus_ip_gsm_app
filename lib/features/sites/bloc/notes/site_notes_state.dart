@@ -1,4 +1,5 @@
 import 'package:emcus_ipgsm_app/features/notes/models/note_entry.dart';
+import 'package:emcus_ipgsm_app/features/sites/models/site_notes_response.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class SiteNotesState extends Equatable {
@@ -30,12 +31,12 @@ class SiteNoteFailure extends SiteNotesState {
 class SiteNoteCreateLoading extends SiteNotesState {}
 
 class SiteNoteCreateSuccess extends SiteNotesState {
-  SiteNoteCreateSuccess({required this.notes, required this.message});
-  final List<NoteEntry> notes;
+  SiteNoteCreateSuccess({required this.messages, required this.message});
+  final List<SiteNoteCreationMessage> messages;
   final String message;
 
   @override
-  List<Object?> get props => [notes, message];
+  List<Object?> get props => [messages, message];
 }
 
 class SiteNoteCreateFailure extends SiteNotesState {

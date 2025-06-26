@@ -1,3 +1,4 @@
+import 'package:emcus_ipgsm_app/features/logs/models/log_entry.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class SiteLogsEvent extends Equatable {
@@ -12,3 +13,11 @@ class SiteLogsFetched extends SiteLogsEvent {
   @override
   List<Object?> get props => [siteId];
 }
+
+class SiteLogsNewLogReceived extends SiteLogsEvent {
+  SiteLogsNewLogReceived(this.newLog);
+  final LogEntry newLog;
+
+  @override
+  List<Object?> get props => [newLog];
+} 
