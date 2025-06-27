@@ -1,3 +1,4 @@
+import 'package:emcus_ipgsm_app/features/sites/models/site_logs_response.dart';
 import 'package:emcus_ipgsm_app/features/logs/models/log_entry.dart';
 import 'package:equatable/equatable.dart';
 

@@ -73,7 +73,7 @@ class _AllDevicesScreenState extends State<AllDevicesScreen> {
             // Show error message for other failures
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Failed to load devices: {state.error}'),
+                content: Text('Failed to load devices: ${state.error}'),
                 backgroundColor: Colors.red,
                 duration: const Duration(seconds: 3),
               ),
@@ -196,13 +196,14 @@ class DeviceCard extends StatelessWidget {
                 ),
                 Icon(
                   Icons.memory,
-                  size: 16,
+                  size: 24,
                   color: Colors.grey[600],
                 ),
               ],
             ),
             const SizedBox(height: 8),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: Text(
@@ -228,6 +229,7 @@ class DeviceCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Row(
+               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: Text(
