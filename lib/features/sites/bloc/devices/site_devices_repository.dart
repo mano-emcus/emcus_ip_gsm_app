@@ -11,7 +11,7 @@ class SiteDevicesRepository {
       : _authManager = authManager ?? AuthManager();
   final AuthManager _authManager;
 
-  Future<SiteDevicesResponse> fetchSiteDevices({required int siteId}) async {
+  Future<GatewaysResponse> fetchSiteGateways({required int siteId}) async {
     try {
       final idToken = await _authManager.getCurrentIdToken();
       if (idToken == null || idToken.isEmpty) {
@@ -21,7 +21,7 @@ class SiteDevicesRepository {
         ...ApiConfig.defaultHeaders,
         'Authorization': 'Bearer $idToken',
       };
-      final url = 'https://ipgsm.emcus.co.in/api/sites/$siteId/devices';
+      final url = 'https://ipgsm.emcus.co.in/api/sites/$siteId/gateways';
       ApiLogger.logRequest(
         method: 'GET',
         url: url,
@@ -39,19 +39,19 @@ class SiteDevicesRepository {
       );
       final Map<String, dynamic> responseData = jsonDecode(response.body);
       if (response.statusCode == 200) {
-        return SiteDevicesResponse.fromJson(responseData);
+        return GatewaysResponse.fromJson(responseData);
       } else if (response.statusCode == 401) {
         await _authManager.logoutSilent();
         throw Exception('Authentication failed. Please sign in again.');
       } else {
-        throw Exception('Failed to fetch site devices: ${response.statusCode}');
+        throw Exception('Failed to fetch site gateways: ${response.statusCode}');
       }
     } on SocketException {
       throw Exception('No internet connection');
     } on FormatException {
       throw Exception('Invalid response format');
     } catch (e) {
-      throw Exception('Failed to fetch site devices: ${e.toString()}');
+      throw Exception('Failed to fetch site gateways: ${e.toString()}');
     }
   }
 }

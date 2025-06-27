@@ -7,6 +7,7 @@ import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class AllDevicesScreen extends StatefulWidget {
   const AllDevicesScreen({super.key, required this.siteId});
@@ -166,7 +167,16 @@ class _AllDevicesScreenState extends State<AllDevicesScreen> {
 
 class DeviceCard extends StatelessWidget {
   const DeviceCard({super.key, required this.device});
-  final SiteDevice device;
+  final Gateway device;
+
+  String _formatDate(String isoString) {
+    try {
+      final date = DateTime.parse(isoString);
+      return DateFormat('dd-MM-yyyy, HH:mm:ss').format(date);
+    } catch (_) {
+      return isoString;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -182,80 +192,44 @@ class DeviceCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Device ID: ${device.id}',
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: ColorConstants.primaryColor,
-                    ),
-                  ),
-                ),
-                Icon(
-                  Icons.memory,
-                  size: 24,
-                  color: Colors.grey[600],
-                ),
-              ],
-            ),
+            _keyValueRow('Gateway ID', device.id.toString()),
             const SizedBox(height: 8),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    'Device Address: ${device.deviceAddress}',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: ColorConstants.textColor,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    'Zone Address: ${device.zoneAddress}',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: ColorConstants.textColor,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            _keyValueRow('Serial Number', device.serialNumber),
             const SizedBox(height: 8),
-            Row(
-               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    'Company: ${device.company}',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: ColorConstants.textColor,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    'Created: ${device.createdAt}',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: ColorConstants.textColor,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            _keyValueRow('Category', device.category),
+            const SizedBox(height: 8),
+            _keyValueRow('Company', device.company),
+            const SizedBox(height: 8),
+            _keyValueRow('Created', _formatDate(device.createdAt)),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _keyValueRow(String key, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '$key: ',
+          style: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: ColorConstants.primaryColor,
+          ),
+        ),
+        Text(
+          value,
+          style: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w400,
+            color: ColorConstants.textColor,
+          ),
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
     );
   }
 }

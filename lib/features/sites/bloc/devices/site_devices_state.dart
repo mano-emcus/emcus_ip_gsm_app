@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:emcus_ipgsm_app/features/sites/models/site_devices_response.dart';
 
 abstract class SiteDevicesState extends Equatable {
   @override
@@ -11,7 +12,7 @@ class SiteDevicesLoading extends SiteDevicesState {}
 
 class SiteDevicesSuccess extends SiteDevicesState {
   SiteDevicesSuccess({required this.devices, required this.message});
-  final List<dynamic> devices;
+  final List<Gateway> devices;
   final String message;
 
   @override
