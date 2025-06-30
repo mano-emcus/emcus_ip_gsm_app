@@ -16,6 +16,7 @@ class LogEntry {
     required this.u8Minutes,
     required this.u8Seconds,
     required this.u8Logbitoffset,
+    required this.u8SerialNumber,
     required this.u16Crc,
     required this.source,
     required this.createdAt,
@@ -39,6 +40,7 @@ class LogEntry {
       u8Minutes: json['u8_minutes'] as int,
       u8Seconds: json['u8_seconds'] as int,
       u8Logbitoffset: json['u8_logbitoffset'] as int,
+      u8SerialNumber: json['u8_serialNumber'] as int,
       u16Crc: json['u16_crc'] as int,
       source: json['source'] as String,
       createdAt: json['createdAt'] as String,
@@ -60,6 +62,7 @@ class LogEntry {
   final int u8Minutes;
   final int u8Seconds;
   final int u8Logbitoffset;
+  final int u8SerialNumber;
   final int u16Crc;
   final String source;
   final String createdAt;
@@ -82,6 +85,7 @@ class LogEntry {
       'u8_minutes': u8Minutes,
       'u8_seconds': u8Seconds,
       'u8_logbitoffset': u8Logbitoffset,
+      'u8_serialNumber': u8SerialNumber,
       'u16_crc': u16Crc,
       'source': source,
       'createdAt': createdAt,

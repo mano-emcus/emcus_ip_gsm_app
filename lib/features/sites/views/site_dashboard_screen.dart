@@ -551,7 +551,7 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Zone Address',
+                  'Serial No',
                   style: GoogleFonts.inter(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
@@ -560,7 +560,7 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  log.u8ZoneNumber.toString(),
+                  log.u8SerialNumber.toString(),
                   style: GoogleFonts.inter(
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
@@ -570,29 +570,29 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
               ],
             ),
             const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Device Address',
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: ColorConstants.primaryColor,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  log.u8DeviceAddress.toString(),
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    color: ColorConstants.textColor,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //     Text(
+            //       'Device Address',
+            //       style: GoogleFonts.inter(
+            //         fontSize: 12,
+            //         fontWeight: FontWeight.w600,
+            //         color: ColorConstants.primaryColor,
+            //       ),
+            //     ),
+            //     const SizedBox(height: 4),
+            //     Text(
+            //       log.u8DeviceAddress.toString(),
+            //       style: GoogleFonts.inter(
+            //         fontSize: 12,
+            //         fontWeight: FontWeight.w400,
+            //         color: ColorConstants.textColor,
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            // const SizedBox(height: 10),
             // Second row: Source
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

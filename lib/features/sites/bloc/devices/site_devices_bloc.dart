@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/devices/site_devices_event.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/devices/site_devices_state.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/devices/site_devices_repository.dart';
-import 'package:emcus_ipgsm_app/features/sites/models/site_devices_response.dart';
 
 class SiteDevicesBloc extends Bloc<SiteDevicesEvent, SiteDevicesState> {
   SiteDevicesBloc({SiteDevicesRepository? siteDevicesRepository})
