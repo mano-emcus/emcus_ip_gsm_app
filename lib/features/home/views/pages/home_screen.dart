@@ -179,75 +179,87 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
       child: Scaffold(
         backgroundColor: ColorConstants.whiteColor,
-        body: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              backgroundColor: ColorConstants.whiteColor,
-              surfaceTintColor: ColorConstants.whiteColor,
-              elevation: 0,
-              pinned: true,
-              expandedHeight: 120,
-              automaticallyImplyLeading: false,
-              flexibleSpace: LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints constraints) {
-                  final double appBarHeight = constraints.biggest.height;
-                  final double statusBarHeight =
-                      MediaQuery.of(context).padding.top;
-                  final double minHeight = kToolbarHeight + statusBarHeight;
-                  final double maxHeight = 120 + statusBarHeight;
+        body: RefreshIndicator(
+          displacement: 120,
+          color: ColorConstants.primaryColor,
+          onRefresh: () async {
+            _fetchLogs();
+            _fetchSites();
+            _fetchNotes();
+            // Optionally, wait for a short duration to show the indicator
+            await Future.delayed(const Duration(milliseconds: 500));
+          },
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              SliverAppBar(
+                backgroundColor: ColorConstants.whiteColor,
+                surfaceTintColor: ColorConstants.whiteColor,
+                elevation: 0,
+                pinned: true,
+                expandedHeight: 120,
+                automaticallyImplyLeading: false,
+                flexibleSpace: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    final double appBarHeight = constraints.biggest.height;
+                    final double statusBarHeight =
+                        MediaQuery.of(context).padding.top;
+                    final double minHeight = kToolbarHeight + statusBarHeight;
+                    final double maxHeight = 120 + statusBarHeight;
 
-                  // Calculate scroll progress (0.0 = fully expanded, 1.0 = fully collapsed)
-                  final double scrollProgress = ((maxHeight - appBarHeight) /
-                          (maxHeight - minHeight))
-                      .clamp(0.0, 1.0);
+                    // Calculate scroll progress (0.0 = fully expanded, 1.0 = fully collapsed)
+                    final double scrollProgress = ((maxHeight - appBarHeight) /
+                            (maxHeight - minHeight))
+                        .clamp(0.0, 1.0);
 
-                  // Calculate logo size and position based on scroll
-                  final double logoSize =
-                      50 - (20 * scrollProgress); // 60 -> 35
-                  final double topPadding =
-                      statusBarHeight + (20 * (1 - scrollProgress));
+                    // Calculate logo size and position based on scroll
+                    final double logoSize =
+                        50 - (20 * scrollProgress); // 60 -> 35
+                    final double topPadding =
+                        statusBarHeight + (20 * (1 - scrollProgress));
 
-                  return Container(
-                    color: ColorConstants.whiteColor,
-                    child: Align(
-                      alignment:
-                          scrollProgress > 0.5
-                              ? Alignment.bottomCenter
-                              : Alignment.center,
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                          top: scrollProgress > 0.5 ? 0 : topPadding,
-                          bottom: scrollProgress > 0.5 ? 16 : 0,
-                        ),
-                        child: Hero(
-                          tag: 'emcus_logo',
-                          child: SvgPicture.asset(
-                            'assets/svgs/emcus_logo.svg',
-                            height: logoSize,
+                    return Container(
+                      color: ColorConstants.whiteColor,
+                      child: Align(
+                        alignment:
+                            scrollProgress > 0.5
+                                ? Alignment.bottomCenter
+                                : Alignment.center,
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            top: scrollProgress > 0.5 ? 0 : topPadding,
+                            bottom: scrollProgress > 0.5 ? 16 : 0,
+                          ),
+                          child: Hero(
+                            tag: 'emcus_logo',
+                            child: SvgPicture.asset(
+                              'assets/svgs/emcus_logo.svg',
+                              height: logoSize,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 26),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  const SizedBox(height: 20),
-                  _buildDashboardContent(),
-                  const SizedBox(height: 39),
-                  _buildRecentSites(),
-                  const SizedBox(height: 39),
-                  _buildRecentNotes(),
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 26),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    const SizedBox(height: 20),
+                    _buildDashboardContent(),
+                    const SizedBox(height: 39),
+                    _buildRecentSites(),
+                    const SizedBox(height: 39),
+                    _buildRecentNotes(),
 
-                  const SizedBox(height: 100),
-                ]),
+                    const SizedBox(height: 100),
+                  ]),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
