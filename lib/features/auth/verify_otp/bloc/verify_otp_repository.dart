@@ -6,8 +6,7 @@ import 'package:emcus_ipgsm_app/core/utils/api_logger.dart';
 import 'package:emcus_ipgsm_app/features/auth/verify_otp/models/verify_otp_response.dart';
 
 class VerifyOtpRepository {
-  VerifyOtpRepository({http.Client? client})
-    : _client = client ?? http.Client();
+  VerifyOtpRepository({required http.Client client}) : _client = client;
   final http.Client _client;
 
   Future<VerifyOtpResponse> verifyCode({

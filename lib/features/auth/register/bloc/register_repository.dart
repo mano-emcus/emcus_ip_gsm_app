@@ -7,7 +7,7 @@ import 'package:emcus_ipgsm_app/features/auth/register/models/register_response.
 
 class RegisterRepository {
 
-  RegisterRepository({http.Client? client}) : _client = client ?? http.Client();
+  RegisterRepository({required http.Client client}) : _client = client;
   final http.Client _client;
 
   Future<RegisterResponse> register({

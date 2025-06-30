@@ -7,7 +7,7 @@ import 'package:emcus_ipgsm_app/features/auth/set_password/models/set_password_r
 
 class SetPasswordRepository {
 
-  SetPasswordRepository({http.Client? client}) : _client = client ?? http.Client();
+  SetPasswordRepository({required http.Client client}) : _client = client;
   final http.Client _client;
 
   Future<SetPasswordResponse> updatePassword({

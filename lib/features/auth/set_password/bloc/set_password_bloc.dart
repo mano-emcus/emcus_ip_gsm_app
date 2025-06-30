@@ -4,8 +4,8 @@ import 'package:emcus_ipgsm_app/features/auth/set_password/bloc/set_password_sta
 import 'package:emcus_ipgsm_app/features/auth/set_password/bloc/set_password_repository.dart';
 
 class SetPasswordBloc extends Bloc<SetPasswordEvent, SetPasswordState> {
-  SetPasswordBloc({SetPasswordRepository? setPasswordRepository})
-    : _setPasswordRepository = setPasswordRepository ?? SetPasswordRepository(),
+  SetPasswordBloc({required SetPasswordRepository setPasswordRepository})
+    : _setPasswordRepository = setPasswordRepository,
       super(SetPasswordInitial()) {
     on<SetPasswordSubmitted>(_onSetPasswordSubmitted);
   }

@@ -4,8 +4,8 @@ import 'package:emcus_ipgsm_app/features/auth/register/bloc/register_state.dart'
 import 'package:emcus_ipgsm_app/features/auth/register/bloc/register_repository.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
-  RegisterBloc({RegisterRepository? registerRepository})
-    : _registerRepository = registerRepository ?? RegisterRepository(),
+  RegisterBloc({required RegisterRepository registerRepository})
+    : _registerRepository = registerRepository,
       super(RegisterInitial()) {
     on<RegisterSubmitted>(_onRegisterSubmitted);
   }

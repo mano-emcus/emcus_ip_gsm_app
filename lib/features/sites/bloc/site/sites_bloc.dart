@@ -6,8 +6,8 @@ import 'package:emcus_ipgsm_app/features/sites/bloc/site/sites_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SitesBloc extends Bloc<SitesEvent, SitesState> {
-  SitesBloc({SitesRepository? sitesRepository})
-      : _sitesRepository = sitesRepository ?? SitesRepository(),
+  SitesBloc({required SitesRepository sitesRepository})
+      : _sitesRepository = sitesRepository,
         super(SitesInitial()) {
     on<SitesFetched>(_onSitesFetched);
   }

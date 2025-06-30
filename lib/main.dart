@@ -12,9 +12,11 @@ import 'package:emcus_ipgsm_app/features/auth/sign_in/bloc/sign_in_bloc.dart';
 import 'package:emcus_ipgsm_app/features/auth/register/bloc/register_bloc.dart';
 import 'package:emcus_ipgsm_app/features/auth/set_password/bloc/set_password_bloc.dart';
 import 'package:emcus_ipgsm_app/features/auth/verify_otp/bloc/verify_otp_bloc.dart';
+import 'package:emcus_ipgsm_app/core/services/di.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  setupLocator();
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -25,16 +27,16 @@ void main() {
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider<LogsBloc>(create: (_) => LogsBloc()),
-        BlocProvider<NotesBloc>(create: (_) => NotesBloc()),
-        BlocProvider<SitesBloc>(create: (_) => SitesBloc()),
-        BlocProvider<SignInBloc>(create: (_) => SignInBloc()),
-        BlocProvider<RegisterBloc>(create: (_) => RegisterBloc()),
-        BlocProvider<SetPasswordBloc>(create: (_) => SetPasswordBloc()),
-        BlocProvider<VerifyOtpBloc>(create: (_) => VerifyOtpBloc()),
-        BlocProvider<SiteLogsBloc>(create: (_) => SiteLogsBloc()),
-        BlocProvider<SiteNotesBloc>(create: (_) => SiteNotesBloc()),
-        BlocProvider<SiteDevicesBloc>(create: (_) => SiteDevicesBloc()),
+        BlocProvider<LogsBloc>(create: (_) => getIt<LogsBloc>()),
+        BlocProvider<NotesBloc>(create: (_) => getIt<NotesBloc>()),
+        BlocProvider<SitesBloc>(create: (_) => getIt<SitesBloc>()),
+        BlocProvider<SignInBloc>(create: (_) => getIt<SignInBloc>()),
+        BlocProvider<RegisterBloc>(create: (_) => getIt<RegisterBloc>()),
+        BlocProvider<SetPasswordBloc>(create: (_) => getIt<SetPasswordBloc>()),
+        BlocProvider<VerifyOtpBloc>(create: (_) => getIt<VerifyOtpBloc>()),
+        BlocProvider<SiteLogsBloc>(create: (_) => getIt<SiteLogsBloc>()),
+        BlocProvider<SiteNotesBloc>(create: (_) => getIt<SiteNotesBloc>()),
+        BlocProvider<SiteDevicesBloc>(create: (_) => getIt<SiteDevicesBloc>()),
       ],
       child: const MyApp(),
     ),

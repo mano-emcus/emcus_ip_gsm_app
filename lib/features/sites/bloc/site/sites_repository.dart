@@ -8,9 +8,9 @@ import 'package:emcus_ipgsm_app/features/sites/models/sites_response.dart';
 import 'package:http/http.dart' as http;
 
 class SitesRepository {
-  SitesRepository({AuthManager? authManager, http.Client? client})
+  SitesRepository({AuthManager? authManager, required http.Client client})
     : _authManager = authManager ?? AuthManager(),
-      _client = client ?? http.Client();
+      _client = client;
   
   final AuthManager _authManager;
   final http.Client _client;

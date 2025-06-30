@@ -4,8 +4,8 @@ import 'package:emcus_ipgsm_app/features/notes/bloc/notes_state.dart';
 import 'package:emcus_ipgsm_app/features/notes/bloc/notes_repository.dart';
 
 class NotesBloc extends Bloc<NotesEvent, NotesState> {
-  NotesBloc({NotesRepository? notesRepository})
-    : _notesRepository = notesRepository ?? NotesRepository(),
+  NotesBloc({required NotesRepository notesRepository})
+    : _notesRepository = notesRepository,
       super(NotesInitial()) {
     on<NotesFetched>(_onNotesFetched);
     on<NoteAdded>(_onNoteAdded);

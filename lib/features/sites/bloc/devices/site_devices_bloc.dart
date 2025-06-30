@@ -4,8 +4,8 @@ import 'package:emcus_ipgsm_app/features/sites/bloc/devices/site_devices_state.d
 import 'package:emcus_ipgsm_app/features/sites/bloc/devices/site_devices_repository.dart';
 
 class SiteDevicesBloc extends Bloc<SiteDevicesEvent, SiteDevicesState> {
-  SiteDevicesBloc({SiteDevicesRepository? siteDevicesRepository})
-      : _siteDevicesRepository = siteDevicesRepository ?? SiteDevicesRepository(),
+  SiteDevicesBloc({required SiteDevicesRepository siteDevicesRepository})
+      : _siteDevicesRepository = siteDevicesRepository,
         super(SiteDevicesInitial()) {
     on<SiteDevicesFetched>(_onSiteDevicesFetched);
   }

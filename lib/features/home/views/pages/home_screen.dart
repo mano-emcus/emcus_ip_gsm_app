@@ -18,6 +18,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_bloc.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_event.dart';
+import 'package:emcus_ipgsm_app/core/services/di.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -496,7 +497,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   )
                 else if (state is SitesSuccess)
                   ...state.sites.map((site) => BlocProvider(
-                    create: (context) => SiteLogsBloc()..add(SiteLogsFetched(siteId: site.id)),
+                    create: (context) => getIt<SiteLogsBloc>()..add(SiteLogsFetched(siteId: site.id)),
                     child: SiteCard(siteData: site),
                   ))
                 else if (state is SitesFailure)

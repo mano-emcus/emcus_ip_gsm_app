@@ -5,9 +5,9 @@ import 'package:emcus_ipgsm_app/features/auth/sign_in/bloc/sign_in_repository.da
 import 'package:emcus_ipgsm_app/core/services/auth_manager.dart';
 
 class SignInBloc extends Bloc<SignInEvent, SignInState> {
-  SignInBloc({SignInRepository? signInRepository, AuthManager? authManager})
-    : _signInRepository = signInRepository ?? SignInRepository(),
-      _authManager = authManager ?? AuthManager(),
+  SignInBloc({required SignInRepository signInRepository, required AuthManager authManager})
+    : _signInRepository = signInRepository,
+      _authManager = authManager,
       super(SignInInitial()) {
     on<SignInSubmitted>(_onSignInSubmitted);
   }

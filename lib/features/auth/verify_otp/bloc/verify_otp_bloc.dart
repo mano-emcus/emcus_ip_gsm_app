@@ -4,8 +4,8 @@ import 'package:emcus_ipgsm_app/features/auth/verify_otp/bloc/verify_otp_state.d
 import 'package:emcus_ipgsm_app/features/auth/verify_otp/bloc/verify_otp_repository.dart';
 
 class VerifyOtpBloc extends Bloc<VerifyOtpEvent, VerifyOtpState> {
-  VerifyOtpBloc({VerifyOtpRepository? verifyOtpRepository})
-    : _verifyOtpRepository = verifyOtpRepository ?? VerifyOtpRepository(),
+  VerifyOtpBloc({required VerifyOtpRepository verifyOtpRepository})
+    : _verifyOtpRepository = verifyOtpRepository,
       super(VerifyOtpInitial()) {
     on<VerifyOtpSubmitted>(_onVerifyOtpSubmitted);
   }

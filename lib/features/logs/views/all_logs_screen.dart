@@ -7,6 +7,7 @@ import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:emcus_ipgsm_app/core/services/di.dart';
 import 'package:emcus_ipgsm_app/core/services/socket_service.dart';
 
 enum LogFilter { all, fire, fault }
@@ -31,7 +32,7 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
     _logsBloc = context.read<LogsBloc>();
     _fetchLogs();
     // Listen to socket connection status
-    final socket = SocketService().socket;
+    final socket = getIt<SocketService>().socket;
     if (socket != null) {
       _isSocketConnected = socket.connected;
       socket.on('connect', (_) {

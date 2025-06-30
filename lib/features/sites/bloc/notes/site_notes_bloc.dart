@@ -4,8 +4,8 @@ import 'package:emcus_ipgsm_app/features/sites/bloc/notes/site_notes_state.dart'
 import 'package:emcus_ipgsm_app/features/sites/bloc/notes/site_notes_repository.dart';
 
 class SiteNotesBloc extends Bloc<SiteNotesEvent, SiteNotesState> {
-  SiteNotesBloc({SiteNoteRepository? siteNoteRepository})
-      : _siteNoteRepository = siteNoteRepository ?? SiteNoteRepository(),
+  SiteNotesBloc({required SiteNoteRepository siteNoteRepository})
+      : _siteNoteRepository = siteNoteRepository,
         super(SiteNoteInitial()) {
     on<SiteNotesFetched>(_onSiteNotesFetched);
     on<SiteNoteCreated>(_onSiteNoteCreated);

@@ -7,14 +7,13 @@ import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_state.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_repository.dart';
 
 class SiteLogsBloc extends Bloc<SiteLogsEvent, SiteLogsState> {
-  SiteLogsBloc({SiteLogsRepository? siteLogsRepository})
-    : _siteLogsRepository = siteLogsRepository ?? SiteLogsRepository(),
+  SiteLogsBloc({required SiteLogsRepository siteLogsRepository, required SocketService socketService})
+    : _siteLogsRepository = siteLogsRepository,
       super(SiteLogsInitial()) {
     on<SiteLogsFetched>(_onSiteLogsFetched);
     on<SiteLogsNewLogReceived>(_onSiteLogsNewLogReceived);
 
     // Connect to socket and listen for new logs
-    final socketService = SocketService();
     socketService.connect('https://ipgsm.emcus.co.in/websocket/site-logs');
     socketService.onNewLog((data) {
       try {

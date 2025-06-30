@@ -7,15 +7,14 @@ import 'package:emcus_ipgsm_app/core/services/socket_service.dart';
 import 'package:emcus_ipgsm_app/features/logs/models/log_entry.dart';
 
 class LogsBloc extends Bloc<LogsEvent, LogsState> {
-  LogsBloc({LogsRepository? logsRepository})
-    : _logsRepository = logsRepository ?? LogsRepository(),
+  LogsBloc({required LogsRepository logsRepository, required SocketService socketService})
+    : _logsRepository = logsRepository,
       super(LogsInitial()) {
     on<LogsFetched>(_onLogsFetched);
     on<LogsRefresh>(_onLogsRefresh);
     on<LogsNewLogReceived>(_onNewLogReceived);
 
     // Connect to socket and listen for new logs
-    final socketService = SocketService();
     socketService.connect('https://ipgsm.emcus.co.in');
     socketService.onNewLog((data) {
       try {

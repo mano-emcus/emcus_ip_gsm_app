@@ -7,7 +7,7 @@ import 'package:emcus_ipgsm_app/features/auth/sign_in/models/sign_in_response.da
 
 class SignInRepository {
 
-  SignInRepository({http.Client? client}) : _client = client ?? http.Client();
+  SignInRepository({required http.Client client}) : _client = client;
   final http.Client _client;
 
   Future<SignInResponse> signIn({
