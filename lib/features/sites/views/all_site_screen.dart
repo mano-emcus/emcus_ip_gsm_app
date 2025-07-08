@@ -21,10 +21,12 @@ class AllSitesScreen extends StatefulWidget {
 
 class _AllSitesScreenState extends State<AllSitesScreen> {
   SitesBloc? _sitesBloc;
+  late TextEditingController _searchController;
 
   @override
   void initState() {
     super.initState();
+    _searchController = TextEditingController();
     _sitesBloc = context.read<SitesBloc>();
     _fetchSites();
   }
@@ -117,6 +119,39 @@ class _AllSitesScreenState extends State<AllSitesScreen> {
                 ),
               ),
             ),
+            SizedBox(height: 10),
+            // Search Bar
+            Container(
+              decoration: BoxDecoration(
+                color: ColorConstants.textFieldBorderColor.withValues(
+                  alpha: 0.3,
+                ),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: TextField(
+                onTapOutside: (event) {
+                  FocusScope.of(context).unfocus();
+                },
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'Search sites...',
+                  hintStyle: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: ColorConstants.greyColor,
+                  ),
+                  prefixIcon: const Icon(Icons.search),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                ),
+                onChanged: (value) {
+                  _sitesBloc!.add(SitesFilterChanged(filter: value));
+                },
+              ),
+            ),
             const SizedBox(height: 24),
             if (state is SitesLoading)
               const Center(
@@ -125,10 +160,15 @@ class _AllSitesScreenState extends State<AllSitesScreen> {
                 ),
               )
             else if (state is SitesSuccess)
-              ...state.sites.map((site) => BlocProvider(
-                create: (context) => getIt<SiteLogsBloc>()..add(SiteLogsFetched(siteId: site.id)),
-                child: SiteCard(siteData: site),
-              ))
+              ...state.sites.map(
+                (site) => BlocProvider(
+                  create:
+                      (context) =>
+                          getIt<SiteLogsBloc>()
+                            ..add(SiteLogsFetched(siteId: site.id)),
+                  child: SiteCard(siteData: site),
+                ),
+              )
             else if (state is SitesFailure)
               Center(
                 child: Column(

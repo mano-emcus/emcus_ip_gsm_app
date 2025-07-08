@@ -39,7 +39,21 @@ class SiteNotesBloc extends Bloc<SiteNotesEvent, SiteNotesState> {
     SiteNotesFilterChanged state,
     Emitter<SiteNotesState> emit,
   ) async {
-    final filtered = _allNotes.where((note) => note.noteTitle.toLowerCase().contains(state.filter.toLowerCase()) || note.noteContent.toLowerCase().contains(state.filter.toLowerCase())).toList();
+    final filtered =
+        _allNotes
+            .where(
+              (note) =>
+                  note.noteTitle.toLowerCase().contains(
+                    state.filter.toLowerCase(),
+                  ) ||
+                  note.noteContent.toLowerCase().contains(
+                    state.filter.toLowerCase(),
+                  ) ||
+                  note.username.toLowerCase().contains(
+                    state.filter.toLowerCase(),
+                  ),
+            )
+            .toList();
     emit(SiteNoteSuccess(notes: filtered));
   }
 

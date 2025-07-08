@@ -13,3 +13,11 @@ class SitesFetched extends SitesEvent {
   @override
   List<Object> get props => [];
 }
+
+class SitesFilterChanged extends SitesEvent {
+  SitesFilterChanged({required this.filter});
+  final String filter;
+
+  @override
+  List<Object> get props => [filter];
+}

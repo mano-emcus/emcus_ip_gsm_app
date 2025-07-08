@@ -1,4 +1,3 @@
-import 'package:emcus_ipgsm_app/features/notes/models/note_entry.dart';
 import 'package:emcus_ipgsm_app/features/notes/widgets/note_grid_view_widget.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/notes/site_notes_bloc.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/notes/site_notes_event.dart';
