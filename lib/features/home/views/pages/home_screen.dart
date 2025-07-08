@@ -189,76 +189,84 @@ class _HomeScreenState extends State<HomeScreen> {
             // Optionally, wait for a short duration to show the indicator
             await Future.delayed(const Duration(milliseconds: 500));
           },
-          child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            slivers: [
-              SliverAppBar(
-                backgroundColor: ColorConstants.whiteColor,
-                surfaceTintColor: ColorConstants.whiteColor,
-                elevation: 0,
-                pinned: true,
-                expandedHeight: 120,
-                automaticallyImplyLeading: false,
-                flexibleSpace: LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                    final double appBarHeight = constraints.biggest.height;
-                    final double statusBarHeight =
-                        MediaQuery.of(context).padding.top;
-                    final double minHeight = kToolbarHeight + statusBarHeight;
-                    final double maxHeight = 120 + statusBarHeight;
-
-                    // Calculate scroll progress (0.0 = fully expanded, 1.0 = fully collapsed)
-                    final double scrollProgress = ((maxHeight - appBarHeight) /
-                            (maxHeight - minHeight))
-                        .clamp(0.0, 1.0);
-
-                    // Calculate logo size and position based on scroll
-                    final double logoSize =
-                        50 - (20 * scrollProgress); // 60 -> 35
-                    final double topPadding =
-                        statusBarHeight + (20 * (1 - scrollProgress));
-
-                    return Container(
-                      color: ColorConstants.whiteColor,
-                      child: Align(
-                        alignment:
-                            scrollProgress > 0.5
-                                ? Alignment.bottomCenter
-                                : Alignment.center,
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                            top: scrollProgress > 0.5 ? 0 : topPadding,
-                            bottom: scrollProgress > 0.5 ? 16 : 0,
-                          ),
-                          child: Hero(
-                            tag: 'emcus_logo',
-                            child: SvgPicture.asset(
-                              'assets/svgs/emcus_logo.svg',
-                              height: logoSize,
+          child: SafeArea(
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                SliverAppBar(
+                  backgroundColor: ColorConstants.whiteColor,
+                  surfaceTintColor: ColorConstants.whiteColor,
+                  elevation: 0,
+                  pinned: true,
+                  expandedHeight: 120,
+                  automaticallyImplyLeading: false,
+                  leading: Builder(
+                    builder:
+                        (context) => IconButton(
+                          icon: Icon(Icons.menu),
+                          onPressed: () => Scaffold.of(context).openDrawer(),
+                        ),
+                  ),
+                  flexibleSpace: LayoutBuilder(
+                    builder: (BuildContext context, BoxConstraints constraints) {
+                      final double appBarHeight = constraints.biggest.height;
+                      final double statusBarHeight =
+                          MediaQuery.of(context).padding.top;
+                      final double minHeight = kToolbarHeight + statusBarHeight;
+                      final double maxHeight = 120 + statusBarHeight;
+            
+                      // Calculate scroll progress (0.0 = fully expanded, 1.0 = fully collapsed)
+                      final double scrollProgress = ((maxHeight - appBarHeight) /
+                              (maxHeight - minHeight))
+                          .clamp(0.0, 1.0);
+            
+                      // Calculate logo size and position based on scroll
+                      final double logoSize =
+                          50 - (20 * scrollProgress); // 60 -> 35
+                      final double topPadding =
+                          statusBarHeight + (20 * (1 - scrollProgress));
+            
+                      return Container(
+                        color: ColorConstants.whiteColor,
+                        child: Align(
+                          alignment:
+                              scrollProgress > 0.5
+                                  ? Alignment.bottomCenter
+                                  : Alignment.center,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              top: scrollProgress > 0.5 ? 0 : topPadding,
+                              bottom: scrollProgress > 0.5 ? 16 : 0,
+                            ),
+                            child: Hero(
+                              tag: 'emcus_logo',
+                              child: SvgPicture.asset(
+                                'assets/svgs/emcus_logo.svg',
+                                height: logoSize,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
-              ),
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 26),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate([
-                    const SizedBox(height: 20),
-                    _buildDashboardContent(),
-                    const SizedBox(height: 39),
-                    _buildRecentSites(),
-                    const SizedBox(height: 39),
-                    _buildRecentNotes(),
-
-                    const SizedBox(height: 100),
-                  ]),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 26),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      const SizedBox(height: 10),
+                      _buildDashboardContent(),
+                      const SizedBox(height: 39),
+                      _buildRecentSites(),
+                      const SizedBox(height: 39),
+                      _buildRecentNotes(),
+                      const SizedBox(height: 10),
+                    ]),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -285,16 +293,19 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildDashboardContent() {
     return Column(
       children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            'Dashboard',
-            style: GoogleFonts.inter(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: ColorConstants.textColor,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Logs',
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: ColorConstants.textColor,
+              ),
             ),
-          ),
+            SvgPicture.asset('assets/svgs/arrow_forward_icon.svg'),
+          ],
         ),
         const SizedBox(height: 16),
         BlocBuilder<LogsBloc, LogsState>(
@@ -508,10 +519,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   )
                 else if (state is SitesSuccess)
-                  ...state.sites.map((site) => BlocProvider(
-                    create: (context) => getIt<SiteLogsBloc>()..add(SiteLogsFetched(siteId: site.id)),
-                    child: SiteCard(siteData: site),
-                  ))
+                  ...state.sites.map(
+                    (site) => BlocProvider(
+                      create:
+                          (context) =>
+                              getIt<SiteLogsBloc>()
+                                ..add(SiteLogsFetched(siteId: site.id)),
+                      child: SiteCard(siteData: site),
+                    ),
+                  )
                 else if (state is SitesFailure)
                   Center(
                     child: Column(
@@ -697,7 +713,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisCount: 3,
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
-                childAspectRatio: 0.85,
+                childAspectRatio: 1,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 children: List.generate(
@@ -713,19 +729,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               );
-            } 
-            else if (state is NotesSuccess) {
+            } else if (state is NotesSuccess) {
               // Get the most recent 3 notes
               return NoteGridViewWidget(notes: state.notes, isHomeScreen: true);
-            } 
-            else {
+            } else {
               // Error or initial state - show empty containers
               return GridView.count(
                 padding: EdgeInsets.zero,
                 crossAxisCount: 3,
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
-                childAspectRatio: 1.25,
+                childAspectRatio: 1,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 children: List.generate(

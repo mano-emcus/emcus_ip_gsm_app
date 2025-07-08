@@ -13,6 +13,14 @@ class SiteNotesFetched extends SiteNotesEvent {
   List<Object?> get props => [siteId];
 }
 
+class SiteNotesFilterChanged extends SiteNotesEvent {
+  SiteNotesFilterChanged({required this.filter});
+  final String filter;
+
+  @override
+  List<Object?> get props => [filter];
+}
+
 class SiteNoteCreated extends SiteNotesEvent {
   SiteNoteCreated({
     required this.siteId,

@@ -26,8 +26,8 @@ class _SiteNotesScreenState extends State<SiteNotesScreen> {
   final TextEditingController _searchController = TextEditingController();
   late NoteCategory selectedCategory;
   SiteNotesBloc? _siteNotesBloc;
-  List<NoteEntry> _localNotesList = [];
-  List<NoteEntry> _filteredNotesList = [];
+  // List<NoteEntry> _localNotesList = [];
+  // List<NoteEntry> _filteredNotesList = [];
 
   @override
   void initState() {
@@ -411,9 +411,7 @@ class _SiteNotesScreenState extends State<SiteNotesScreen> {
                                               );
                                             } else {
                                               // Trigger note creation
-                                              BlocProvider.of<SiteNotesBloc>(
-                                                context,
-                                              ).add(
+                                              _siteNotesBloc!.add(
                                                 SiteNoteCreated(
                                                   siteId: widget.siteId,
                                                   noteTitle: title,
@@ -539,9 +537,7 @@ class _SiteNotesScreenState extends State<SiteNotesScreen> {
                       ),
                     ),
                     onChanged: (value) {
-                     setState(() {
-                        _filteredNotesList = _localNotesList.where((note) => note.noteTitle.toLowerCase().contains(value.toLowerCase()) || note.noteContent.toLowerCase().contains(value.toLowerCase())).toList();
-                     });
+                      _siteNotesBloc!.add(SiteNotesFilterChanged(filter: value));
                     },
                   ),
                 ),
@@ -675,8 +671,7 @@ class _SiteNotesScreenState extends State<SiteNotesScreen> {
                           state is SiteNoteCreateLoading) {
                         return const Center(child: CircularProgressIndicator());
                       } else if (state is SiteNoteSuccess) {
-                        _localNotesList = state.notes;
-                        if (state.notes.isEmpty || _filteredNotesList.isEmpty) {
+                        if (state.notes.isEmpty) {
                           return Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -708,7 +703,7 @@ class _SiteNotesScreenState extends State<SiteNotesScreen> {
                             ),
                           );
                         }
-                        return NoteGridViewWidget(notes:_searchController.text.isEmpty ? _localNotesList : _filteredNotesList);
+                        return NoteGridViewWidget(notes:state.notes);
                       } else if (state is SiteNoteFailure) {
                         return Center(
                           child: Column(

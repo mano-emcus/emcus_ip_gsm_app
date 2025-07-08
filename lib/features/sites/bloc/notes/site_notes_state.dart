@@ -12,12 +12,11 @@ class SiteNoteInitial extends SiteNotesState {}
 class SiteNoteLoading extends SiteNotesState {}
 
 class SiteNoteSuccess extends SiteNotesState {
-  SiteNoteSuccess({required this.notes, required this.message});
+  SiteNoteSuccess({required this.notes});
   final List<NoteEntry> notes;
-  final String message;
 
   @override
-  List<Object?> get props => [notes, message];
+  List<Object?> get props => [notes];
 }
 
 class SiteNoteFailure extends SiteNotesState {
