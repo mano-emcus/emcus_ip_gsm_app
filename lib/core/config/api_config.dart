@@ -1,8 +1,8 @@
 class ApiConfig {
   // Base URLs for different environments
-  static const String _devBaseUrl = 'https://ipgsm.emcus.co.in/api';
-  static const String _stagingBaseUrl = 'https://ipgsm.emcus.co.in/api';
-  static const String _prodBaseUrl = 'https://ipgsm.emcus.co.in/api';
+  static const String _devBaseUrl = 'http://kiddeapi.emcus.co.in/api';
+  static const String _stagingBaseUrl = 'http://kiddeapi.emcus.co.in/api';
+  static const String _prodBaseUrl = 'http://kiddeapi.emcus.co.in/api';
 
   // Current environment - change this based on your environment
   static const Environment _currentEnvironment = Environment.dev;

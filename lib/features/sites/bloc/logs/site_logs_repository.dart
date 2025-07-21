@@ -21,7 +21,7 @@ class SiteLogsRepository {
         ...ApiConfig.defaultHeaders,
         'Authorization': 'Bearer $idToken',
       };
-      final url = 'https://ipgsm.emcus.co.in/api/sites/$siteId/logs';
+      final url = 'http://kiddeapi.emcus.co.in/api/sites/$siteId/logs';
       ApiLogger.logRequest(
         method: 'GET',
         url: url,

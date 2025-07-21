@@ -37,6 +37,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: ColorConstants.whiteColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           title: Text(
             'Logout',
             style: GoogleFonts.inter(
@@ -54,28 +58,47 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             ),
           ),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                'Cancel',
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey,
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: ColorConstants.whiteColor,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  child: Text(
+                    'Cancel',
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey,
+                    ),
+                  ),
                 ),
               ),
             ),
-            TextButton(
-              onPressed: () async {
+            GestureDetector(
+              onTap: () async {
                 Navigator.of(context).pop(); // Close dialog first
                 await AuthManager().logout(context);
               },
-              child: Text(
-                'Logout',
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
+              child: Container(
+                decoration: BoxDecoration(
                   color: ColorConstants.primaryColor,
+                  borderRadius: BorderRadius.circular(8)
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: Text(
+                    'Logout',
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: ColorConstants.whiteColor,
+                    ),
+                  ),
                 ),
               ),
             ),

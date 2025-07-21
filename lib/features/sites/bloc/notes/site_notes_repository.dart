@@ -21,7 +21,7 @@ class SiteNoteRepository {
         ...ApiConfig.defaultHeaders,
         'Authorization': 'Bearer $idToken',
       };
-      final url = 'https://ipgsm.emcus.co.in/api/sites/$siteId/notes';
+      final url = 'http://kiddeapi.emcus.co.in/api/sites/$siteId/notes';
       ApiLogger.logRequest(
         method: 'GET',
         url: url,
@@ -68,7 +68,7 @@ class SiteNoteRepository {
         'Authorization': 'Bearer $idToken',
         'Content-Type': 'application/json',
       };
-      final url = 'https://ipgsm.emcus.co.in/api/sites/note';
+      final url = 'http://kiddeapi.emcus.co.in/api/sites/note';
       final body = jsonEncode({
         'siteId': siteId.toString(),
         'noteTitle': noteTitle,

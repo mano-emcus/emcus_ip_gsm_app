@@ -90,8 +90,8 @@ class _AllSitesScreenState extends State<AllSitesScreen> {
         backgroundColor: ColorConstants.whiteColor,
         body: Padding(
           padding: EdgeInsets.only(
-            left: 17,
-            right: 17,
+            left: 26,
+            right: 26,
             top: MediaQuery.of(context).padding.top + 16,
           ),
           child: _buildSitesList(),

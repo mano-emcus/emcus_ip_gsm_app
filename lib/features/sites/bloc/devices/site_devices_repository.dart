@@ -21,7 +21,7 @@ class SiteDevicesRepository {
         ...ApiConfig.defaultHeaders,
         'Authorization': 'Bearer $idToken',
       };
-      final url = 'https://ipgsm.emcus.co.in/api/sites/$siteId/gateways';
+      final url = 'http://kiddeapi.emcus.co.in/api/sites/$siteId/gateways';
       ApiLogger.logRequest(
         method: 'GET',
         url: url,

@@ -26,13 +26,13 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
       );
 
       if (response.statusCode == 1) {
-        final signInData = response.data.first;
+        final signInData = response.data;
 
         // Store tokens in SharedPreferences
         await _authManager.storeAuthTokens(
           idToken: signInData.idToken,
           accessToken: signInData.accessToken,
-          refreshToken: signInData.refreshToken,
+          // refreshToken: signInData.refreshToken,
         );
 
         emit(SignInSuccess(message: response.message, signInData: signInData));

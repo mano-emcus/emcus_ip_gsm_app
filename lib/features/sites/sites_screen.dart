@@ -29,7 +29,7 @@ class _SitesScreenState extends State<SitesScreen> {
   SiteDevicesBloc? _siteDevicesBloc;
 
   List<Widget> get _screens => [
-    SiteDashboardScreen(siteId: widget.siteData.id),
+    SiteDashboardScreen(siteData: widget.siteData),
     AllDevicesScreen(siteId: widget.siteData.id,),
     SiteNotesScreen(siteId: widget.siteData.id,),
   ];
@@ -156,7 +156,7 @@ class _SitesScreenState extends State<SitesScreen> {
       ),
       centerTitle: true,
       title: Text(
-        widget.siteData.siteName,
+        'Sites Details',
         style: GoogleFonts.inter(
           fontSize: 20,
           fontWeight: FontWeight.w600,

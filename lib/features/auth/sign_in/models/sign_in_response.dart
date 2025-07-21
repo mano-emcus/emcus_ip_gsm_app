@@ -10,14 +10,12 @@ class SignInResponse {
     return SignInResponse(
       statusCode: json['statusCode'] as int,
       message: json['message'] as String,
-      data: (json['data'] as List?)
-          ?.map((item) => SignInData.fromJson(item as Map<String, dynamic>))
-          .toList() ?? [],
+      data: SignInData.fromJson(json['data']),
     );
   }
   final int statusCode;
   final String message;
-  final List<SignInData> data;
+  final SignInData data;
 }
 
 class SignInData {
@@ -26,7 +24,7 @@ class SignInData {
     required this.accessToken,
     required this.expiresIn,
     required this.idToken,
-    required this.refreshToken,
+    // required this.refreshToken,
     required this.tokenType,
   });
 
@@ -35,13 +33,13 @@ class SignInData {
       accessToken: json['AccessToken'] as String,
       expiresIn: json['ExpiresIn'] as int,
       idToken: json['IdToken'] as String,
-      refreshToken: json['RefreshToken'] as String,
+      // refreshToken: json['RefreshToken'] as String,
       tokenType: json['TokenType'] as String,
     );
   }
   final String accessToken;
   final int expiresIn;
   final String idToken;
-  final String refreshToken;
+  // final String refreshToken;
   final String tokenType;
 } 

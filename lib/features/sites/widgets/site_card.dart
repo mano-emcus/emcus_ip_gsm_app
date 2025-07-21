@@ -8,8 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SiteCard extends StatefulWidget {
-  const SiteCard({super.key, required this.siteData});
+  const SiteCard({super.key, required this.siteData, this.isTappable});
   final SiteData siteData;
+  final bool? isTappable;
 
   @override
   State<SiteCard> createState() => _SiteCardState();
@@ -19,14 +20,14 @@ class _SiteCardState extends State<SiteCard> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: (widget.isTappable ?? true) ? () {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => SitesScreen(siteData: widget.siteData),
           ),
         );
-      },
+      } : null,
       child: Container(
         width: double.infinity,
         margin: const EdgeInsets.only(bottom: 16),
@@ -51,10 +52,13 @@ class _SiteCardState extends State<SiteCard> {
                       ),
                     ),
                   ),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    size: 16,
-                    color: Colors.grey[600],
+                  Visibility(
+                    visible: (widget.isTappable ?? true),
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      size: 16,
+                      color: Colors.grey[600],
+                    ),
                   ),
                 ],
               ),
@@ -98,7 +102,7 @@ class _SiteCardState extends State<SiteCard> {
                 ],
               ),
               const SizedBox(height: 8),
-              BlocBuilder<SiteLogsBloc, SiteLogsState>(
+              (widget.isTappable ?? true) ? BlocBuilder<SiteLogsBloc, SiteLogsState>(
                 builder: (context, state) {
                   if (state is SiteLogsLoading) {
                     return Row(
@@ -221,7 +225,7 @@ class _SiteCardState extends State<SiteCard> {
                   }
                   return const SizedBox.shrink();
                 },
-              ),
+              ) : SizedBox(),
             ],
           ),
         ),
