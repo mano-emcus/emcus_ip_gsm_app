@@ -26,7 +26,6 @@ class NoteGridViewWidget extends StatelessWidget {
           crossAxisCount: 3,
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
-          childAspectRatio: 1,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           children: List.generate(3, (index) {
@@ -135,7 +134,6 @@ class NoteGridViewWidget extends StatelessWidget {
             crossAxisCount: 3,
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
-            childAspectRatio: 1,
           ),
           itemCount: notesToShow.length,
           itemBuilder: (context, index) {

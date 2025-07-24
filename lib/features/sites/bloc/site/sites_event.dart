@@ -15,7 +15,7 @@ class SitesFetched extends SitesEvent {
 }
 
 class SitesFilterChanged extends SitesEvent {
-  SitesFilterChanged({required this.filter});
+  const SitesFilterChanged({required this.filter});
   final String filter;
 
   @override
