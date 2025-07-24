@@ -13,11 +13,13 @@ class RegisterSubmitted extends RegisterEvent {
     required this.fullName,
     required this.companyName,
     required this.email,
+    required this.password,
   });
   final String fullName;
   final String companyName;
   final String email;
+  final String password;
 
   @override
-  List<Object> get props => [fullName, companyName, email];
+  List<Object> get props => [fullName, companyName, email, password];
 } 

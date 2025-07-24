@@ -51,8 +51,8 @@ class SiteLogsBloc extends Bloc<SiteLogsEvent, SiteLogsState> {
   ) {
     if (state is SiteLogsSuccess) {
       final currentState = state as SiteLogsSuccess;
-      if (currentState.logs.isNotEmpty) {
-        final currentData = currentState.logs[0];
+      if (currentState.logs.allCount == 0) {
+        final currentData = currentState.logs;
         final log = event.newLog;
         final isFire = log.u16EventId >= 1001 && log.u16EventId <= 1007;
         final isFault = log.u16EventId >= 2000 && log.u16EventId < 3000;
@@ -70,7 +70,7 @@ class SiteLogsBloc extends Bloc<SiteLogsEvent, SiteLogsState> {
           fault: newFault,
           all: newAll,
         );
-        emit(SiteLogsSuccess(logs: [updatedData], message: currentState.message));
+        emit(SiteLogsSuccess(logs: updatedData, message: currentState.message));
       }
     }
   }

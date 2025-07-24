@@ -220,9 +220,9 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
             String allEventsCountText = '-';
 
             if (state is SiteLogsSuccess) {
-              fireCount = state.logs[0].fireCount;
-              faultCount = state.logs[0].faultCount;
-              allEventsCount = state.logs[0].allCount;
+              fireCount = state.logs.fireCount;
+              faultCount = state.logs.faultCount;
+              allEventsCount = state.logs.allCount;
               fireCountText = fireCount.toString();
               faultCountText = faultCount.toString();
               allEventsCountText = allEventsCount.toString();
@@ -437,9 +437,9 @@ class _SiteDashboardScreenState extends State<SiteDashboardScreen> {
             ),
           );
         } else if (state is SiteLogsSuccess) {
-          final fireLogs = state.logs[0].fire.reversed.toList();
-          final faultLogs = state.logs[0].fault.reversed.toList();
-          final allLogs = state.logs[0].all.reversed.toList();
+          final fireLogs = state.logs.fire.reversed.toList();
+          final faultLogs = state.logs.fault.reversed.toList();
+          final allLogs = state.logs.all.reversed.toList();
           final filteredLogs = _filterLogs(fireLogs: fireLogs, faultLogs: faultLogs, allLogs: allLogs).reversed.toList();
           if (filteredLogs.isEmpty) {
             return Center(

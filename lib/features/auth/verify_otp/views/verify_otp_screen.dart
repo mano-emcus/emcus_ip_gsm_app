@@ -1,5 +1,5 @@
-import 'package:emcus_ipgsm_app/features/auth/set_password/views/set_password_screen.dart';
 import 'package:emcus_ipgsm_app/features/auth/register/widgets/register_app_bar_widget.dart';
+import 'package:emcus_ipgsm_app/features/auth/sign_in/views/sign_in_screen.dart';
 import 'package:emcus_ipgsm_app/features/auth/verify_otp/bloc/verify_otp_bloc.dart';
 import 'package:emcus_ipgsm_app/features/auth/verify_otp/bloc/verify_otp_event.dart';
 import 'package:emcus_ipgsm_app/features/auth/verify_otp/bloc/verify_otp_state.dart';
@@ -40,11 +40,11 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     return BlocListener<VerifyOtpBloc, VerifyOtpState>(
       listener: (context, state) {
         if (state is VerifyOtpSuccess) {
-          Navigator.push(
-            context,
+          Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
-              builder: (context) => SetPasswordScreen(email: widget.email),
+              builder: (BuildContext context) => const SignInScreen(),
             ),
+            (Route<dynamic> route) => false,
           );
         } else if (state is VerifyOtpFailure) {
           showDialog(

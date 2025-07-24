@@ -22,28 +22,49 @@ class _RegisterScreenState extends State<RegisterScreen> {
   late TextEditingController fullNameController;
   late TextEditingController companyNameController;
   late TextEditingController emailController;
+  late TextEditingController passwordController;
+  late TextEditingController confirmPasswordController;
   bool isTermsAndConditions = false;
   bool canSubmit = false;
+  bool _showPasswordMismatchError = false;
 
   @override
   void initState() {
     super.initState();
     fullNameController = TextEditingController();
     companyNameController = TextEditingController(text: 'Emcus Technologies');
+    passwordController = TextEditingController();
+    confirmPasswordController = TextEditingController();
     emailController = TextEditingController();
     fullNameController.addListener(_updateCanSubmit);
     companyNameController.addListener(_updateCanSubmit);
     emailController.addListener(_updateCanSubmit);
+    passwordController.addListener(_validatePasswordMatch);
+    confirmPasswordController.addListener(_validatePasswordMatch);
+
+  }
+
+  void _validatePasswordMatch() {
+    setState(() {
+      _showPasswordMismatchError =
+          confirmPasswordController.text.isNotEmpty &&
+          passwordController.text != confirmPasswordController.text;
+    });
   }
 
   void _updateCanSubmit() {
     final fullName = fullNameController.text.trim();
     final companyName = companyNameController.text.trim();
     final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+    final confirmPassword = confirmPasswordController.text.trim();
     final next =
         fullName.isNotEmpty &&
         companyName.isNotEmpty &&
         email.isNotEmpty &&
+        password.isNotEmpty &&
+        confirmPassword.isNotEmpty &&
+        password == confirmPassword &&
         isTermsAndConditions;
     if (next != canSubmit) {
       setState(() => canSubmit = next);
@@ -75,6 +96,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
     if (!isTermsAndConditions) {
       return 'Please agree to the terms and conditions to register';
+    }
+    if (passwordController.text.isEmpty) {
+      return 'Please enter your password';
+    }
+    if (confirmPasswordController.text.isEmpty) {
+      return 'Please enter your confirm password';
+    }
+    if (passwordController.text != confirmPasswordController.text) {
+      return 'Passwords do not match';
     }
     return 'Please fill all the fields to register';
   }
@@ -170,6 +200,56 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           keyboardType: TextInputType.emailAddress,
                         ),
                       ),
+                      const SizedBox(height: 14),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 26),
+                        child: GenericTextFieldWidget(
+                          labelText: 'Password',
+                          hintText: 'Enter your Password',
+                          controller: passwordController,
+                          keyboardType: TextInputType.visiblePassword,
+                          obscureText: true,
+                          isPassword: true,
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 26),
+                        child: GenericTextFieldWidget(
+                          labelText: 'Confirm Password',
+                          hintText: 'Enter your Password Again',
+                          controller: confirmPasswordController,
+                          keyboardType: TextInputType.visiblePassword,
+                          obscureText: true,
+                          isPassword: true,
+                        ),
+                      ),
+                      if (_showPasswordMismatchError)
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 26,
+                            right: 26,
+                            top: 8,
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.error_outline,
+                                color: Colors.red,
+                                size: 16,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                'Passwords do not match',
+                                style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       const SizedBox(height: 20),
                       // Terms & Conditions checkbox with wrapping text
                       Padding(
@@ -285,6 +365,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                     companyNameController
                                                         .text,
                                                 email: emailController.text,
+                                                password:
+                                                    passwordController.text,
                                               ),
                                             );
                                           }

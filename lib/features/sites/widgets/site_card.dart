@@ -159,7 +159,7 @@ class _SiteCardState extends State<SiteCard> {
                                   ),
                                 ),
                                 TextSpan(
-                                  text: state.logs[0].fireCount.toString(),
+                                  text: state.logs.fireCount.toString(),
                                   style: GoogleFonts.inter(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w700,
@@ -184,7 +184,7 @@ class _SiteCardState extends State<SiteCard> {
                                   ),
                                 ),
                                 TextSpan(
-                                  text: state.logs[0].faultCount.toString(),
+                                  text: state.logs.faultCount.toString(),
                                   style: GoogleFonts.inter(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w700,
@@ -209,7 +209,7 @@ class _SiteCardState extends State<SiteCard> {
                                   ),
                                 ),
                                 TextSpan(
-                                  text: state.logs[0].allCount.toString(),
+                                  text: state.logs.allCount.toString(),
                                   style: GoogleFonts.inter(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w700,

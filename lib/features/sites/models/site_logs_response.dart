@@ -11,13 +11,13 @@ class SiteLogsResponse {
     return SiteLogsResponse(
       statusCode: json['statusCode'] as int,
       message: json['message'] as String,
-      data: (json['data'] as List?)?.map((item) => SiteLogsData.fromJson(item as Map<String, dynamic>)).toList() ?? [],
+      data: SiteLogsData.fromJson(json['data']),
     );
   }
 
   final int statusCode;
   final String message;
-  final List<SiteLogsData> data;
+  final SiteLogsData data;
 }
 
 class SiteLogsData {

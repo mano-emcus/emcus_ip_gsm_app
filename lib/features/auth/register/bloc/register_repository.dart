@@ -14,6 +14,7 @@ class RegisterRepository {
     required String fullName,
     required String companyName,
     required String email,
+    required String password,
   }) async {
     final url = AuthEndpoints.register;
     final headers = ApiConfig.defaultHeaders;
@@ -22,6 +23,7 @@ class RegisterRepository {
       'companyName': companyName,
       'email': email,
       'groupName': 'users',
+      'password': password,
     };
 
     try {
