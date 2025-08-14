@@ -1,4 +1,5 @@
 import 'package:emcus_ipgsm_app/features/auth/sign_in/views/sign_in_screen.dart';
+import 'package:emcus_ipgsm_app/features/home/widgets/dashboard_logs_card.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_bloc.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_event.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_state.dart';
@@ -12,6 +13,7 @@ import 'package:emcus_ipgsm_app/features/sites/bloc/site/sites_event.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/site/sites_state.dart';
 import 'package:emcus_ipgsm_app/features/sites/widgets/site_card.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
+import 'package:emcus_ipgsm_app/utils/theme/custom_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -28,9 +30,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int fireCount = 0;
-  int faultCount = 0;
-  int allEventsCount = 0;
+  int fireCount = 5;
+  int faultCount = 12;
+  int allEventsCount = 40;
   String fireCountText = '...';
   String faultCountText = '...';
   String allEventsCountText = '...';
@@ -83,6 +85,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final customColors = theme.extension<CustomColors>()!;
     return MultiBlocListener(
       listeners: [
         BlocListener<LogsBloc, LogsState>(
@@ -177,96 +181,130 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
       ],
-      child: Scaffold(
-        backgroundColor: ColorConstants.whiteColor,
-        body: RefreshIndicator(
-          displacement: 120,
-          color: ColorConstants.primaryColor,
-          onRefresh: () async {
-            _fetchLogs();
-            _fetchSites();
-            _fetchNotes();
-            // Optionally, wait for a short duration to show the indicator
-            await Future.delayed(const Duration(milliseconds: 500));
-          },
-          child: SafeArea(
-            child: CustomScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              slivers: [
-                SliverAppBar(
-                  backgroundColor: ColorConstants.whiteColor,
-                  surfaceTintColor: ColorConstants.whiteColor,
-                  elevation: 0,
-                  pinned: true,
-                  expandedHeight: 120,
-                  automaticallyImplyLeading: false,
-                  leading: Builder(
-                    builder:
-                        (context) => IconButton(
-                          icon: Icon(Icons.menu),
-                          onPressed: () => Scaffold.of(context).openDrawer(),
-                        ),
-                  ),
-                  flexibleSpace: LayoutBuilder(
-                    builder: (BuildContext context, BoxConstraints constraints) {
-                      final double appBarHeight = constraints.biggest.height;
-                      final double statusBarHeight =
-                          MediaQuery.of(context).padding.top;
-                      final double minHeight = kToolbarHeight + statusBarHeight;
-                      final double maxHeight = 120 + statusBarHeight;
-            
-                      // Calculate scroll progress (0.0 = fully expanded, 1.0 = fully collapsed)
-                      final double scrollProgress = ((maxHeight - appBarHeight) /
-                              (maxHeight - minHeight))
-                          .clamp(0.0, 1.0);
-            
-                      // Calculate logo size and position based on scroll
-                      final double logoSize =
-                          50 - (20 * scrollProgress); // 60 -> 35
-                      final double topPadding =
-                          statusBarHeight + (20 * (1 - scrollProgress));
-            
-                      return Container(
-                        color: ColorConstants.whiteColor,
-                        child: Align(
-                          alignment:
-                              scrollProgress > 0.5
-                                  ? Alignment.bottomCenter
-                                  : Alignment.center,
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              top: scrollProgress > 0.5 ? 0 : topPadding,
-                              bottom: scrollProgress > 0.5 ? 16 : 0,
-                            ),
-                            child: Hero(
-                              tag: 'emcus_logo',
-                              child: SvgPicture.asset(
-                                'assets/svgs/emcus_logo.svg',
-                                height: logoSize,
-                              ),
-                            ),
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: customColors.themeBackground,
+          body: RefreshIndicator(
+            color: ColorConstants.primaryColor,
+            onRefresh: () async {
+              _fetchLogs();
+              _fetchSites();
+              _fetchNotes();
+              // Optionally, wait for a short duration to show the indicator
+              await Future.delayed(const Duration(milliseconds: 500));
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16, top: 20),
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          'Dashboard',
+                          style: GoogleFonts.inter(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: customColors.themeTextPrimary,
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    DashBoardLogsCard(
+                      fireCount: fireCount,
+                      faultCount: faultCount,
+                      generalCount: allEventsCount - fireCount - faultCount,
+                    ),
+                    const SizedBox(height: 24),
+                    _buildRecentSites(customColors: customColors),
+                  ],
                 ),
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 26),
-                  sliver: SliverList(
-                    delegate: SliverChildListDelegate([
-                      const SizedBox(height: 10),
-                      _buildDashboardContent(),
-                      const SizedBox(height: 39),
-                      _buildRecentSites(),
-                      const SizedBox(height: 39),
-                      _buildRecentNotes(),
-                      const SizedBox(height: 10),
-                    ]),
-                  ),
-                ),
-              ],
+              ),
             ),
+            // child: SafeArea(
+            //   child: CustomScrollView(
+            //     physics: const AlwaysScrollableScrollPhysics(),
+            //     slivers: [
+            //       // SliverAppBar(
+            //       //   backgroundColor: ColorConstants.whiteColor,
+            //       //   surfaceTintColor: ColorConstants.whiteColor,
+            //       //   elevation: 0,
+            //       //   pinned: true,
+            //       //   expandedHeight: 120,
+            //       //   automaticallyImplyLeading: false,
+            //       //   leading: Builder(
+            //       //     builder:
+            //       //         (context) => IconButton(
+            //       //           icon: Icon(Icons.menu),
+            //       //           onPressed: () => Scaffold.of(context).openDrawer(),
+            //       //         ),
+            //       //   ),
+            //       //   flexibleSpace: LayoutBuilder(
+            //       //     builder: (
+            //       //       BuildContext context,
+            //       //       BoxConstraints constraints,
+            //       //     ) {
+            //       //       final double appBarHeight = constraints.biggest.height;
+            //       //       final double statusBarHeight =
+            //       //           MediaQuery.of(context).padding.top;
+            //       //       final double minHeight = kToolbarHeight + statusBarHeight;
+            //       //       final double maxHeight = 120 + statusBarHeight;
+
+            //       //       // Calculate scroll progress (0.0 = fully expanded, 1.0 = fully collapsed)
+            //       //       final double scrollProgress =
+            //       //           ((maxHeight - appBarHeight) / (maxHeight - minHeight))
+            //       //               .clamp(0.0, 1.0);
+
+            //       //       // Calculate logo size and position based on scroll
+            //       //       final double logoSize =
+            //       //           50 - (20 * scrollProgress); // 60 -> 35
+            //       //       final double topPadding =
+            //       //           statusBarHeight + (20 * (1 - scrollProgress));
+
+            //       //       return Container(
+            //       //         color: ColorConstants.whiteColor,
+            //       //         child: Align(
+            //       //           alignment:
+            //       //               scrollProgress > 0.5
+            //       //                   ? Alignment.bottomCenter
+            //       //                   : Alignment.center,
+            //       //           child: Padding(
+            //       //             padding: EdgeInsets.only(
+            //       //               top: scrollProgress > 0.5 ? 0 : topPadding,
+            //       //               bottom: scrollProgress > 0.5 ? 16 : 0,
+            //       //             ),
+            //       //             child: Hero(
+            //       //               tag: 'emcus_logo',
+            //       //               child: SvgPicture.asset(
+            //       //                 'assets/svgs/emcus_logo.svg',
+            //       //                 height: logoSize,
+            //       //               ),
+            //       //             ),
+            //       //           ),
+            //       //         ),
+            //       //       );
+            //       //     },
+            //       //   ),
+            //       // ),
+            //       SliverPadding(
+            //         padding: const EdgeInsets.symmetric(horizontal: 26),
+            //         sliver: SliverList(
+            //           delegate: SliverChildListDelegate([
+            //             const SizedBox(height: 10),
+            //             _buildDashboardContent(),
+            //             const SizedBox(height: 39),
+            //             _buildRecentSites(),
+            //             const SizedBox(height: 39),
+            //             _buildRecentNotes(),
+            //             const SizedBox(height: 10),
+            //           ]),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
           ),
         ),
       ),
@@ -489,21 +527,28 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildRecentSites() {
+  Widget _buildRecentSites({required CustomColors customColors}) {
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Recent Sites',
+              'Your Sites',
               style: GoogleFonts.inter(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: ColorConstants.textColor,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: customColors.themeTextSecondary,
               ),
             ),
-            SvgPicture.asset('assets/svgs/arrow_forward_icon.svg'),
+            Text(
+              'View All',
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+                color: customColors.primaryColor,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 12),
@@ -513,9 +558,14 @@ class _HomeScreenState extends State<HomeScreen> {
             return Column(
               children: [
                 if (state is SitesLoading)
-                  const Center(
-                    child: CircularProgressIndicator(
-                      color: ColorConstants.primaryColor,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 40),
+                    child: SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        color: ColorConstants.primaryColor,
+                      ),
                     ),
                   )
                 else if (state is SitesSuccess)

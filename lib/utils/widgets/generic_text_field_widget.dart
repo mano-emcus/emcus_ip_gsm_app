@@ -1,11 +1,11 @@
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
+import 'package:emcus_ipgsm_app/utils/theme/custom_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class GenericTextFieldWidget extends StatefulWidget {
   const GenericTextFieldWidget({
     super.key,
-    required this.labelText,
     required this.hintText,
     required this.controller,
     required this.keyboardType,
@@ -14,7 +14,6 @@ class GenericTextFieldWidget extends StatefulWidget {
     this.isEmail,
     this.readOnly,
   });
-  final String labelText;
   final String hintText;
   final TextEditingController controller;
   final TextInputType keyboardType;
@@ -33,7 +32,6 @@ class _GenericTextFieldWidgetState extends State<GenericTextFieldWidget> {
   @override
   void initState() {
     super.initState();
-    // Initialize password visibility based on obscureText parameter
     _isPasswordVisible = !(widget.obscureText ?? false);
   }
 
@@ -45,23 +43,14 @@ class _GenericTextFieldWidgetState extends State<GenericTextFieldWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final customColors = Theme.of(context).extension<CustomColors>()!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.labelText,
-          style: GoogleFonts.inter(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: ColorConstants.textColor,
-          ),
-        ),
-        const SizedBox(height: 14),
         Container(
           decoration: BoxDecoration(
-            color: ColorConstants.whiteColor,
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(color: ColorConstants.textFieldBorderColor),
+            color: customColors.themeTextFieldBackgroud,
+            borderRadius: BorderRadius.circular(8),
           ),
           child: TextField(
             readOnly: widget.readOnly ?? false,
@@ -70,15 +59,21 @@ class _GenericTextFieldWidgetState extends State<GenericTextFieldWidget> {
             },
             controller: widget.controller,
             keyboardType: widget.keyboardType,
-            obscureText: widget.isPassword == true ? !_isPasswordVisible : (widget.obscureText ?? false),
+            obscureText:
+                widget.isPassword == true
+                    ? !_isPasswordVisible
+                    : (widget.obscureText ?? false),
             style: GoogleFonts.inter(
               fontSize: 16,
               fontWeight: FontWeight.w400,
-              color: ColorConstants.textColor,
+              color: customColors.themeTextPrimary,
             ),
             obscuringCharacter: '*',
             decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 18,
+                vertical: 16,
+              ),
               border: InputBorder.none,
               hintText: widget.hintText,
               hintStyle: GoogleFonts.inter(
@@ -86,18 +81,19 @@ class _GenericTextFieldWidgetState extends State<GenericTextFieldWidget> {
                 fontWeight: FontWeight.w400,
                 color: ColorConstants.greyColor,
               ),
-              suffixIcon: widget.isPassword == true
-                  ? IconButton(
-                      icon: Icon(
-                        _isPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: ColorConstants.greyColor,
-                        size: 20,
-                      ),
-                      onPressed: _togglePasswordVisibility,
-                    )
-                  : null,
+              suffixIcon:
+                  widget.isPassword == true
+                      ? IconButton(
+                        icon: Icon(
+                          _isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: ColorConstants.greyColor,
+                          size: 20,
+                        ),
+                        onPressed: _togglePasswordVisibility,
+                      )
+                      : null,
             ),
           ),
         ),

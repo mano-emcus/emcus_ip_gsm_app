@@ -2,6 +2,7 @@ import 'package:emcus_ipgsm_app/features/sites/bloc/devices/site_devices_bloc.da
 import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_bloc.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/notes/site_notes_bloc.dart';
 import 'package:emcus_ipgsm_app/features/splash_screen/views/splash_screen.dart';
+import 'package:emcus_ipgsm_app/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,6 +50,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(title: 'Ip-Gsm App', home: SplashScreen());
+    return MaterialApp(
+      title: 'Ip-Gsm App',
+      home: SplashScreen(),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+    );
   }
 }

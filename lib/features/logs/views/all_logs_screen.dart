@@ -3,14 +3,16 @@ import 'package:emcus_ipgsm_app/features/logs/bloc/logs_bloc.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_event.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_state.dart';
 import 'package:emcus_ipgsm_app/features/logs/models/log_entry.dart';
+import 'package:emcus_ipgsm_app/features/logs/widgets/logs_card.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
+import 'package:emcus_ipgsm_app/utils/theme/custom_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:emcus_ipgsm_app/core/services/di.dart';
 import 'package:emcus_ipgsm_app/core/services/socket_service.dart';
 
-enum LogFilter { all, fire, fault }
+enum LogFilter { all, fire, fault, general }
 
 class AllLogsScreen extends StatefulWidget {
   const AllLogsScreen({super.key});
@@ -64,14 +66,28 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
     // Apply filter based on selected type
     switch (selectedFilter) {
       case LogFilter.fire:
-        filteredLogs = logs
-            .where((log) => log.u16EventId >= 1001 && log.u16EventId <= 1007)
-            .toList();
+        filteredLogs =
+            logs
+                .where(
+                  (log) => log.u16EventId >= 1001 && log.u16EventId <= 1007,
+                )
+                .toList();
         break;
       case LogFilter.fault:
-        filteredLogs = logs
-            .where((log) => log.u16EventId >= 2000 && log.u16EventId < 3000)
-            .toList();
+        filteredLogs =
+            logs
+                .where((log) => log.u16EventId >= 2000 && log.u16EventId < 3000)
+                .toList();
+        break;
+      case LogFilter.general:
+        filteredLogs =
+            logs
+                .where(
+                  (log) =>
+                      !(log.u16EventId >= 2000 && log.u16EventId < 3000) &&
+                      !(log.u16EventId >= 1001 && log.u16EventId <= 1007),
+                )
+                .toList();
         break;
       case LogFilter.all:
         filteredLogs = logs;
@@ -80,19 +96,40 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
 
     // Apply search filter if search query is not empty
     if (searchQuery.isNotEmpty) {
-      filteredLogs = filteredLogs.where((log) {
-        return log.u8DeviceText.toLowerCase().contains(searchQuery.toLowerCase()) ||
-               log.source.toLowerCase().contains(searchQuery.toLowerCase()) ||
-               log.formattedDateTime.toLowerCase().contains(searchQuery.toLowerCase()) ||
-               _getLogTypeText(log).toLowerCase().contains(searchQuery.toLowerCase());
-      }).toList();
+      filteredLogs =
+          filteredLogs.where((log) {
+            return log.u8DeviceText.toLowerCase().contains(
+                  searchQuery.toLowerCase(),
+                ) ||
+                log.source.toLowerCase().contains(searchQuery.toLowerCase()) ||
+                log.formattedDateTime.toLowerCase().contains(
+                  searchQuery.toLowerCase(),
+                ) ||
+                _getLogTypeText(
+                  log,
+                ).toLowerCase().contains(searchQuery.toLowerCase());
+          }).toList();
     }
 
     // Sort by most recent first
     filteredLogs.sort((a, b) {
       // Create DateTime objects for comparison
-      final dateTimeA = DateTime(a.u8Year, a.u8Month, a.u8Date, a.u8Hours, a.u8Minutes, a.u8Seconds);
-      final dateTimeB = DateTime(b.u8Year, b.u8Month, b.u8Date, b.u8Hours, b.u8Minutes, b.u8Seconds);
+      final dateTimeA = DateTime(
+        a.u8Year,
+        a.u8Month,
+        a.u8Date,
+        a.u8Hours,
+        a.u8Minutes,
+        a.u8Seconds,
+      );
+      final dateTimeB = DateTime(
+        b.u8Year,
+        b.u8Month,
+        b.u8Date,
+        b.u8Hours,
+        b.u8Minutes,
+        b.u8Seconds,
+      );
       return dateTimeB.compareTo(dateTimeA); // Most recent first
     });
 
@@ -131,6 +168,8 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final customColors = theme.extension<CustomColors>()!;
     return BlocListener<LogsBloc, LogsState>(
       listener: (context, state) {
         if (state is LogsFailure) {
@@ -143,8 +182,9 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
               context,
               PageRouteBuilder(
                 transitionDuration: const Duration(milliseconds: 600),
-                pageBuilder: (context, animation, secondaryAnimation) =>
-                    const SignInScreen(),
+                pageBuilder:
+                    (context, animation, secondaryAnimation) =>
+                        const SignInScreen(),
                 transitionsBuilder: (
                   context,
                   animation,
@@ -180,94 +220,94 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: ColorConstants.whiteColor,
+        backgroundColor: customColors.themeBackground,
         body: SafeArea(
-          child: Column(
-            children: [
-              // TEMP SOCKET STATUS INDICATOR
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 12,
-                      height: 12,
-                      decoration: BoxDecoration(
-                        color: _isSocketConnected ? Colors.green : Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      _isSocketConnected ? 'Socket Connected' : 'Socket Disconnected',
-                      style: TextStyle(
-                        color: _isSocketConnected ? Colors.green : Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Header
-              _buildHeader(),
-              
-              // Search Bar
-              _buildSearchBar(),
-              
-              // Filter Chips
-              _buildFilterChips(),
-              
-              // Logs List
-              Expanded(
-                child: _buildLogsList(),
-              ),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: [
+                // TEMP SOCKET STATUS INDICATOR
+                // Padding(
+                //   padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     children: [
+                //       Container(
+                //         width: 12,
+                //         height: 12,
+                //         decoration: BoxDecoration(
+                //           color: _isSocketConnected ? Colors.green : Colors.red,
+                //           shape: BoxShape.circle,
+                //         ),
+                //       ),
+                //       const SizedBox(width: 8),
+                //       Text(
+                //         _isSocketConnected
+                //             ? 'Socket Connected'
+                //             : 'Socket Disconnected',
+                //         style: TextStyle(
+                //           color: _isSocketConnected ? Colors.green : Colors.red,
+                //           fontWeight: FontWeight.bold,
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                // Header
+                _buildHeader(customColors),
+                const SizedBox(height: 16),
+
+                // Search Bar
+                // _buildSearchBar(),
+
+                // Filter Chips
+                _buildFilterChips(customColors),
+                const SizedBox(height: 16),
+
+                // Logs List
+                Expanded(child: _buildLogsList()),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.all(26),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'All Logs',
-            style: GoogleFonts.inter(
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
-              color: ColorConstants.blackColor,
+  Widget _buildHeader(CustomColors customColors) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          'All Logs',
+          style: GoogleFonts.inter(
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
+            color: customColors.themeTextPrimary,
+          ),
+        ),
+        Row(
+          children: [
+            IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.search_rounded,
+                color: customColors.themeTextSecondary,
+              ),
             ),
-          ),
-          Row(
-            children: [
-              IconButton(
-                onPressed: () {
-                  _fetchLogs();
-                },
-                icon: const Icon(
-                  Icons.refresh_outlined,
-                  color: ColorConstants.primaryColor,
-                ),
+            IconButton(
+              onPressed: () {
+                // Show filter options or sort options
+                _showFilterModal(context);
+              },
+              icon: Icon(
+                Icons.filter_list_outlined,
+                color: customColors.themeTextSecondary,
               ),
-              IconButton(
-                onPressed: () {
-                  // Show filter options or sort options
-                  _showFilterModal(context);
-                },
-                icon: const Icon(
-                  Icons.filter_list_outlined,
-                  color: ColorConstants.primaryColor,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -292,20 +332,21 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
               Icons.search,
               color: ColorConstants.greyColor,
             ),
-            suffixIcon: searchQuery.isNotEmpty
-                ? IconButton(
-                    icon: const Icon(
-                      Icons.clear,
-                      color: ColorConstants.greyColor,
-                    ),
-                    onPressed: () {
-                      _searchController.clear();
-                      setState(() {
-                        searchQuery = '';
-                      });
-                    },
-                  )
-                : null,
+            suffixIcon:
+                searchQuery.isNotEmpty
+                    ? IconButton(
+                      icon: const Icon(
+                        Icons.clear,
+                        color: ColorConstants.greyColor,
+                      ),
+                      onPressed: () {
+                        _searchController.clear();
+                        setState(() {
+                          searchQuery = '';
+                        });
+                      },
+                    )
+                    : null,
             border: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
@@ -322,49 +363,35 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
     );
   }
 
-  Widget _buildFilterChips() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 16),
-      child: Row(
-        children: [
-          _buildFilterChip('All', LogFilter.all),
-          const SizedBox(width: 12),
-          _buildFilterChip('Fire', LogFilter.fire),
-          const SizedBox(width: 12),
-          _buildFilterChip('Fault', LogFilter.fault),
-        ],
-      ),
+  Widget _buildFilterChips(CustomColors customColors) {
+    return Row(
+      children: [
+        _buildFilterChip('All', LogFilter.all, customColors),
+        const SizedBox(width: 12),
+        _buildFilterChip('Fire', LogFilter.fire, customColors),
+        const SizedBox(width: 12),
+        _buildFilterChip('Fault', LogFilter.fault, customColors),
+        const SizedBox(width: 12),
+        _buildFilterChip('General', LogFilter.general, customColors),
+      ],
     );
   }
 
-  Widget _buildFilterChip(String label, LogFilter filter) {
+  Widget _buildFilterChip(
+    String label,
+    LogFilter filter,
+    CustomColors customColors,
+  ) {
     final bool isSelected = selectedFilter == filter;
     Color backgroundColor;
     Color textColor;
-    Color borderColor;
 
     if (isSelected) {
-      switch (filter) {
-        case LogFilter.fire:
-          backgroundColor = ColorConstants.fireTitleBackGroundColor;
-          textColor = ColorConstants.fireTitleTextColor;
-          borderColor = ColorConstants.fireTitleBorderColor;
-          break;
-        case LogFilter.fault:
-          backgroundColor = ColorConstants.faultTitleBackGroundColor;
-          textColor = ColorConstants.faultTitleTextColor;
-          borderColor = ColorConstants.faultTitleBorderColor;
-          break;
-        case LogFilter.all:
-          backgroundColor = ColorConstants.allEventsTitleBackGroundColor;
-          textColor = ColorConstants.allEventsTitleTextColor;
-          borderColor = ColorConstants.allEventsTitleBorderColor;
-          break;
-      }
+      backgroundColor = customColors.primaryColor.withValues(alpha: 0.2);
+      textColor = customColors.primaryColor;
     } else {
-      backgroundColor = ColorConstants.whiteColor;
-      textColor = ColorConstants.greyColor;
-      borderColor = ColorConstants.textFieldBorderColor;
+      backgroundColor = customColors.themeTextFieldBackgroud;
+      textColor = customColors.themeTextPrimary;
     }
 
     return GestureDetector(
@@ -378,7 +405,6 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: borderColor),
         ),
         child: Text(
           label,
@@ -413,13 +439,15 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
               _fetchLogs();
             },
             color: ColorConstants.primaryColor,
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 26),
+            child: ListView.separated(
               physics: const AlwaysScrollableScrollPhysics(),
               itemCount: filteredLogs.length,
               itemBuilder: (context, index) {
                 final log = filteredLogs[index];
                 return _buildLogCard(log);
+              },
+              separatorBuilder: (context, index) {
+                return const SizedBox(height: 12);
               },
             ),
           );
@@ -436,19 +464,28 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
     String message;
     switch (selectedFilter) {
       case LogFilter.fire:
-        message = searchQuery.isNotEmpty 
-            ? 'No fire logs found for "$searchQuery"'
-            : 'No fire logs found';
+        message =
+            searchQuery.isNotEmpty
+                ? 'No fire logs found for "$searchQuery"'
+                : 'No fire logs found';
         break;
       case LogFilter.fault:
-        message = searchQuery.isNotEmpty 
-            ? 'No fault logs found for "$searchQuery"'
-            : 'No fault logs found';
+        message =
+            searchQuery.isNotEmpty
+                ? 'No fault logs found for "$searchQuery"'
+                : 'No fault logs found';
         break;
       case LogFilter.all:
-        message = searchQuery.isNotEmpty 
-            ? 'No logs found for "$searchQuery"'
-            : 'No logs found';
+        message =
+            searchQuery.isNotEmpty
+                ? 'No logs found for "$searchQuery"'
+                : 'No logs found';
+        break;
+      case LogFilter.general:
+        message =
+            searchQuery.isNotEmpty
+                ? 'No general logs found for "$searchQuery"'
+                : 'No general logs found';
         break;
     }
 
@@ -536,133 +573,148 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
   }
 
   Widget _buildLogCard(LogEntry log) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: ColorConstants.whiteColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header row with status badge and event ID
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: _getLogTypeBackgroundColor(log),
-                    borderRadius: BorderRadius.circular(4),
-                    border: Border.all(
-                      color: _getLogTypeColor(log).withValues(alpha: 0.3),
-                    ),
-                  ),
-                  child: Text(
-                    _getLogTypeText(log),
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: _getLogTypeColor(log),
-                    ),
-                  ),
-                ),
-                Text(
-                  'ID: ${log.u16EventId}',
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: ColorConstants.greyColor,
-                  ),
-                ),
-              ],
+    return Column(
+      children: [
+        LogsCard(log: log),
+        Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          decoration: BoxDecoration(
+            color: ColorConstants.whiteColor,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
             ),
-            const SizedBox(height: 12),
-            
-            // Device information
-            if (log.u8DeviceText.isNotEmpty) ...[
-              Text(
-                log.u8DeviceText,
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: ColorConstants.textColor,
-                ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
               ),
-              const SizedBox(height: 8),
             ],
-            
-            // Zone and Device Address
-            Row(
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: _buildInfoRow('Zone', log.u8ZoneNumber.toString()),
-                ),
-                Expanded(
-                  child: _buildInfoRow('Device', log.u8DeviceAddress.toString()),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            
-            // Source and Date Time
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+                // Header row with status badge and event ID
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: _getLogTypeBackgroundColor(log),
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(
+                          color: _getLogTypeColor(log).withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Text(
+                        _getLogTypeText(log),
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: _getLogTypeColor(log),
+                        ),
+                      ),
+                    ),
                     Text(
-                      'Source: ',
+                      'ID: ${log.u16EventId}',
                       style: GoogleFonts.inter(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                         color: ColorConstants.greyColor,
                       ),
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: log.source.toLowerCase() == 'gsm'
-                            ? ColorConstants.gsmBackGroundColor
-                            : ColorConstants.primaryColor,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        log.source,
-                        style: GoogleFonts.inter(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w500,
-                          color: ColorConstants.whiteColor,
-                        ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                // Device information
+                if (log.u8DeviceText.isNotEmpty) ...[
+                  Text(
+                    log.u8DeviceText,
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: ColorConstants.textColor,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+
+                // Zone and Device Address
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildInfoRow('Zone', log.u8ZoneNumber.toString()),
+                    ),
+                    Expanded(
+                      child: _buildInfoRow(
+                        'Device',
+                        log.u8DeviceAddress.toString(),
                       ),
                     ),
                   ],
                 ),
-                Text(
-                  log.formattedDateTime,
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    color: ColorConstants.greyColor,
-                  ),
+                const SizedBox(height: 8),
+
+                // Source and Date Time
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          'Source: ',
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: ColorConstants.greyColor,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color:
+                                log.source.toLowerCase() == 'gsm'
+                                    ? ColorConstants.gsmBackGroundColor
+                                    : ColorConstants.primaryColor,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            log.source,
+                            style: GoogleFonts.inter(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w500,
+                              color: ColorConstants.whiteColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      log.formattedDateTime,
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: ColorConstants.greyColor,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -712,26 +764,38 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
               ),
               const SizedBox(height: 20),
               ListTile(
-                leading: const Icon(Icons.sort, color: ColorConstants.primaryColor),
+                leading: const Icon(
+                  Icons.sort,
+                  color: ColorConstants.primaryColor,
+                ),
                 title: Text(
                   'Sort by Date (Newest First)',
                   style: GoogleFonts.inter(fontWeight: FontWeight.w500),
                 ),
                 subtitle: Text(
                   'Currently active',
-                  style: GoogleFonts.inter(fontSize: 12, color: ColorConstants.greyColor),
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: ColorConstants.greyColor,
+                  ),
                 ),
               ),
               const Divider(),
               ListTile(
-                leading: const Icon(Icons.info_outline, color: ColorConstants.primaryColor),
+                leading: const Icon(
+                  Icons.info_outline,
+                  color: ColorConstants.primaryColor,
+                ),
                 title: Text(
                   'About Filters',
                   style: GoogleFonts.inter(fontWeight: FontWeight.w500),
                 ),
                 subtitle: Text(
                   'Use the filter chips above to filter by log type',
-                  style: GoogleFonts.inter(fontSize: 12, color: ColorConstants.greyColor),
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: ColorConstants.greyColor,
+                  ),
                 ),
               ),
               const SizedBox(height: 20),

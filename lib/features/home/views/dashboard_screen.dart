@@ -1,7 +1,11 @@
 import 'package:emcus_ipgsm_app/core/services/auth_manager.dart';
 import 'package:emcus_ipgsm_app/features/home/views/pages/home_screen.dart';
+import 'package:emcus_ipgsm_app/features/logs/views/all_logs_screen.dart';
+import 'package:emcus_ipgsm_app/features/notes/views/all_notes_screen.dart';
+import 'package:emcus_ipgsm_app/features/profile/views/profile_screen.dart';
 import 'package:emcus_ipgsm_app/features/sites/views/all_site_screen.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
+import 'package:emcus_ipgsm_app/utils/theme/custom_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,78 +22,77 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
 
   List<Widget> get _screens => [
     const HomeScreen(),
-    const AllSitesScreen(),
+    const AllLogsScreen(),
+    const AllNotesScreen(),
+    const ProfileScreen(),
   ];
 
   void _onItemTapped(int index) {
-    if (index == 2) {
-      _showLogoutDialog(context);
-      return;
-    } else {
-      setState(() {
-        _selectedIndex = index;
-      });
-    }
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
-  void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            'Logout',
-            style: GoogleFonts.inter(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: ColorConstants.textColor,
-            ),
-          ),
-          content: Text(
-            'Are you sure you want to logout?',
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: ColorConstants.textColor,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                'Cancel',
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () async {
-                Navigator.of(context).pop(); // Close dialog first
-                await AuthManager().logout(context);
-              },
-              child: Text(
-                'Logout',
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: ColorConstants.primaryColor,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  // void _showLogoutDialog(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Text(
+  //           'Logout',
+  //           style: GoogleFonts.inter(
+  //             fontSize: 18,
+  //             fontWeight: FontWeight.w600,
+  //             color: ColorConstants.textColor,
+  //           ),
+  //         ),
+  //         content: Text(
+  //           'Are you sure you want to logout?',
+  //           style: GoogleFonts.inter(
+  //             fontSize: 14,
+  //             fontWeight: FontWeight.w400,
+  //             color: ColorConstants.textColor,
+  //           ),
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () => Navigator.of(context).pop(),
+  //             child: Text(
+  //               'Cancel',
+  //               style: GoogleFonts.inter(
+  //                 fontSize: 14,
+  //                 fontWeight: FontWeight.w600,
+  //                 color: Colors.grey,
+  //               ),
+  //             ),
+  //           ),
+  //           TextButton(
+  //             onPressed: () async {
+  //               Navigator.of(context).pop(); // Close dialog first
+  //               await AuthManager().logout(context);
+  //             },
+  //             child: Text(
+  //               'Logout',
+  //               style: GoogleFonts.inter(
+  //                 fontSize: 14,
+  //                 fontWeight: FontWeight.w600,
+  //                 color: ColorConstants.primaryColor,
+  //               ),
+  //             ),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final customColors = theme.extension<CustomColors>()!;
     return Scaffold(
       extendBody: true,
-      body: _screens[_selectedIndex],
+      body: IndexedStack(index: _selectedIndex, children: _screens),
       bottomNavigationBar: Container(
         height: 80 + MediaQuery.of(context).padding.bottom,
         decoration: BoxDecoration(
@@ -123,29 +126,59 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 label: 'Home',
               ),
               BottomNavigationBarItem(
+                icon: Transform.translate(
+                  offset: const Offset(
+                    0,
+                    -2,
+                  ), // Move the entire icon up by 2 pixels
+                  child: SvgPicture.asset(
+                    'assets/svgs/logs_icon.svg',
+                    height: 24,
+                    width: 24,
+                    colorFilter: ColorFilter.mode(
+                      _selectedIndex == 1
+                          ? ColorConstants.primaryColor
+                          : Colors.grey,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+                label: 'Logs',
+              ),
+              BottomNavigationBarItem(
                 icon: SvgPicture.asset(
-                  'assets/svgs/sites_icon.svg',
+                  'assets/svgs/notes_icon.svg',
                   height: 24,
                   width: 24,
                   colorFilter: ColorFilter.mode(
-                    _selectedIndex == 1
+                    _selectedIndex == 2
                         ? ColorConstants.primaryColor
                         : Colors.grey,
                     BlendMode.srcIn,
                   ),
                 ),
-                label: 'Sites',
+                label: 'Notes',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.logout, color: ColorConstants.blackColor),
-                label: 'Logout',
+                icon: SvgPicture.asset(
+                  'assets/svgs/profile_icon.svg',
+                  height: 24,
+                  width: 24,
+                  colorFilter: ColorFilter.mode(
+                    _selectedIndex == 3
+                        ? ColorConstants.primaryColor
+                        : Colors.grey,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                label: 'Profile',
               ),
             ],
             currentIndex: _selectedIndex,
             selectedItemColor: ColorConstants.primaryColor,
             unselectedItemColor: Colors.grey,
             onTap: _onItemTapped,
-            backgroundColor: ColorConstants.whiteColor,
+            backgroundColor: customColors.themeSurface,
             elevation: 0,
             type: BottomNavigationBarType.fixed,
             selectedLabelStyle: GoogleFonts.inter(
