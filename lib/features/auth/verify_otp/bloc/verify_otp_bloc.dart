@@ -25,8 +25,9 @@ class VerifyOtpBloc extends Bloc<VerifyOtpEvent, VerifyOtpState> {
       if (response.statusCode == 1) {
         emit(
           VerifyOtpSuccess(
-            message: response.data.first.message,
-            session: response.data.first.response.session,
+            // message: response.data.first.message,
+            // session: response.data.first.response.session,
+            message: response.data.message,
           ),
         );
       } else {

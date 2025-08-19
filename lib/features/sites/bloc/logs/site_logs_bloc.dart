@@ -7,22 +7,22 @@ import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_state.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_repository.dart';
 
 class SiteLogsBloc extends Bloc<SiteLogsEvent, SiteLogsState> {
-  SiteLogsBloc({required SiteLogsRepository siteLogsRepository, required SocketService socketService})
+  SiteLogsBloc({required SiteLogsRepository siteLogsRepository})
     : _siteLogsRepository = siteLogsRepository,
       super(SiteLogsInitial()) {
     on<SiteLogsFetched>(_onSiteLogsFetched);
     on<SiteLogsNewLogReceived>(_onSiteLogsNewLogReceived);
 
     // Connect to socket and listen for new logs
-    socketService.connect('https://ipgsm.emcus.co.in/websocket/site-logs');
-    socketService.onNewLog((data) {
-      try {
-        final newLog = LogEntry.fromJson(data);
-        add(SiteLogsNewLogReceived(newLog));
-      } catch (e) {
-        throw Exception('Failed to parse new log: $e');
-      }
-    });
+    // socketService.connect('https://ipgsm.emcus.co.in/websocket/site-logs');
+    // socketService.onNewLog((data) {
+    //   try {
+    //     final newLog = LogEntry.fromJson(data);
+    //     add(SiteLogsNewLogReceived(newLog));
+    //   } catch (e) {
+    //     throw Exception('Failed to parse new log: $e');
+    //   }
+    // });
   }
   final SiteLogsRepository _siteLogsRepository;
 
@@ -51,8 +51,8 @@ class SiteLogsBloc extends Bloc<SiteLogsEvent, SiteLogsState> {
   ) {
     if (state is SiteLogsSuccess) {
       final currentState = state as SiteLogsSuccess;
-      if (currentState.logs.isNotEmpty) {
-        final currentData = currentState.logs[0];
+      if (currentState.logs.allCount == 0) {
+        final currentData = currentState.logs;
         final log = event.newLog;
         final isFire = log.u16EventId >= 1001 && log.u16EventId <= 1007;
         final isFault = log.u16EventId >= 2000 && log.u16EventId < 3000;
@@ -64,13 +64,14 @@ class SiteLogsBloc extends Bloc<SiteLogsEvent, SiteLogsState> {
         if (isFault) newFault.insert(0, log);
         final updatedData = SiteLogsData(
           fireCount: isFire ? currentData.fireCount + 1 : currentData.fireCount,
-          faultCount: isFault ? currentData.faultCount + 1 : currentData.faultCount,
+          faultCount:
+              isFault ? currentData.faultCount + 1 : currentData.faultCount,
           allCount: currentData.allCount + 1,
           fire: newFire,
           fault: newFault,
           all: newAll,
         );
-        emit(SiteLogsSuccess(logs: [updatedData], message: currentState.message));
+        emit(SiteLogsSuccess(logs: updatedData, message: currentState.message));
       }
     }
   }

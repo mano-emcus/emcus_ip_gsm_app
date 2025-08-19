@@ -1,4 +1,6 @@
 import 'package:emcus_ipgsm_app/features/logs/models/log_entry.dart';
+import 'package:emcus_ipgsm_app/features/notes/models/note_entry.dart';
+import 'package:emcus_ipgsm_app/features/notes/views/notes_screen.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:emcus_ipgsm_app/utils/theme/custom_colors.dart';
 import 'package:flutter/material.dart';
@@ -6,42 +8,42 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
-class LogsCard extends StatefulWidget {
-  const LogsCard({super.key, required this.log});
+class NotesCard extends StatefulWidget {
+  const NotesCard({super.key, required this.note});
 
-  final LogEntry log;
+  final NoteEntry note;
 
   @override
-  State<LogsCard> createState() => _LogsCardState();
+  State<NotesCard> createState() => _NotesCardState();
 }
 
-String _getLogTypeText(LogEntry log) {
-  if (log.u16EventId >= 1001 && log.u16EventId <= 1007) {
-    return 'Fire';
-  } else if (log.u16EventId >= 2000 && log.u16EventId < 3000) {
-    return 'Fault';
+String _getNoteTypeText(NoteEntry note) {
+  if (note.noteTag == NoteCategory.issueNotes) {
+    return 'Issue';
+  } else if (note.noteTag == NoteCategory.infoNotes) {
+    return 'Info';
   } else {
-    return 'Event';
+    return 'General';
   }
 }
 
-String _getLogTypeIcon(LogEntry log) {
-  if (log.u16EventId >= 1001 && log.u16EventId <= 1007) {
+String _getNoteTypeIcon(NoteEntry note) {
+  if (note.noteTag == NoteCategory.issueNotes) {
     return 'assets/svgs/fire_icon.svg';
-  } else if (log.u16EventId >= 2000 && log.u16EventId < 3000) {
+  } else if (note.noteTag == NoteCategory.infoNotes) {
     return 'assets/svgs/fault_icon.svg';
   } else {
     return 'assets/svgs/general_icon.svg';
   }
 }
 
-String _getLogTitle(LogEntry log) {
-  if (log.u16EventId >= 1001 && log.u16EventId <= 1007) {
-    return 'Fire Alert Detected';
-  } else if (log.u16EventId >= 2000 && log.u16EventId < 3000) {
-    return 'System Fault';
+String _getNoteTitle(NoteEntry note) {
+  if (note.noteTag == NoteCategory.issueNotes) {
+    return 'Issue Note';
+  } else if (note.noteTag == NoteCategory.infoNotes) {
+    return 'Info Note';
   } else {
-    return 'General Update';
+    return 'General Note';
   }
 }
 
@@ -61,68 +63,67 @@ String _getLogDescription(
   }
 }
 
-String _formatLogDate(LogEntry log) {
-  final now = DateTime.now();
-  final logDate = DateTime(
-    log.u8Year,
-    log.u8Month,
-    log.u8Date,
-    log.u8Hours,
-    log.u8Minutes,
-  );
+String _formatLogDate(NoteEntry note) {
+  try {
+    final now = DateTime.now();
+    final noteDate = DateTime.parse(note.createdAt);
 
-  final today = DateTime(now.year, now.month, now.day);
-  final yesterday = today.subtract(const Duration(days: 1));
-  final logDateOnly = DateTime(logDate.year, logDate.month, logDate.day);
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    final noteDateOnly = DateTime(noteDate.year, noteDate.month, noteDate.day);
 
-  final timeString =
-      '${log.u8Hours.toString().padLeft(2, '0')}:${log.u8Minutes.toString().padLeft(2, '0')}';
+    final timeString =
+        '${noteDate.hour.toString().padLeft(2, '0')}:${noteDate.minute.toString().padLeft(2, '0')}';
 
-  if (logDateOnly == today) {
-    return 'Today, $timeString';
-  } else if (logDateOnly == yesterday) {
-    return 'Yesterday, $timeString';
-  } else {
-    final monthNames = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    final monthName = monthNames[log.u8Month - 1];
-    return '$monthName ${log.u8Date}, $timeString';
+    if (noteDateOnly == today) {
+      return 'Today, $timeString';
+    } else if (noteDateOnly == yesterday) {
+      return 'Yesterday, $timeString';
+    } else {
+      final monthNames = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ];
+      final monthName = monthNames[noteDate.month - 1];
+      return '$monthName ${noteDate.day}, $timeString';
+    }
+  } catch (e) {
+    // Fallback to original value if parsing fails
+    return note.createdAt;
   }
 }
 
-Color _getLogTypeColor(LogEntry log) {
-  if (log.u16EventId >= 1001 && log.u16EventId <= 1007) {
+Color _getNoteTypeColor(NoteEntry note) {
+  if (note.noteTag == NoteCategory.issueNotes) {
     return ColorConstants.fireTitleTextColor;
-  } else if (log.u16EventId >= 2000 && log.u16EventId < 3000) {
+  } else if (note.noteTag == NoteCategory.infoNotes) {
     return ColorConstants.faultTitleTextColor;
   } else {
     return ColorConstants.allEventsTitleTextColor;
   }
 }
 
-Color _getLogTypeBackgroundColor(LogEntry log) {
-  if (log.u16EventId >= 1001 && log.u16EventId <= 1007) {
+Color _getNoteTypeBackgroundColor(NoteEntry note) {
+  if (note.noteTag == NoteCategory.issueNotes) {
     return ColorConstants.fireTitleBackGroundColor;
-  } else if (log.u16EventId >= 2000 && log.u16EventId < 3000) {
+  } else if (note.noteTag == NoteCategory.infoNotes) {
     return ColorConstants.faultTitleBackGroundColor;
   } else {
     return ColorConstants.allEventsTitleBackGroundColor;
   }
 }
 
-class _LogsCardState extends State<LogsCard> {
+class _NotesCardState extends State<NotesCard> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -133,7 +134,7 @@ class _LogsCardState extends State<LogsCard> {
         borderRadius: BorderRadius.circular(12),
         border: Border(
           left: BorderSide(
-            color: _getLogTypeColor(widget.log), // Use corresponding color
+            color: _getNoteTypeColor(widget.note), // Use corresponding color
             width: 4, // Adjust width as needed for thickness
           ),
         ),
@@ -144,10 +145,10 @@ class _LogsCardState extends State<LogsCard> {
           children: [
             Row(
               children: [
-                SvgPicture.asset(_getLogTypeIcon(widget.log)),
+                SvgPicture.asset(_getNoteTypeIcon(widget.note)),
                 const SizedBox(width: 8),
                 Text(
-                  _getLogTitle(widget.log),
+                  widget.note.noteTitle,
                   style: GoogleFonts.inter(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -156,7 +157,7 @@ class _LogsCardState extends State<LogsCard> {
                 ),
                 Spacer(),
                 Text(
-                  _formatLogDate(widget.log),
+                  _formatLogDate(widget.note),
                   style: GoogleFonts.inter(
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
@@ -169,13 +170,7 @@ class _LogsCardState extends State<LogsCard> {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                _getLogDescription(
-                  widget.log,
-                  widget.log.u8DeviceText,
-                  widget.log.u8ZoneNumber.toString(),
-                  widget.log.source,
-                  widget.log.u8DeviceAddress.toString(),
-                ),
+                widget.note.noteContent,
                 style: GoogleFonts.inter(
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
@@ -190,41 +185,7 @@ class _LogsCardState extends State<LogsCard> {
                 Row(
                   children: [
                     Text(
-                      'Source: ',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: customColors.themeTextSecondary,
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color:
-                            widget.log.source.toLowerCase() == 'gsm'
-                                ? ColorConstants.gsmBackGroundColor
-                                : customColors.themeTextFieldBackgroud,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        widget.log.source,
-                        style: GoogleFonts.inter(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w500,
-                          color: customColors.themeTextPrimary,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-
-                Row(
-                  children: [
-                    Text(
-                      'Device: ',
+                      'Author: ',
                       style: GoogleFonts.inter(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
@@ -232,7 +193,7 @@ class _LogsCardState extends State<LogsCard> {
                       ),
                     ),
                     Text(
-                      widget.log.u8DeviceAddress.toString(),
+                      widget.note.username,
                       style: GoogleFonts.inter(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
@@ -242,27 +203,27 @@ class _LogsCardState extends State<LogsCard> {
                   ],
                 ),
                 Container(
-                  width: 50,
+                  width: 70,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8,
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: _getLogTypeBackgroundColor(widget.log),
+                    color: _getNoteTypeBackgroundColor(widget.note),
                     borderRadius: BorderRadius.circular(4),
                     border: Border.all(
-                      color: _getLogTypeColor(
-                        widget.log,
+                      color: _getNoteTypeColor(
+                        widget.note,
                       ).withValues(alpha: 0.3),
                     ),
                   ),
                   child: Center(
                     child: Text(
-                      _getLogTypeText(widget.log),
+                      _getNoteTypeText(widget.note),
                       style: GoogleFonts.inter(
                         fontSize: 10,
                         fontWeight: FontWeight.w600,
-                        color: _getLogTypeColor(widget.log),
+                        color: _getNoteTypeColor(widget.note),
                       ),
                     ),
                   ),

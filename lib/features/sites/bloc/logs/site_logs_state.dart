@@ -12,7 +12,8 @@ class SiteLogsLoading extends SiteLogsState {}
 
 class SiteLogsSuccess extends SiteLogsState {
   SiteLogsSuccess({required this.logs, required this.message});
-  final List<SiteLogsData> logs;
+  // final List<SiteLogsData> logs;
+  final SiteLogsData logs;
   final String message;
 
   @override

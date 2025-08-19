@@ -80,7 +80,7 @@ class _SiteCardState extends State<SiteCard> {
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              state.logs[0].faultCount.toString(),
+                              state.logs.fireCount.toString(),
                               style: GoogleFonts.inter(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400,
@@ -98,7 +98,7 @@ class _SiteCardState extends State<SiteCard> {
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              '${state.logs[0].allCount - state.logs[0].fireCount - state.logs[0].faultCount}',
+                              state.logs.faultCount.toString(),
                               style: GoogleFonts.inter(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400,
@@ -116,7 +116,7 @@ class _SiteCardState extends State<SiteCard> {
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              state.logs[0].fireCount.toString(),
+                              '${state.logs.allCount - state.logs.fireCount - state.logs.faultCount}',
                               style: GoogleFonts.inter(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400,
@@ -135,15 +135,17 @@ class _SiteCardState extends State<SiteCard> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    widget.siteData.siteLocation,
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: customColors.themeTextSecondary,
+                  Expanded(
+                    child: Text(
+                      widget.siteData.siteLocation,
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: customColors.themeTextSecondary,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
 
                   Icon(

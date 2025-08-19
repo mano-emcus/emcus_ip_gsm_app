@@ -46,11 +46,9 @@ class _VerifyOtpFormState extends State<VerifyOtpForm> {
     return BlocListener<VerifyOtpBloc, VerifyOtpState>(
       listener: (context, state) {
         if (state is VerifyOtpSuccess) {
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
-            MaterialPageRoute(
-              builder: (context) => SetPasswordScreen(email: widget.email),
-            ),
+            MaterialPageRoute(builder: (context) => const SignInScreen()),
           );
         } else if (state is VerifyOtpFailure) {
           showDialog(

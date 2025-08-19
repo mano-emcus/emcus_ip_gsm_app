@@ -20,7 +20,13 @@ class SignUpForm extends StatefulWidget {
     required this.onSignIn,
   });
 
-  final Function({String fullName, String companyName, String email}) onSignUp;
+  final Function({
+    String fullName,
+    String companyName,
+    String email,
+    String password,
+  })
+  onSignUp;
   final Function() onSignIn;
   final RegisterState state;
 
@@ -184,6 +190,7 @@ class _SignUpFormState extends State<SignUpForm> {
                           fullName: fullNameController.text,
                           companyName: 'Gemini',
                           email: emailController.text,
+                          password: passwordController.text,
                         );
                       },
               child: Container(

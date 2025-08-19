@@ -6,7 +6,6 @@ import 'package:emcus_ipgsm_app/core/utils/api_logger.dart';
 import 'package:emcus_ipgsm_app/features/auth/register/models/register_response.dart';
 
 class RegisterRepository {
-
   RegisterRepository({required http.Client client}) : _client = client;
   final http.Client _client;
 
@@ -14,6 +13,7 @@ class RegisterRepository {
     required String fullName,
     required String companyName,
     required String email,
+    required String password,
   }) async {
     final url = AuthEndpoints.register;
     final headers = ApiConfig.defaultHeaders;
@@ -22,6 +22,7 @@ class RegisterRepository {
       'companyName': companyName,
       'email': email,
       'groupName': 'users',
+      'password': password,
     };
 
     try {
@@ -51,7 +52,9 @@ class RegisterRepository {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return RegisterResponse.fromJson(responseData);
       } else {
-        final error = responseData['message'] ?? 'Failed to register: ${response.statusCode}';
+        final error =
+            responseData['message'] ??
+            'Failed to register: ${response.statusCode}';
         ApiLogger.logError(error);
         throw Exception(error);
       }
@@ -67,4 +70,4 @@ class RegisterRepository {
   void dispose() {
     _client.close();
   }
-} 
+}

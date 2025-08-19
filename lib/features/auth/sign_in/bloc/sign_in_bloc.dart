@@ -5,10 +5,12 @@ import 'package:emcus_ipgsm_app/features/auth/sign_in/bloc/sign_in_repository.da
 import 'package:emcus_ipgsm_app/core/services/auth_manager.dart';
 
 class SignInBloc extends Bloc<SignInEvent, SignInState> {
-  SignInBloc({required SignInRepository signInRepository, required AuthManager authManager})
-    : _signInRepository = signInRepository,
-      _authManager = authManager,
-      super(SignInInitial()) {
+  SignInBloc({
+    required SignInRepository signInRepository,
+    required AuthManager authManager,
+  }) : _signInRepository = signInRepository,
+       _authManager = authManager,
+       super(SignInInitial()) {
     on<SignInSubmitted>(_onSignInSubmitted);
   }
   final SignInRepository _signInRepository;
@@ -26,13 +28,13 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
       );
 
       if (response.statusCode == 1) {
-        final signInData = response.data.first;
+        final signInData = response.data;
 
         // Store tokens in SharedPreferences
         await _authManager.storeAuthTokens(
           idToken: signInData.idToken,
           accessToken: signInData.accessToken,
-          refreshToken: signInData.refreshToken,
+          // refreshToken: signInData.refreshToken,
         );
 
         emit(SignInSuccess(message: response.message, signInData: signInData));

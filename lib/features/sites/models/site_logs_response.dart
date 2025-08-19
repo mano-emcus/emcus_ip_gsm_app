@@ -11,13 +11,15 @@ class SiteLogsResponse {
     return SiteLogsResponse(
       statusCode: json['statusCode'] as int,
       message: json['message'] as String,
-      data: (json['data'] as List?)?.map((item) => SiteLogsData.fromJson(item as Map<String, dynamic>)).toList() ?? [],
+      // data: (json['data'] as List?)?.map((item) => SiteLogsData.fromJson(item as Map<String, dynamic>)).toList() ?? [],
+      data: SiteLogsData.fromJson(json['data']),
     );
   }
 
   final int statusCode;
   final String message;
-  final List<SiteLogsData> data;
+  // final List<SiteLogsData> data;
+  final SiteLogsData data;
 }
 
 class SiteLogsData {
@@ -35,9 +37,21 @@ class SiteLogsData {
       fireCount: json['fireCount'] as int,
       faultCount: json['faultCount'] as int,
       allCount: json['allCount'] as int,
-      fire: (json['fire'] as List?)?.map((item) => LogEntry.fromJson(item as Map<String, dynamic>)).toList() ?? [],
-      fault: (json['fault'] as List?)?.map((item) => LogEntry.fromJson(item as Map<String, dynamic>)).toList() ?? [],
-      all: (json['all'] as List?)?.map((item) => LogEntry.fromJson(item as Map<String, dynamic>)).toList() ?? [],
+      fire:
+          (json['fire'] as List?)
+              ?.map((item) => LogEntry.fromJson(item as Map<String, dynamic>))
+              .toList() ??
+          [],
+      fault:
+          (json['fault'] as List?)
+              ?.map((item) => LogEntry.fromJson(item as Map<String, dynamic>))
+              .toList() ??
+          [],
+      all:
+          (json['all'] as List?)
+              ?.map((item) => LogEntry.fromJson(item as Map<String, dynamic>))
+              .toList() ??
+          [],
     );
   }
 
@@ -47,4 +61,4 @@ class SiteLogsData {
   final List<LogEntry> fire;
   final List<LogEntry> fault;
   final List<LogEntry> all;
-} 
+}

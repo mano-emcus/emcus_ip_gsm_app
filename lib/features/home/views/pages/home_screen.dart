@@ -3,6 +3,7 @@ import 'package:emcus_ipgsm_app/features/home/widgets/dashboard_logs_card.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_bloc.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_event.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_state.dart';
+import 'package:emcus_ipgsm_app/features/logs/models/log_entry.dart';
 import 'package:emcus_ipgsm_app/features/notes/bloc/notes_bloc.dart';
 import 'package:emcus_ipgsm_app/features/notes/bloc/notes_event.dart';
 import 'package:emcus_ipgsm_app/features/notes/bloc/notes_state.dart';
@@ -27,15 +28,36 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int fireCount = 5;
-  int faultCount = 12;
-  int allEventsCount = 40;
+  // Remove hardcoded values
+  // int fireCount = 5;
+  // int faultCount = 12;
+  // int allEventsCount = 40;
+
   String fireCountText = '...';
   String faultCountText = '...';
   String allEventsCountText = '...';
   NotesBloc? _notesBloc;
   LogsBloc? _logsBloc;
   SitesBloc? _sitesBloc;
+
+  // Helper method to count logs by type
+  Map<String, int> _countLogsByType(List<LogEntry> logs) {
+    int fireCount = 0;
+    int faultCount = 0;
+    int generalCount = 0;
+
+    for (final log in logs) {
+      if (log.u16EventId >= 1001 && log.u16EventId <= 1007) {
+        fireCount++;
+      } else if (log.u16EventId >= 2000 && log.u16EventId < 3000) {
+        faultCount++;
+      } else {
+        generalCount++;
+      }
+    }
+
+    return {'fire': fireCount, 'fault': faultCount, 'general': generalCount};
+  }
 
   @override
   void initState() {
@@ -209,10 +231,37 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                     const SizedBox(height: 20),
-                    DashBoardLogsCard(
-                      fireCount: fireCount,
-                      faultCount: faultCount,
-                      generalCount: allEventsCount - fireCount - faultCount,
+                    // Use BlocBuilder to render logs count dynamically
+                    BlocBuilder<LogsBloc, LogsState>(
+                      builder: (context, state) {
+                        if (state is LogsSuccess) {
+                          final logCounts = _countLogsByType(state.logs);
+                          return DashBoardLogsCard(
+                            fireCount: logCounts['fire']!,
+                            faultCount: logCounts['fault']!,
+                            generalCount: logCounts['general']!,
+                          );
+                        } else if (state is LogsLoading) {
+                          return DashBoardLogsCard(
+                            fireCount: 0,
+                            faultCount: 0,
+                            generalCount: 0,
+                          );
+                        } else if (state is LogsFailure) {
+                          return DashBoardLogsCard(
+                            fireCount: 0,
+                            faultCount: 0,
+                            generalCount: 0,
+                          );
+                        } else {
+                          // LogsInitial state
+                          return DashBoardLogsCard(
+                            fireCount: 0,
+                            faultCount: 0,
+                            generalCount: 0,
+                          );
+                        }
+                      },
                     ),
                     const SizedBox(height: 24),
                     _buildRecentSites(customColors: customColors),

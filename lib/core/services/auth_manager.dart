@@ -65,12 +65,12 @@ class AuthManager {
   Future<void> storeAuthTokens({
     required String idToken,
     required String accessToken,
-    required String refreshToken,
+    // required String refreshToken,
   }) async {
     await _tokenStorageService.storeTokens(
       idToken: idToken,
       accessToken: accessToken,
-      refreshToken: refreshToken,
+      // refreshToken: refreshToken,
     );
   }
 }

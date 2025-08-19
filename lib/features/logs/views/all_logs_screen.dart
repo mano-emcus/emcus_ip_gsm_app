@@ -277,7 +277,7 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          'All Logs',
+          'Logs',
           style: GoogleFonts.inter(
             fontSize: 24,
             fontWeight: FontWeight.w700,
@@ -570,150 +570,147 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
     );
   }
 
+  // Container(
+  //         margin: const EdgeInsets.only(bottom: 12),
+  //         decoration: BoxDecoration(
+  //           color: ColorConstants.whiteColor,
+  //           borderRadius: BorderRadius.circular(12),
+  //           border: Border.all(
+  //             color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
+  //           ),
+  //           boxShadow: [
+  //             BoxShadow(
+  //               color: Colors.black.withValues(alpha: 0.05),
+  //               blurRadius: 8,
+  //               offset: const Offset(0, 2),
+  //             ),
+  //           ],
+  //         ),
+  //         child: Padding(
+  //           padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 16),
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               // Header row with status badge and event ID
+  //               Row(
+  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                 children: [
+  //                   Container(
+  //                     padding: const EdgeInsets.symmetric(
+  //                       horizontal: 8,
+  //                       vertical: 4,
+  //                     ),
+  //                     decoration: BoxDecoration(
+  //                       color: _getLogTypeBackgroundColor(log),
+  //                       borderRadius: BorderRadius.circular(4),
+  //                       border: Border.all(
+  //                         color: _getLogTypeColor(log).withValues(alpha: 0.3),
+  //                       ),
+  //                     ),
+  //                     child: Text(
+  //                       _getLogTypeText(log),
+  //                       style: GoogleFonts.inter(
+  //                         fontSize: 12,
+  //                         fontWeight: FontWeight.w600,
+  //                         color: _getLogTypeColor(log),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                   Text(
+  //                     'ID: ${log.u16EventId}',
+  //                     style: GoogleFonts.inter(
+  //                       fontSize: 12,
+  //                       fontWeight: FontWeight.w500,
+  //                       color: ColorConstants.greyColor,
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //               const SizedBox(height: 12),
+
+  //               // Device information
+  //               if (log.u8DeviceText.isNotEmpty) ...[
+  //                 Text(
+  //                   log.u8DeviceText,
+  //                   style: GoogleFonts.inter(
+  //                     fontSize: 14,
+  //                     fontWeight: FontWeight.w600,
+  //                     color: ColorConstants.textColor,
+  //                   ),
+  //                 ),
+  //                 const SizedBox(height: 8),
+  //               ],
+
+  //               // Zone and Device Address
+  //               Row(
+  //                 children: [
+  //                   Expanded(
+  //                     child: _buildInfoRow('Zone', log.u8ZoneNumber.toString()),
+  //                   ),
+  //                   Expanded(
+  //                     child: _buildInfoRow(
+  //                       'Device',
+  //                       log.u8DeviceAddress.toString(),
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //               const SizedBox(height: 8),
+
+  //               // Source and Date Time
+  //               Row(
+  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                 children: [
+  //                   Row(
+  //                     children: [
+  //                       Text(
+  //                         'Source: ',
+  //                         style: GoogleFonts.inter(
+  //                           fontSize: 12,
+  //                           fontWeight: FontWeight.w500,
+  //                           color: ColorConstants.greyColor,
+  //                         ),
+  //                       ),
+  //                       Container(
+  //                         padding: const EdgeInsets.symmetric(
+  //                           horizontal: 6,
+  //                           vertical: 2,
+  //                         ),
+  //                         decoration: BoxDecoration(
+  //                           color:
+  //                               log.source.toLowerCase() == 'gsm'
+  //                                   ? ColorConstants.gsmBackGroundColor
+  //                                   : ColorConstants.primaryColor,
+  //                           borderRadius: BorderRadius.circular(4),
+  //                         ),
+  //                         child: Text(
+  //                           log.source,
+  //                           style: GoogleFonts.inter(
+  //                             fontSize: 10,
+  //                             fontWeight: FontWeight.w500,
+  //                             color: ColorConstants.whiteColor,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                   Text(
+  //                     log.formattedDateTime,
+  //                     style: GoogleFonts.inter(
+  //                       fontSize: 12,
+  //                       fontWeight: FontWeight.w400,
+  //                       color: ColorConstants.greyColor,
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+
   Widget _buildLogCard(LogEntry log) {
-    return Column(
-      children: [
-        LogsCard(log: log),
-        Container(
-          margin: const EdgeInsets.only(bottom: 12),
-          decoration: BoxDecoration(
-            color: ColorConstants.whiteColor,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header row with status badge and event ID
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: _getLogTypeBackgroundColor(log),
-                        borderRadius: BorderRadius.circular(4),
-                        border: Border.all(
-                          color: _getLogTypeColor(log).withValues(alpha: 0.3),
-                        ),
-                      ),
-                      child: Text(
-                        _getLogTypeText(log),
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: _getLogTypeColor(log),
-                        ),
-                      ),
-                    ),
-                    Text(
-                      'ID: ${log.u16EventId}',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: ColorConstants.greyColor,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-
-                // Device information
-                if (log.u8DeviceText.isNotEmpty) ...[
-                  Text(
-                    log.u8DeviceText,
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: ColorConstants.textColor,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                ],
-
-                // Zone and Device Address
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildInfoRow('Zone', log.u8ZoneNumber.toString()),
-                    ),
-                    Expanded(
-                      child: _buildInfoRow(
-                        'Device',
-                        log.u8DeviceAddress.toString(),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-
-                // Source and Date Time
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          'Source: ',
-                          style: GoogleFonts.inter(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: ColorConstants.greyColor,
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color:
-                                log.source.toLowerCase() == 'gsm'
-                                    ? ColorConstants.gsmBackGroundColor
-                                    : ColorConstants.primaryColor,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            log.source,
-                            style: GoogleFonts.inter(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
-                              color: ColorConstants.whiteColor,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      log.formattedDateTime,
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: ColorConstants.greyColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
+    return LogsCard(log: log);
   }
 
   Widget _buildInfoRow(String label, String value) {

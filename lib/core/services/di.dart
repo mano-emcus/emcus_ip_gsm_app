@@ -1,3 +1,4 @@
+import 'package:emcus_ipgsm_app/utils/theme/bloc/theme_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_bloc.dart';
 import 'package:emcus_ipgsm_app/features/notes/bloc/notes_bloc.dart';
@@ -32,26 +33,78 @@ void setupLocator() {
   getIt.registerLazySingleton<SocketService>(() => SocketService());
 
   // Repositories
-  getIt.registerLazySingleton<LogsRepository>(() => LogsRepository(authManager: getIt<AuthManager>()));
-  getIt.registerLazySingleton<NotesRepository>(() => NotesRepository(authManager: getIt<AuthManager>()));
-  getIt.registerLazySingleton<SitesRepository>(() => SitesRepository(authManager: getIt<AuthManager>(), client: getIt<http.Client>()));
-  getIt.registerLazySingleton<SignInRepository>(() => SignInRepository(client: getIt<http.Client>()));
-  getIt.registerLazySingleton<RegisterRepository>(() => RegisterRepository(client: getIt<http.Client>()));
-  getIt.registerLazySingleton<SetPasswordRepository>(() => SetPasswordRepository(client: getIt<http.Client>()));
-  getIt.registerLazySingleton<VerifyOtpRepository>(() => VerifyOtpRepository(client: getIt<http.Client>()));
-  getIt.registerLazySingleton<SiteLogsRepository>(() => SiteLogsRepository(authManager: getIt<AuthManager>()));
-  getIt.registerLazySingleton<SiteNoteRepository>(() => SiteNoteRepository(authManager: getIt<AuthManager>()));
-  getIt.registerLazySingleton<SiteDevicesRepository>(() => SiteDevicesRepository(authManager: getIt<AuthManager>()));
+  getIt.registerLazySingleton<LogsRepository>(
+    () => LogsRepository(authManager: getIt<AuthManager>()),
+  );
+  getIt.registerLazySingleton<NotesRepository>(
+    () => NotesRepository(authManager: getIt<AuthManager>()),
+  );
+  getIt.registerLazySingleton<SitesRepository>(
+    () => SitesRepository(
+      authManager: getIt<AuthManager>(),
+      client: getIt<http.Client>(),
+    ),
+  );
+  getIt.registerLazySingleton<SignInRepository>(
+    () => SignInRepository(client: getIt<http.Client>()),
+  );
+  getIt.registerLazySingleton<RegisterRepository>(
+    () => RegisterRepository(client: getIt<http.Client>()),
+  );
+  getIt.registerLazySingleton<SetPasswordRepository>(
+    () => SetPasswordRepository(client: getIt<http.Client>()),
+  );
+  getIt.registerLazySingleton<VerifyOtpRepository>(
+    () => VerifyOtpRepository(client: getIt<http.Client>()),
+  );
+  getIt.registerLazySingleton<SiteLogsRepository>(
+    () => SiteLogsRepository(authManager: getIt<AuthManager>()),
+  );
+  getIt.registerLazySingleton<SiteNoteRepository>(
+    () => SiteNoteRepository(authManager: getIt<AuthManager>()),
+  );
+  getIt.registerLazySingleton<SiteDevicesRepository>(
+    () => SiteDevicesRepository(authManager: getIt<AuthManager>()),
+  );
 
   // Blocs
-  getIt.registerFactory(() => LogsBloc(logsRepository: getIt<LogsRepository>(), socketService: getIt<SocketService>()));
-  getIt.registerFactory(() => NotesBloc(notesRepository: getIt<NotesRepository>()));
-  getIt.registerFactory(() => SitesBloc(sitesRepository: getIt<SitesRepository>()));
-  getIt.registerFactory(() => SignInBloc(signInRepository: getIt<SignInRepository>(), authManager: getIt<AuthManager>()));
-  getIt.registerFactory(() => RegisterBloc(registerRepository: getIt<RegisterRepository>()));
-  getIt.registerFactory(() => SetPasswordBloc(setPasswordRepository: getIt<SetPasswordRepository>()));
-  getIt.registerFactory(() => VerifyOtpBloc(verifyOtpRepository: getIt<VerifyOtpRepository>()));
-  getIt.registerFactory(() => SiteLogsBloc(siteLogsRepository: getIt<SiteLogsRepository>(), socketService: getIt<SocketService>()));
-  getIt.registerFactory(() => SiteNotesBloc(siteNoteRepository: getIt<SiteNoteRepository>()));
-  getIt.registerFactory(() => SiteDevicesBloc(siteDevicesRepository: getIt<SiteDevicesRepository>()));
-} 
+  getIt.registerLazySingleton<ThemeBloc>(() => ThemeBloc());
+  getIt.registerFactory(
+    () => LogsBloc(
+      logsRepository: getIt<LogsRepository>(),
+      socketService: getIt<SocketService>(),
+    ),
+  );
+  getIt.registerFactory(
+    () => NotesBloc(notesRepository: getIt<NotesRepository>()),
+  );
+  getIt.registerFactory(
+    () => SitesBloc(sitesRepository: getIt<SitesRepository>()),
+  );
+  getIt.registerFactory(
+    () => SignInBloc(
+      signInRepository: getIt<SignInRepository>(),
+      authManager: getIt<AuthManager>(),
+    ),
+  );
+  getIt.registerFactory(
+    () => RegisterBloc(registerRepository: getIt<RegisterRepository>()),
+  );
+  getIt.registerFactory(
+    () =>
+        SetPasswordBloc(setPasswordRepository: getIt<SetPasswordRepository>()),
+  );
+  getIt.registerFactory(
+    () => VerifyOtpBloc(verifyOtpRepository: getIt<VerifyOtpRepository>()),
+  );
+  getIt.registerFactory(
+    () => SiteLogsBloc(siteLogsRepository: getIt<SiteLogsRepository>()),
+  );
+  getIt.registerFactory(
+    () => SiteNotesBloc(siteNoteRepository: getIt<SiteNoteRepository>()),
+  );
+  getIt.registerFactory(
+    () =>
+        SiteDevicesBloc(siteDevicesRepository: getIt<SiteDevicesRepository>()),
+  );
+}

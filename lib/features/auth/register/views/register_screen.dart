@@ -71,6 +71,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               String? fullName,
                               String? companyName,
                               String? email,
+                              String? password,
                             }) {
                               FocusScope.of(context).unfocus();
                               if (state is! RegisterLoading) {
@@ -79,6 +80,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     fullName: fullName!,
                                     companyName: companyName!,
                                     email: email!,
+                                    password: password!,
                                   ),
                                 );
                               }

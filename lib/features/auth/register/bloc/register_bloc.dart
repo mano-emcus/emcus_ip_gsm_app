@@ -21,10 +21,11 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         fullName: event.fullName,
         companyName: 'Gemini',
         email: event.email,
+        password: event.password,
       );
 
       if (response.statusCode == 1) {
-        emit(RegisterSuccess(message: response.data.first.message));
+        emit(RegisterSuccess(message: response.message));
       } else {
         emit(RegisterFailure(error: response.message));
       }

@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 
 class SiteDevicesRepository {
   SiteDevicesRepository({AuthManager? authManager})
-      : _authManager = authManager ?? AuthManager();
+    : _authManager = authManager ?? AuthManager();
   final AuthManager _authManager;
 
   Future<GatewaysResponse> fetchSiteGateways({required int siteId}) async {
@@ -21,17 +21,15 @@ class SiteDevicesRepository {
         ...ApiConfig.defaultHeaders,
         'Authorization': 'Bearer $idToken',
       };
-      final url = 'https://ipgsm.emcus.co.in/api/sites/$siteId/gateways';
+      // final url = 'https://ipgsm.emcus.co.in/api/sites/$siteId/gateways';
+      final url = 'http://kiddeapi.emcus.co.in/api/sites/$siteId/gateways';
       ApiLogger.logRequest(
         method: 'GET',
         url: url,
         headers: headers,
         body: null,
       );
-      final response = await http.get(
-        Uri.parse(url),
-        headers: headers,
-      );
+      final response = await http.get(Uri.parse(url), headers: headers);
       ApiLogger.logResponse(
         statusCode: response.statusCode,
         headers: response.headers,
@@ -44,7 +42,9 @@ class SiteDevicesRepository {
         await _authManager.logoutSilent();
         throw Exception('Authentication failed. Please sign in again.');
       } else {
-        throw Exception('Failed to fetch site gateways: ${response.statusCode}');
+        throw Exception(
+          'Failed to fetch site gateways: ${response.statusCode}',
+        );
       }
     } on SocketException {
       throw Exception('No internet connection');

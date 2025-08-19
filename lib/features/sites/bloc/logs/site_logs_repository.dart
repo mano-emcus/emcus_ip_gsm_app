@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 
 class SiteLogsRepository {
   SiteLogsRepository({AuthManager? authManager})
-      : _authManager = authManager ?? AuthManager();
+    : _authManager = authManager ?? AuthManager();
   final AuthManager _authManager;
 
   Future<SiteLogsResponse> fetchSiteLogs({required int siteId}) async {
@@ -21,17 +21,15 @@ class SiteLogsRepository {
         ...ApiConfig.defaultHeaders,
         'Authorization': 'Bearer $idToken',
       };
-      final url = 'https://ipgsm.emcus.co.in/api/sites/$siteId/logs';
+      // final url = 'https://ipgsm.emcus.co.in/api/sites/$siteId/logs';
+      final url = 'http://kiddeapi.emcus.co.in/api/sites/$siteId/logs';
       ApiLogger.logRequest(
         method: 'GET',
         url: url,
         headers: headers,
         body: null,
       );
-      final response = await http.get(
-        Uri.parse(url),
-        headers: headers,
-      );
+      final response = await http.get(Uri.parse(url), headers: headers);
       ApiLogger.logResponse(
         statusCode: response.statusCode,
         headers: response.headers,
