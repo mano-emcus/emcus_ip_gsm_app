@@ -9,8 +9,6 @@ import 'package:emcus_ipgsm_app/utils/theme/custom_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:emcus_ipgsm_app/core/services/di.dart';
-import 'package:emcus_ipgsm_app/core/services/socket_service.dart';
 
 enum LogFilter { all, fire, fault, general }
 
@@ -26,7 +24,7 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
   final TextEditingController _searchController = TextEditingController();
   String searchQuery = '';
   LogsBloc? _logsBloc;
-  bool _isSocketConnected = false;
+  // bool _isSocketConnected = false;
 
   @override
   void initState() {
@@ -34,20 +32,20 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
     _logsBloc = context.read<LogsBloc>();
     _fetchLogs();
     // Listen to socket connection status
-    final socket = getIt<SocketService>().socket;
-    if (socket != null) {
-      _isSocketConnected = socket.connected;
-      socket.on('connect', (_) {
-        setState(() {
-          _isSocketConnected = true;
-        });
-      });
-      socket.on('disconnect', (_) {
-        setState(() {
-          _isSocketConnected = false;
-        });
-      });
-    }
+    // final socket = getIt<SocketService>().socket;
+    // if (socket != null) {
+    //   _isSocketConnected = socket.connected;
+    //   socket.on('connect', (_) {
+    //     setState(() {
+    //       _isSocketConnected = true;
+    //     });
+    //   });
+    //   socket.on('disconnect', (_) {
+    //     setState(() {
+    //       _isSocketConnected = false;
+    //     });
+    //   });
+    // }
   }
 
   @override
@@ -311,57 +309,57 @@ class _AllLogsScreenState extends State<AllLogsScreen> {
     );
   }
 
-  Widget _buildSearchBar() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 26),
-      child: Container(
-        decoration: BoxDecoration(
-          color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: TextField(
-          controller: _searchController,
-          decoration: InputDecoration(
-            hintText: 'Search logs...',
-            hintStyle: GoogleFonts.inter(
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-              color: ColorConstants.greyColor,
-            ),
-            prefixIcon: const Icon(
-              Icons.search,
-              color: ColorConstants.greyColor,
-            ),
-            suffixIcon:
-                searchQuery.isNotEmpty
-                    ? IconButton(
-                      icon: const Icon(
-                        Icons.clear,
-                        color: ColorConstants.greyColor,
-                      ),
-                      onPressed: () {
-                        _searchController.clear();
-                        setState(() {
-                          searchQuery = '';
-                        });
-                      },
-                    )
-                    : null,
-            border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 12,
-            ),
-          ),
-          onChanged: (value) {
-            setState(() {
-              searchQuery = value;
-            });
-          },
-        ),
-      ),
-    );
-  }
+  // Widget _buildSearchBar() {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(horizontal: 26),
+  //     child: Container(
+  //       decoration: BoxDecoration(
+  //         color: ColorConstants.textFieldBorderColor.withValues(alpha: 0.3),
+  //         borderRadius: BorderRadius.circular(8),
+  //       ),
+  //       child: TextField(
+  //         controller: _searchController,
+  //         decoration: InputDecoration(
+  //           hintText: 'Search logs...',
+  //           hintStyle: GoogleFonts.inter(
+  //             fontSize: 16,
+  //             fontWeight: FontWeight.w400,
+  //             color: ColorConstants.greyColor,
+  //           ),
+  //           prefixIcon: const Icon(
+  //             Icons.search,
+  //             color: ColorConstants.greyColor,
+  //           ),
+  //           suffixIcon:
+  //               searchQuery.isNotEmpty
+  //                   ? IconButton(
+  //                     icon: const Icon(
+  //                       Icons.clear,
+  //                       color: ColorConstants.greyColor,
+  //                     ),
+  //                     onPressed: () {
+  //                       _searchController.clear();
+  //                       setState(() {
+  //                         searchQuery = '';
+  //                       });
+  //                     },
+  //                   )
+  //                   : null,
+  //           border: InputBorder.none,
+  //           contentPadding: const EdgeInsets.symmetric(
+  //             horizontal: 16,
+  //             vertical: 12,
+  //           ),
+  //         ),
+  //         onChanged: (value) {
+  //           setState(() {
+  //             searchQuery = value;
+  //           });
+  //         },
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildFilterChips(CustomColors customColors) {
     return Row(

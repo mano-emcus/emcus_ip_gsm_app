@@ -3,11 +3,9 @@ import 'package:emcus_ipgsm_app/features/home/widgets/dashboard_logs_card.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_bloc.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_event.dart';
 import 'package:emcus_ipgsm_app/features/logs/bloc/logs_state.dart';
-import 'package:emcus_ipgsm_app/features/logs/models/log_entry.dart';
 import 'package:emcus_ipgsm_app/features/notes/bloc/notes_bloc.dart';
 import 'package:emcus_ipgsm_app/features/notes/bloc/notes_event.dart';
 import 'package:emcus_ipgsm_app/features/notes/bloc/notes_state.dart';
-import 'package:emcus_ipgsm_app/features/notes/widgets/note_grid_view_widget.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/site/sites_bloc.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/site/sites_event.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/site/sites_state.dart';
@@ -16,7 +14,6 @@ import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:emcus_ipgsm_app/utils/theme/custom_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_bloc.dart';
 import 'package:emcus_ipgsm_app/features/sites/bloc/logs/site_logs_event.dart';
@@ -312,220 +309,220 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // Helper methods to calculate log counts based on event IDs
-  int _getFireCount(List<LogEntry> logs) {
-    return logs
-        .where((log) => log.u16EventId >= 1001 && log.u16EventId <= 1007)
-        .length;
-  }
+  // int _getFireCount(List<LogEntry> logs) {
+  //   return logs
+  //       .where((log) => log.u16EventId >= 1001 && log.u16EventId <= 1007)
+  //       .length;
+  // }
 
-  int _getFaultCount(List<LogEntry> logs) {
-    return logs
-        .where((log) => log.u16EventId >= 2000 && log.u16EventId < 3000)
-        .length;
-  }
+  // int _getFaultCount(List<LogEntry> logs) {
+  //   return logs
+  //       .where((log) => log.u16EventId >= 2000 && log.u16EventId < 3000)
+  //       .length;
+  // }
 
-  int _getAllEventsCount(List<LogEntry> logs) {
-    return logs.length;
-  }
+  // int _getAllEventsCount(List<LogEntry> logs) {
+  //   return logs.length;
+  // }
 
-  Widget _buildDashboardContent() {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Logs',
-              style: GoogleFonts.inter(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: ColorConstants.textColor,
-              ),
-            ),
-            SvgPicture.asset('assets/svgs/arrow_forward_icon.svg'),
-          ],
-        ),
-        const SizedBox(height: 16),
-        BlocBuilder<LogsBloc, LogsState>(
-          builder: (context, state) {
-            if (state is LogsSuccess) {
-              fireCount = _getFireCount(state.logs);
-              faultCount = _getFaultCount(state.logs);
-              allEventsCount = _getAllEventsCount(state.logs);
-              fireCountText = fireCount.toString();
-              faultCountText = faultCount.toString();
-              allEventsCountText = allEventsCount.toString();
-            } else if (state is LogsLoading) {
-              fireCountText = '...';
-              faultCountText = '...';
-              allEventsCountText = '...';
-            }
+  // Widget _buildDashboardContent() {
+  //   return Column(
+  //     children: [
+  //       Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: [
+  //           Text(
+  //             'Logs',
+  //             style: GoogleFonts.inter(
+  //               fontSize: 16,
+  //               fontWeight: FontWeight.w600,
+  //               color: ColorConstants.textColor,
+  //             ),
+  //           ),
+  //           SvgPicture.asset('assets/svgs/arrow_forward_icon.svg'),
+  //         ],
+  //       ),
+  //       const SizedBox(height: 16),
+  //       BlocBuilder<LogsBloc, LogsState>(
+  //         builder: (context, state) {
+  //           if (state is LogsSuccess) {
+  //             fireCount = _getFireCount(state.logs);
+  //             faultCount = _getFaultCount(state.logs);
+  //             allEventsCount = _getAllEventsCount(state.logs);
+  //             fireCountText = fireCount.toString();
+  //             faultCountText = faultCount.toString();
+  //             allEventsCountText = allEventsCount.toString();
+  //           } else if (state is LogsLoading) {
+  //             fireCountText = '...';
+  //             faultCountText = '...';
+  //             allEventsCountText = '...';
+  //           }
 
-            return GridView.count(
-              padding: EdgeInsets.zero,
-              crossAxisCount: 3,
-              mainAxisSpacing: 16,
-              crossAxisSpacing: 8,
-              childAspectRatio: 1.25,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: ColorConstants.fireTitleBackGroundColor,
-                    border: Border.all(
-                      color: ColorConstants.fireTitleBorderColor,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      top: 17,
-                      right: 13,
-                      bottom: 9,
-                      left: 10,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SvgPicture.asset(
-                              'assets/svgs/fire_tile_icon.svg',
-                              height: 32,
-                            ),
-                            Text(
-                              fireCountText,
-                              style: GoogleFonts.inter(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w600,
-                                color: ColorConstants.blackColor,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            'Fire',
-                            style: GoogleFonts.inter(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: ColorConstants.fireTitleTextColor,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: ColorConstants.faultTitleBackGroundColor,
-                    border: Border.all(
-                      color: ColorConstants.faultTitleBorderColor,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      top: 17,
-                      right: 13,
-                      bottom: 9,
-                      left: 10,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SvgPicture.asset('assets/svgs/fault_tile_icon.svg'),
-                            Text(
-                              faultCountText,
-                              style: GoogleFonts.inter(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w600,
-                                color: ColorConstants.blackColor,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            'Fault',
-                            style: GoogleFonts.inter(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: ColorConstants.faultTitleTextColor,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: ColorConstants.allEventsTitleBackGroundColor,
-                    border: Border.all(
-                      color: ColorConstants.allEventsTitleBorderColor,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      top: 17,
-                      right: 13,
-                      bottom: 9,
-                      left: 10,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SvgPicture.asset(
-                              'assets/svgs/all_event_tile_icon.svg',
-                            ),
-                            Text(
-                              allEventsCountText,
-                              style: GoogleFonts.inter(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w600,
-                                color: ColorConstants.blackColor,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            'All Events',
-                            style: GoogleFonts.inter(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: ColorConstants.allEventsTitleTextColor,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      ],
-    );
-  }
+  //           return GridView.count(
+  //             padding: EdgeInsets.zero,
+  //             crossAxisCount: 3,
+  //             mainAxisSpacing: 16,
+  //             crossAxisSpacing: 8,
+  //             childAspectRatio: 1.25,
+  //             shrinkWrap: true,
+  //             physics: const NeverScrollableScrollPhysics(),
+  //             children: [
+  //               Container(
+  //                 decoration: BoxDecoration(
+  //                   color: ColorConstants.fireTitleBackGroundColor,
+  //                   border: Border.all(
+  //                     color: ColorConstants.fireTitleBorderColor,
+  //                   ),
+  //                   borderRadius: BorderRadius.circular(8),
+  //                 ),
+  //                 child: Padding(
+  //                   padding: const EdgeInsets.only(
+  //                     top: 17,
+  //                     right: 13,
+  //                     bottom: 9,
+  //                     left: 10,
+  //                   ),
+  //                   child: Column(
+  //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                     children: [
+  //                       Row(
+  //                         crossAxisAlignment: CrossAxisAlignment.end,
+  //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                         children: [
+  //                           SvgPicture.asset(
+  //                             'assets/svgs/fire_tile_icon.svg',
+  //                             height: 32,
+  //                           ),
+  //                           Text(
+  //                             fireCountText,
+  //                             style: GoogleFonts.inter(
+  //                               fontSize: 24,
+  //                               fontWeight: FontWeight.w600,
+  //                               color: ColorConstants.blackColor,
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                       Align(
+  //                         alignment: Alignment.centerRight,
+  //                         child: Text(
+  //                           'Fire',
+  //                           style: GoogleFonts.inter(
+  //                             fontSize: 14,
+  //                             fontWeight: FontWeight.w600,
+  //                             color: ColorConstants.fireTitleTextColor,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ),
+  //               Container(
+  //                 decoration: BoxDecoration(
+  //                   color: ColorConstants.faultTitleBackGroundColor,
+  //                   border: Border.all(
+  //                     color: ColorConstants.faultTitleBorderColor,
+  //                   ),
+  //                   borderRadius: BorderRadius.circular(8),
+  //                 ),
+  //                 child: Padding(
+  //                   padding: const EdgeInsets.only(
+  //                     top: 17,
+  //                     right: 13,
+  //                     bottom: 9,
+  //                     left: 10,
+  //                   ),
+  //                   child: Column(
+  //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                     children: [
+  //                       Row(
+  //                         crossAxisAlignment: CrossAxisAlignment.end,
+  //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                         children: [
+  //                           SvgPicture.asset('assets/svgs/fault_tile_icon.svg'),
+  //                           Text(
+  //                             faultCountText,
+  //                             style: GoogleFonts.inter(
+  //                               fontSize: 24,
+  //                               fontWeight: FontWeight.w600,
+  //                               color: ColorConstants.blackColor,
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                       Align(
+  //                         alignment: Alignment.centerRight,
+  //                         child: Text(
+  //                           'Fault',
+  //                           style: GoogleFonts.inter(
+  //                             fontSize: 14,
+  //                             fontWeight: FontWeight.w600,
+  //                             color: ColorConstants.faultTitleTextColor,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ),
+  //               Container(
+  //                 decoration: BoxDecoration(
+  //                   color: ColorConstants.allEventsTitleBackGroundColor,
+  //                   border: Border.all(
+  //                     color: ColorConstants.allEventsTitleBorderColor,
+  //                   ),
+  //                   borderRadius: BorderRadius.circular(8),
+  //                 ),
+  //                 child: Padding(
+  //                   padding: const EdgeInsets.only(
+  //                     top: 17,
+  //                     right: 13,
+  //                     bottom: 9,
+  //                     left: 10,
+  //                   ),
+  //                   child: Column(
+  //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                     children: [
+  //                       Row(
+  //                         crossAxisAlignment: CrossAxisAlignment.end,
+  //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                         children: [
+  //                           SvgPicture.asset(
+  //                             'assets/svgs/all_event_tile_icon.svg',
+  //                           ),
+  //                           Text(
+  //                             allEventsCountText,
+  //                             style: GoogleFonts.inter(
+  //                               fontSize: 24,
+  //                               fontWeight: FontWeight.w600,
+  //                               color: ColorConstants.blackColor,
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                       Align(
+  //                         alignment: Alignment.centerRight,
+  //                         child: Text(
+  //                           'All Events',
+  //                           style: GoogleFonts.inter(
+  //                             fontSize: 14,
+  //                             fontWeight: FontWeight.w600,
+  //                             color: ColorConstants.allEventsTitleTextColor,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ),
+  //             ],
+  //           );
+  //         },
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _buildRecentSites({required CustomColors customColors}) {
     return Column(
@@ -737,85 +734,85 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildRecentNotes() {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Recent Notes',
-              style: GoogleFonts.inter(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: ColorConstants.textColor,
-              ),
-            ),
-            SvgPicture.asset('assets/svgs/arrow_forward_icon.svg'),
-          ],
-        ),
-        const SizedBox(height: 12),
-        BlocBuilder<NotesBloc, NotesState>(
-          builder: (context, state) {
-            if (state is NotesLoading) {
-              return GridView.count(
-                padding: EdgeInsets.zero,
-                crossAxisCount: 3,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                children: List.generate(
-                  3,
-                  (index) => Container(
-                    decoration: BoxDecoration(
-                      color: ColorConstants.textFieldBorderColor.withValues(
-                        alpha: 0.3,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Center(child: CircularProgressIndicator()),
-                  ),
-                ),
-              );
-            } else if (state is NotesSuccess) {
-              // Get the most recent 3 notes
-              return NoteGridViewWidget(notes: state.notes, isHomeScreen: true);
-            } else {
-              // Error or initial state - show empty containers
-              return GridView.count(
-                padding: EdgeInsets.zero,
-                crossAxisCount: 3,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                children: List.generate(
-                  3,
-                  (index) => Container(
-                    decoration: BoxDecoration(
-                      color: ColorConstants.textFieldBorderColor.withValues(
-                        alpha: 0.3,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'No notes',
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          color: ColorConstants.greyColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            }
-          },
-        ),
-      ],
-    );
-  }
+  // Widget _buildRecentNotes() {
+  //   return Column(
+  //     children: [
+  //       Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: [
+  //           Text(
+  //             'Recent Notes',
+  //             style: GoogleFonts.inter(
+  //               fontSize: 16,
+  //               fontWeight: FontWeight.w600,
+  //               color: ColorConstants.textColor,
+  //             ),
+  //           ),
+  //           SvgPicture.asset('assets/svgs/arrow_forward_icon.svg'),
+  //         ],
+  //       ),
+  //       const SizedBox(height: 12),
+  //       BlocBuilder<NotesBloc, NotesState>(
+  //         builder: (context, state) {
+  //           if (state is NotesLoading) {
+  //             return GridView.count(
+  //               padding: EdgeInsets.zero,
+  //               crossAxisCount: 3,
+  //               crossAxisSpacing: 12,
+  //               mainAxisSpacing: 12,
+  //               shrinkWrap: true,
+  //               physics: const NeverScrollableScrollPhysics(),
+  //               children: List.generate(
+  //                 3,
+  //                 (index) => Container(
+  //                   decoration: BoxDecoration(
+  //                     color: ColorConstants.textFieldBorderColor.withValues(
+  //                       alpha: 0.3,
+  //                     ),
+  //                     borderRadius: BorderRadius.circular(8),
+  //                   ),
+  //                   child: const Center(child: CircularProgressIndicator()),
+  //                 ),
+  //               ),
+  //             );
+  //           } else if (state is NotesSuccess) {
+  //             // Get the most recent 3 notes
+  //             return NoteGridViewWidget(notes: state.notes, isHomeScreen: true);
+  //           } else {
+  //             // Error or initial state - show empty containers
+  //             return GridView.count(
+  //               padding: EdgeInsets.zero,
+  //               crossAxisCount: 3,
+  //               mainAxisSpacing: 16,
+  //               crossAxisSpacing: 16,
+  //               shrinkWrap: true,
+  //               physics: const NeverScrollableScrollPhysics(),
+  //               children: List.generate(
+  //                 3,
+  //                 (index) => Container(
+  //                   decoration: BoxDecoration(
+  //                     color: ColorConstants.textFieldBorderColor.withValues(
+  //                       alpha: 0.3,
+  //                     ),
+  //                     borderRadius: BorderRadius.circular(8),
+  //                   ),
+  //                   child: Center(
+  //                     child: Text(
+  //                       'No notes',
+  //                       style: GoogleFonts.inter(
+  //                         fontSize: 12,
+  //                         fontWeight: FontWeight.w400,
+  //                         color: ColorConstants.greyColor,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //             );
+  //           }
+  //         },
+  //       ),
+  //     ],
+  //   );
+  // }
 }

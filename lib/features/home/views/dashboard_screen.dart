@@ -1,9 +1,7 @@
-import 'package:emcus_ipgsm_app/core/services/auth_manager.dart';
 import 'package:emcus_ipgsm_app/features/home/views/pages/home_screen.dart';
 import 'package:emcus_ipgsm_app/features/logs/views/all_logs_screen.dart';
 import 'package:emcus_ipgsm_app/features/notes/views/all_notes_screen.dart';
 import 'package:emcus_ipgsm_app/features/profile/views/profile_screen.dart';
-import 'package:emcus_ipgsm_app/features/sites/views/all_site_screen.dart';
 import 'package:emcus_ipgsm_app/utils/constants/color_constants.dart';
 import 'package:emcus_ipgsm_app/utils/theme/custom_colors.dart';
 import 'package:flutter/material.dart';
